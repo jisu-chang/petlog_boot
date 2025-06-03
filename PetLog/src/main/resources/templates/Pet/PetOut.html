@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>My pet</title>
+  <style>
+      background-color: #f8f8f8;
+      text-align: center;
+      padding: 0;
+    }
+
+    .profile-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      justify-items: center;
+      margin: 0 20% 20px 20%;
+    }
+
+    .pet-profile {
+      width: 240px;
+      background-color: #fdf6f9;
+      border: 1px solid #e6d5e5;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.05);
+      position: relative;
+      text-align: center;
+    }
+
+    .pet-profile img {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      object-fit: cover;
+    }
+
+    .pet-name {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .pet-info {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 20px;
+      text-align: left;
+      display: block;
+      margin: 0 auto 20px auto;
+      width: 90%;
+      line-height: 1.6;
+    }
+
+    .pet-info span {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .pet-button {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background-color: #6d5da7;
+      transition: background-color 0.3s ease;
+      color: #90cfc3;
+      padding: 8px 0;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .pet-button:hover {
+      background-color: #7fbfb3;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+<header><h2>My pet</h2></header><br>
+
+<!-- 펫이 없는 경우 -->
+<div th:if="${#lists.isEmpty(list)}">
+  <p style="margin-top: 20px; font-weight: bold; color: #c0392b;">등록된 펫이 없습니다. 펫을 등록해주세요 🐾</p>
+  <form th:action="@{/pet_input}" method="get" style="margin-top: 20px;">
+    <input type="submit" value="펫 등록하러 가기"
+           style="padding: 10px 20px; border-radius: 12px; background-color: #d7c9f3;
+                    color: #5e478e; font-weight: bold; border: none; cursor: pointer;">
+  </form>
+</div>
+
+<!-- 펫이 있는 경우 -->
+<div class="profile-container" th:if="${not #lists.isEmpty(list)}">
+  <div class="pet-profile" th:each="pet : ${list}">
+    <img th:src="@{/image/{img}(img=${pet.petImg})}" alt="Pet Image">
+    <div class="pet-name" th:text="${pet.petName}">펫 이름</div>
+    <div class="pet-info">
+      <span th:text="'🧸 성별 ' + ${pet.petBog}">성별</span>
+      <span th:text="'✨ 중성화 ' + ${pet.petNeuter}">중성화</span>
+      <span th:text="'🎂 생일 ' + ${pet.petHbd}">생일</span>
+    </div>
+    <a th:href="@{/PetDetail(update1=${pet.petId})}" class="pet-button" style="background-color: #e5f7f3;">펫 프로필 보기</a>
+  </div>
+</div>
+</body>
+</html>

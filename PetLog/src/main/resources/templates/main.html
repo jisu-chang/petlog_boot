@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Main</title>
+
+  <!-- CSS / JS 링크는 필요에 따라 추가하세요 -->
+  <style>
+    img {
+      margin-left: 400px;
+      margin-top: 100px;
+    }
+  </style>
+
+
+  <!-- ✅ Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+  <!-- ✅ jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+  <!-- ✅ Bootstrap JS -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+</head>
+
+<body>
+
+<!-- ✅ 상단 메뉴 include -->
+<div th:replace="~{top :: menu}"></div>
+
+<!-- ✅ 로그인되지 않은 사용자 -->
+<th:block th:if="${#authentication.name} == 'anonymousUser'">
+  <a th:href="@{/login}">
+    <img title="여기를 클릭하세요!!" th:src="@{/image/login1.jpg}" width="400px" height="300px">
+  </a>
+</th:block>
+
+<!-- ✅ 로그인된 사용자 -->
+<th:block th:unless="${#authentication.name} == 'anonymousUser'">
+  <img th:src="@{/image/logo11.png}" width="400px" height="300px">
+</th:block>
+
+</body>
+</html>

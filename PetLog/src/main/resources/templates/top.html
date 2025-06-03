@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<style>
+  body {
+    background-color: #f0fdfa;
+    font-family: 'Pretendard', sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+
+  .top-wrapper {
+    background-color: #b2f2e9;
+    padding: 15px 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+
+  .logo-img {
+    height: 65px;
+    margin-left: 20px;
+  }
+
+  .navbar {
+    background-color: transparent;
+    border: none;
+    margin: 0;
+  }
+
+  .navbar .nav > li > a,
+  .navbar-right li a {
+    color: #007f7f !important;
+    font-weight: 600;
+    font-size: 15px;
+  }
+
+  .navbar .nav > li > a:hover,
+  .navbar .dropdown-menu > li > a:hover,
+  .navbar-right li a:hover {
+    background-color: #d3f9f4;
+    color: #004c4c !important;
+  }
+
+  .navbar .dropdown-menu {
+    background-color: #e6fcf5;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .navbar .dropdown-menu > li > a {
+    color: #007f7f;
+  }
+
+  .grape-count {
+    padding-top: 15px;
+    color: #007f7f;
+    font-weight: bold;
+  }
+</style>
+
+<body>
+
+<!-- ✅ Fragment 선언 여기 -->
+<div class="top-wrapper" th:fragment="menu">
+  <nav class="navbar">
+    <div class="container-fluid">
+
+      <div class="navbar-header">
+        <a class="navbar-brand" th:href="@{/main}"></a>
+      </div>
+
+      <ul class="nav navbar-nav">
+        <li class="active"><a th:href="@{/main}">🏠 Home</a></li>
+
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">📖 오늘의 일기<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a th:href="@{Diary/DiaryInput}">✏️ 일기 쓰기</a></li>
+            <li><a th:href="@{Diary/DiaryOut}">📖 일기 보기</a></li>
+          </ul>
+        </li>
+
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">🐶마이 펫😺<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a th:href="@{Pet/PetInput}">🐾 펫 등록</a></li>
+            <li><a th:href="@{Pet/PetOut}">😻 펫 보기</a></li>
+          </ul>
+        </li>
+
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">🗨️ 커뮤니티<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a th:href="@{/NoticeBoard}">📢 PetLog 공지사항</a></li>
+            <li><a th:href="@{/CommunityView}">📝 게시판</a></li>
+            <li><a th:href="@{/snack_input}">🦴 레시피 공유</a></li>
+            <li><a th:href="@{/snack_out}">🦴 레시피 보기</a></li>
+          </ul>
+        </li>
+
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">🧠 멍냥 퀴즈방<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a th:href="@{/QuizInput}">🐾 오늘의 멍냥 퀴즈</a></li>
+          </ul>
+        </li>
+
+        <li><a th:href="@{/qnalist}">❓ Q&A</a></li>
+
+        <li th:if="${session.user_role == 'admin'}" class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">👑 관리자<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a th:href="@{/BoardInput}">📢 공지사항 작성하기</a></li>
+            <li><a th:href="@{/items_input}">🎁 아이템 등록</a></li>
+            <li><a th:href="@{/items_out_admin}">🎁 아이템 목록</a></li>
+            <li><a th:href="@{/Quiz_admin}">📄 퀴즈 관리</a></li>
+            <li><a th:href="@{/point/grapes_admin_form}">🍇 포도알 관리</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right">
+        <li th:if="${loginstate}">
+          <ul th:if="${session.user_role == 'admin'}">
+            <li><a th:href="@{/mypage}">관리자 정보변경</a></li>
+            <li><a th:href="@{/logout}">로그아웃</a></li>
+          </ul>
+
+          <ul th:if="${session.user_role != 'admin'}">
+            <li><a th:href="@{/mypage}" th:text="${name} + '님의 마이페이지'"></a></li>
+            <li style="padding-top:15px; color:#9B59B6;">🍇 <span th:text="${session.loginUser.grape_count}"></span>개</li>
+            <li><a th:href="@{/pet_input}">펫 등록</a></li>
+            <li><a th:href="@{/items/buy_items}">내 아이템</a></li>
+            <li><a th:href="@{/logout}">로그아웃</a></li>
+          </ul>
+        </li>
+
+        <li th:unless="${loginstate}">
+          <a th:href="@{/userlogin}">회원가입</a>
+        </li>
+        <li th:unless="${loginstate}">
+          <a th:href="@{/login}">로그인</a>
+        </li>
+      </ul>
+
+    </div>
+  </nav>
+</div>
+
+</body>
+</html>
