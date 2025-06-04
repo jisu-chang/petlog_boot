@@ -130,8 +130,8 @@
 
   <!-- 펫 상세 정보 -->
   <div class="profile-container">
-    <img th:src="@{/image/{img}(img=${petEntity.petImg})}" alt="Pet Image">
-    <div class="pet-name">🤍 <span th:text="${petEntity.petName}">펫 이름</span> 🤍</div>
+    <img th:src="@{/image/{img}(img=${petEntity.petImgName})}" alt="Pet Image">
+    <div class="petName">🤍 <span th:text="${petEntity.petName}">펫 이름</span> 🤍</div>
 
     <div class="pet-info">
       <div class="info-row">🧸 <span>성별 <b th:text="${petEntity.petBog}">성별</b></span></div>
