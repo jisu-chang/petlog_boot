@@ -9,12 +9,19 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Data
+@Builder
 @Table(name = "user1")
+@SequenceGenerator(
+        name = "user_id",
+        sequenceName = "user_id_seq",
+        allocationSize = 1,
+        initialValue = 1
+)
 public class UserEntity {
     @Id
     @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "user_id")
     Long userId;
     @Column(name = "user_login_id")
     String userLoginId;

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="menu"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
@@ -142,14 +142,17 @@
           </ul>
         </li>
 
-        <li th:unless="${loginstate}">
-          <a th:href="@{/userlogin}">회원가입</a>
-        </li>
-        <li th:unless="${loginstate}">
-          <a th:href="@{/login}">로그인</a>
-        </li>
-      </ul>
+        <ul class="nav na vbar-nav navbar-right" style="display: flex;">
 
+          <li><a href="/signUp" sec:authorize="isAnonymous()"><span class="glyphicon glyphicon-user"></span> 회원가입</a>
+            <a href="#" sec:authorize="isAuthenticated()"><span style="color:yellow;" th:text="${#authentication.name}+'님 반가워요!!'">}></span></a>
+          </li>  <!--isAnonymous 인증x(익명), 아이디가 없음 --> <!--isAuthenticated 인증 됨-->
+          <li>
+            <a href="/login" sec:authorize="isAnonymous()"><span class="glyphicon glyphicon-log-in"></span> 로그인</a>
+            <a href="/logout" sec:authorize="isAuthenticated()"><span class="glyphicon glyphicon-log-out" ></span>로그아웃</a>
+          </li>
+
+        </ul>
     </div>
   </nav>
 </div>
