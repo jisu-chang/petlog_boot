@@ -60,8 +60,13 @@ public class PetController {
     }
 
     @GetMapping("/Pet/PetOut")
-    public String out(Model model) {
-        List<PetEntity> list = petService.petOut();
+    public String out(Model model, HttpSession session) {
+        UserEntity loginUser = (UserEntity) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            return "redirect:/login";
+        }
+
+        List<PetEntity> list = petService.petOut(loginUser); // userEntity 넘겨줌
         model.addAttribute("list", list);
         return "Pet/PetOut";
     }

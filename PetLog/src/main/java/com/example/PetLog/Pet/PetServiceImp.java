@@ -1,5 +1,6 @@
 package com.example.PetLog.Pet;
 
+import com.example.PetLog.User.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +18,8 @@ public class PetServiceImp implements PetService {
     }
 
     @Override
-    public List<PetEntity> petOut() {
-        return petRepository.findAll();
+    public List<PetEntity> petOut(UserEntity user) {
+        return petRepository.findByUser(user); // user 기준으로 pet 조회
     }
 
     @Override
