@@ -19,14 +19,19 @@ public class UserServiceImp implements UserService{
     }
 
     @Override
-    public UserEntity findByLoginId(String id) {
-        return userRepository.findByUserLoginId(id);
+    public UserEntity findById(Long id) {
+        return userRepository.findById(id).orElse(null);
     }
 
     @Override
-    public UserEntity findById(Long id) {
-        //pet에서 추가
-        return userRepository.findById(id).orElseThrow();
+    public UserEntity updateById(Long userId) {
+        return userRepository.findById(userId).orElse(null);
     }
+
+    @Override
+    public void updatesave(UserEntity userEntity) {
+        userRepository.save(userEntity);
+    }
+
 
 }

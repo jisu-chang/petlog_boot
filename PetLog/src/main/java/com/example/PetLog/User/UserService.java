@@ -6,9 +6,10 @@ public interface UserService {
 
     void signUpInsert(@Valid UserDTO userDTO);
 
-    UserEntity findByLoginId(String id);
-
     //pet에서 추가
     UserEntity findById(Long id);
 
+    UserEntity updateById(Long userId);
+
+    void updatesave(UserEntity userEntity);
 }

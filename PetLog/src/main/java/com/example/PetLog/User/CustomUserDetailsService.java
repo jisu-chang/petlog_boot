@@ -23,7 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String userLoginId) {
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-        UserEntity userEntity = userRepository.findByUserLoginId(userLoginId) ;
+        UserEntity userEntity = userRepository.findByUserLoginId(userLoginId);
 
         if (userEntity != null) {
             grantedAuthorities.add(new SimpleGrantedAuthority("USER"));

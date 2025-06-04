@@ -144,7 +144,7 @@
         <ul class="nav na vbar-nav navbar-right" style="display: flex;">
 
           <li><a href="/signUp" sec:authorize="isAnonymous()"><span class="glyphicon glyphicon-user"></span> 회원가입</a>
-            <a href="#" sec:authorize="isAuthenticated()"><span style="color:yellow;" th:text="${#authentication.name}+'님 반가워요!!'">}></span></a>
+            <a href="/MyPage" sec:authorize="isAuthenticated()"><span style="color:yellow;" th:text="${#authentication.name}+'님의 마이페이지!'">}></span></a>
           </li>  <!--isAnonymous 인증x(익명), 아이디가 없음 --> <!--isAuthenticated 인증 됨-->
           <li>
             <a href="/login" sec:authorize="isAnonymous()"><span class="glyphicon glyphicon-log-in"></span> 로그인</a>

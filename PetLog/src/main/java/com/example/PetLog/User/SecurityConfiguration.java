@@ -54,6 +54,9 @@ public class SecurityConfiguration {
                     String loginId = authentication.getName();
                     UserEntity loginUser = userRepository.findByUserLoginId(loginId);
 
+                    // user_id를 세션에 저장
+                    request.getSession().setAttribute("user_id", loginUser.getUserId());  // user_id 세션에 저장
+
                     // 반드시 세션에 저장해줘야 PetInput 페이지 등에서 인식 가능
                     request.getSession().setAttribute("loginUser", loginUser);
 
@@ -64,9 +67,10 @@ public class SecurityConfiguration {
                 .and()
                 .logout()
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/login")
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .deleteCookies("JSESSIONID")
                 .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID");
+                .clearAuthentication(true);
 
         return http.build();
     }
