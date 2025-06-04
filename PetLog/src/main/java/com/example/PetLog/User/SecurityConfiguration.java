@@ -32,15 +32,15 @@ public class SecurityConfiguration {
     public static BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-        /* @formatter:off */
         http
-                .authorizeRequests()
-                .requestMatchers("/", "/login","/signUp","/signUpSave","/PetInput").permitAll() //로그인이 필요없는 url 작성, 액션 부분 url 작성하면 됨
+                .csrf().disable() // 🔥 Flutter에서 POST 허용 위해 필수
+                .authorizeHttpRequests()
+                .requestMatchers("/", "/login", "/signUp", "/signUpSave", "/PetInput").permitAll() // 🔥 Flutter 로그인 예외 허용
                 .requestMatchers("/image/**").permitAll()
-                .anyRequest().authenticated()//위의 url 외에는 로그인하라는 뜻
+                .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .permitAll()
@@ -49,23 +49,19 @@ public class SecurityConfiguration {
                 .usernameParameter("userLoginId")
                 .passwordParameter("password")
                 .defaultSuccessUrl("/")
-
-                //로그인 인증 됨
                 .successHandler(new AuthenticationSuccessHandler() {
-                    @Override public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)throws IOException, ServletException {
-                        System.out.println("로그인중 아이디 : "+authentication.getName()); //authentication.getName())
+                    @Override
+                    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                        System.out.println("로그인중 아이디 : " + authentication.getName());
                         response.sendRedirect("/");
                     }
                 })
-
-                //로그인 안됨
                 .failureHandler(new AuthenticationFailureHandler() {
                     @Override
                     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
                         response.sendRedirect("/login");
                     }
                 })
-
                 .and()
                 .logout()
                 .permitAll()
@@ -74,9 +70,10 @@ public class SecurityConfiguration {
                 .deleteCookies("JSESSIONID")
                 .invalidateHttpSession(true)
                 .clearAuthentication(true);
+
         return http.build();
-        /* @formatter:on */
     }
+
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
