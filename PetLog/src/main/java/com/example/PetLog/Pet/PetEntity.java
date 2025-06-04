@@ -35,9 +35,9 @@ public class PetEntity {
     @Column(name = "pet_hbd")
     LocalDate petHbd;
 
-//    @ManyToOne
-//    @JoinColumn(name="user_id")
-//    UserEntity user;
+    @ManyToOne
+    @JoinColumn(name="user_id", nullable=false)
+    UserEntity user;
 
     @Column(name = "pet_img")
     String petImg;

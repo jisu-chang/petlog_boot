@@ -7,4 +7,7 @@ public interface UserService {
     void signUpInsert(@Valid UserDTO userDTO);
 
     UserEntity findByLoginId(String id);
+
+    //pet에서 추가
+    UserEntity findById(Long id);
 }

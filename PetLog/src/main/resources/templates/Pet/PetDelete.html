@@ -99,6 +99,7 @@
   <!-- 히든값 -->
   <input type="hidden" name="himage" th:value="${dto.petImgName}" />
   <input type="hidden" name="petId" th:value="${dto.petId}" />
+  <input type="hidden" name="userId" th:value="${dto.user.userId}">
 
   <div class="container">
     <img th:src="@{/image/{img}(img=${dto.petImgName})}"/>

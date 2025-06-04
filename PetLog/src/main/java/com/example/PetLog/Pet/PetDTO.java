@@ -22,13 +22,13 @@ public class PetDTO {
     LocalDate petHbd;
 
     //UserDTO꺼
-    //int userId;
+    Long userId;
 
     MultipartFile petImg;
     String petImgName; //이미지 파일명만 저장하기용
     String petNeuter;
 
-    public PetEntity entity() {
+    public PetEntity entity(UserEntity user) {
 
         //UserEntity user = new UserEntity();
         //user.setUserId((long) userId);
@@ -38,7 +38,7 @@ public class PetDTO {
                 .petName(petName)
                 .petBog(petBog)
                 .petHbd(petHbd)
-                //.user(user)
+                .user(user)
                 .petImg(petImgName)
                 .petNeuter(petNeuter)
                 .build();

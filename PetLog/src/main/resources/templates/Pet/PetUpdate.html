@@ -129,6 +129,7 @@
   <form th:action="@{/PetUpdateSave}" method="post" enctype="multipart/form-data" onsubmit="return confirm_update()">
     <input type="hidden" name="himage" th:value="${dto.petImgName}">
     <input type="hidden" name="petId" th:value="${petEntity.petId}">
+    <input type="hidden" name="userId" value="${petEntity.user.userId}">
 
     <div class="form-group">
       <label for="petName">이름</label>

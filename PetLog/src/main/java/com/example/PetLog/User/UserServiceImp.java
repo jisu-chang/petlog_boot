@@ -22,4 +22,10 @@ public class UserServiceImp implements UserService{
     public UserEntity findByLoginId(String id) {
         return userRepository.findByUserLoginId(id);
     }
+
+    @Override
+    public UserEntity findById(Long id) {
+        //pet에서 추가
+        return userRepository.findById(id).orElseThrow();
+    }
 }

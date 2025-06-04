@@ -133,6 +133,8 @@
 
   <form th:action="@{/PetSave}" method="post" enctype="multipart/form-data" th:object="${petDTO}">
 
+    <input type="hidden" th:field="*{userId}">
+
     <div class="form-group">
       <label for="pet_name">이름</label>
       <input type="text" id="pet_name" th:field="*{petName}" required>
