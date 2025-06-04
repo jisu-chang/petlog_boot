@@ -12,4 +12,6 @@ public interface PetService {
     List<PetEntity> petOut();
 
     PetEntity detail(long petId);
+
+    void update(PetEntity petEntity);
 }

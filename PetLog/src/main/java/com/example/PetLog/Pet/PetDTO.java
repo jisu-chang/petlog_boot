@@ -25,10 +25,11 @@ public class PetDTO {
     //int userId;
 
     MultipartFile petImg;
+    String petImgName; //이미지 파일명만 저장하기용
     String petNeuter;
 
     public PetEntity entity() {
-        String filename = (petImg != null) ? petImg.getOriginalFilename() : null;
+        String filename = petImgName;
 
         //UserEntity user = new UserEntity();
         //user.setUserId((long) userId);

@@ -26,5 +26,10 @@ public class PetServiceImp implements PetService {
         return petRepository.findById(petId).orElse(null);
     }
 
+    @Override
+    public void update(PetEntity petEntity) {
+        petRepository.save(petEntity);
+    }
+
 
 }

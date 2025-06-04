@@ -140,8 +140,8 @@
     </div>
 
     <div class="pet-actions">
-      <a th:href="@{/pet_update(update=${dto.petId}, dfimage=${petEntity.petImg})}" class="pet-button">✏️</a>
-      <a th:href="@{/pet_delete(delete=${dto.petId}, dfimage=${petEntity.petImg})}" class="pet-button">🗑️</a>
+      <a th:href="@{/Pet/PetUpdate(update=${petEntity.petId}, dfimage=${petEntity.petImg})}" class="pet-button">✏️</a>
+      <a th:href="@{/Pet/PetDelete(delete=${petEntity.petId}, dfimage=${petEntity.petImg})}" class="pet-button">🗑️</a>
     </div>
   </div>
 </div>

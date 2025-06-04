@@ -106,7 +106,7 @@
       <span th:text="'✨ 중성화 ' + ${pet.petNeuter}">중성화</span>
       <span th:text="'🎂 생일 ' + ${pet.petHbd}">생일</span>
     </div>
-    <a th:href="@{/PetDetail(update1=${pet.petId})}" class="pet-button" style="background-color: #e5f7f3;">펫 프로필 보기</a>
+    <a th:href="@{/Pet/PetDetail(petId=${pet.petId})}" class="pet-button" style="background-color: #e5f7f3;">펫 프로필 보기</a>
   </div>
 </div>
 </body>

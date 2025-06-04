@@ -11,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @Controller
@@ -64,5 +66,40 @@ public class PetController {
         mo.addAttribute("petEntity",petEntity);
 
         return "Pet/PetDetail";
-    } //404 오류 뜸!!
+    }
+
+    @GetMapping(value = "/Pet/PetUpdate")
+    public String up(@RequestParam("update") Long petId,Model mo) {
+
+        PetEntity petEntity = petService.detail(petId); //petId로 기존에 있던 데이터 조회
+        mo.addAttribute("petEntity",petEntity);
+
+        return "Pet/PetUpdate";
+    }
+
+    @PostMapping(value = "/PetUpdateSave")
+    public String up2(@ModelAttribute PetDTO petDTO, @RequestParam("himage") String himage) throws IOException {
+
+        MultipartFile mf = petDTO.getPetImg();
+
+        // 새 이미지가 업로드된 경우
+        if (mf != null &&!mf.isEmpty()) {
+            String filename = mf.getOriginalFilename();
+
+            File saveFile = new File(path+"\\"+filename);
+            mf.transferTo(saveFile);
+
+            // 파일명 DTO에 저장
+            petDTO.setPetImgName(filename);
+
+        } else {
+            // 이미지 변경 안 했으면 기존 이미지로 유지
+            petDTO.setPetImgName(himage);
+        }
+
+        PetEntity petEntity = petDTO.entity();
+        petService.update(petEntity);
+
+        return "redirect:/Pet/PetDetail?petId=" +petDTO.getPetId();
+    }
 }
