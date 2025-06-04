@@ -27,13 +27,15 @@ public class PetController {
     @GetMapping("/Pet/PetInput")
     public String input(@ModelAttribute PetDTO petDTO, HttpSession session) {
         UserEntity loginUser = (UserEntity) session.getAttribute("loginUser");
+
         if (loginUser == null) return "redirect:/login";
+
         petDTO.setUserId(loginUser.getUserId());
         return "Pet/PetInput";
     }
 
     @PostMapping("/PetSave")
-    public String save(PetDTO petDTO,
+    public String save(@ModelAttribute PetDTO petDTO,
                        @RequestParam("petImg") MultipartFile mf,
                        HttpSession session) throws IOException {
 
@@ -54,7 +56,7 @@ public class PetController {
         UserEntity user = userService.findById(petDTO.getUserId());
         petService.save(petDTO.entity(user));
 
-        return "redirect:/Pet/PetOut";
+        return "redirect:/main";
     }
 
     @GetMapping("/Pet/PetOut")

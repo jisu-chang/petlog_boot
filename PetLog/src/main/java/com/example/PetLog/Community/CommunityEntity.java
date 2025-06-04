@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,21 +19,22 @@ import lombok.NoArgsConstructor;
         initialValue = 1)
 public class CommunityEntity {
     @Id
-    @Column
+    @Column (name = "post_id")
             @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "community")
-    Long post_id;
-    @Column
-    int user_id;
-    @Column
-    String post_title;
-    @Column
-    String post_content;
-    @Column
-    String post_image;
-    @Column
-    int post_readcnt;
-    @Column
-    String post_date;
+    Long postId;
+    @Column(name = "user_id", nullable = false)
+    int userId;
+    @Column(name = "post_title", nullable = false)
+    String postTitle;
+    @Lob
+    @Column(name = "post_content", nullable = false)
+    String postContent;
+    @Column(name = "post_image")
+    String postImage;
+    @Column(name = "post_readcnt")
+    int postReadcnt;
+    @Column(name = "post_date")
+    LocalDate postDate;
 //    @Column
 //     String user_login_id;
 //    @Column
@@ -40,7 +43,7 @@ public class CommunityEntity {
 //    int like_count;
 //    @Column
 //    String profileimg;
-    @Column
-    String post_type;
+    @Column(name = "post_type")
+    String postType;
 }
 

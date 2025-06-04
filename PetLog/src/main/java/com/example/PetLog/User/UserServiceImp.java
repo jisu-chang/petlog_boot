@@ -28,4 +28,5 @@ public class UserServiceImp implements UserService{
         //pet에서 추가
         return userRepository.findById(id).orElseThrow();
     }
+
 }

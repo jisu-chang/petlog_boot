@@ -27,6 +27,7 @@ import java.io.IOException;
 public class SecurityConfiguration {
 
     private final UserDetailsService userDetailsService;
+    private UserRepository userRepository;
 
     @Bean
     public static BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -36,9 +37,8 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable() // 🔥 Flutter에서 POST 허용 위해 필수
                 .authorizeHttpRequests()
-                .requestMatchers("/", "/login", "/signUp", "/signUpSave", "/PetInput").permitAll() // 🔥 Flutter 로그인 예외 허용
+                .requestMatchers("/", "/login", "/signUp", "/signUpSave").permitAll()
                 .requestMatchers("/image/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -49,27 +49,24 @@ public class SecurityConfiguration {
                 .usernameParameter("userLoginId")
                 .passwordParameter("password")
                 .defaultSuccessUrl("/")
-                .successHandler(new AuthenticationSuccessHandler() {
-                    @Override
-                    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-                        System.out.println("로그인중 아이디 : " + authentication.getName());
-                        response.sendRedirect("/");
-                    }
+                .successHandler((request, response, authentication) -> {
+                    // 로그인 성공 시 세션에 유저 저장
+                    String loginId = authentication.getName();
+                    UserEntity loginUser = userRepository.findByUserLoginId(loginId);
+
+                    // 반드시 세션에 저장해줘야 PetInput 페이지 등에서 인식 가능
+                    request.getSession().setAttribute("loginUser", loginUser);
+
+                    // 홈 또는 원하는 페이지로 이동
+                    response.sendRedirect("/");
                 })
-                .failureHandler(new AuthenticationFailureHandler() {
-                    @Override
-                    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-                        response.sendRedirect("/login");
-                    }
-                })
+                .failureUrl("/login?error=true")
                 .and()
                 .logout()
-                .permitAll()
                 .logoutUrl("/logout")
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .deleteCookies("JSESSIONID")
+                .logoutSuccessUrl("/login")
                 .invalidateHttpSession(true)
-                .clearAuthentication(true);
+                .deleteCookies("JSESSIONID");
 
         return http.build();
     }

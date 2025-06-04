@@ -10,4 +10,5 @@ public interface UserService {
 
     //pet에서 추가
     UserEntity findById(Long id);
+
 }
