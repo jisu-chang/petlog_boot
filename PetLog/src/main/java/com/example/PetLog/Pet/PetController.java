@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.xml.crypto.dsig.spec.XSLTTransformParameterSpec;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -38,6 +39,7 @@ public class PetController {
         String fileName = mf.getOriginalFilename();
         if (!mf.isEmpty()) {
             mf.transferTo(new File(path + File.separator + fileName));
+            petDTO.setPetImgName(fileName);
         }
 
         // ✅ DTO에 이미지 정보 담기
@@ -61,13 +63,25 @@ public class PetController {
     public String de(Model mo, @RequestParam("petId") long petId) {
         PetEntity petEntity = petService.detail(petId);
         mo.addAttribute("petEntity", petEntity);
+
         return "Pet/PetDetail";
     }
 
     @GetMapping(value = "/Pet/PetUpdate")
     public String up(@RequestParam("update") Long petId, Model mo) {
         PetEntity petEntity = petService.detail(petId);
+
+        PetDTO dto = new PetDTO();
+        dto.setPetId(petEntity.getPetId());
+        dto.setPetName(petEntity.getPetName());
+        dto.setPetBog(petEntity.getPetBog());
+        dto.setPetHbd(petEntity.getPetHbd());
+        dto.setPetNeuter(petEntity.getPetNeuter());
+        dto.setPetImgName(petEntity.getPetImg());
+
+        mo.addAttribute("dto", dto);
         mo.addAttribute("petEntity", petEntity);
+
         return "Pet/PetUpdate";
     }
 
@@ -93,5 +107,40 @@ public class PetController {
         petService.update(petEntity);
 
         return "redirect:/Pet/PetDetail?petId=" + petDTO.getPetId();
+    }
+
+    @GetMapping(value = "/Pet/PetDelete")
+    public String delete(@RequestParam("delete") Long petId, @RequestParam("dfimage") String image, Model mo) {
+
+        PetEntity petEntity = petService.detail(petId);
+
+        PetDTO dto = new PetDTO();
+        dto.setPetId(petEntity.getPetId());
+        dto.setPetName(petEntity.getPetName());
+        dto.setPetBog(petEntity.getPetBog());
+        dto.setPetNeuter(petEntity.getPetNeuter());
+        dto.setPetHbd(petEntity.getPetHbd());
+        dto.setPetImgName(image);
+
+        mo.addAttribute("dto",dto);
+
+        return "Pet/PetDelete";
+    }
+
+    @PostMapping(value = "/PetDeleteCheck")
+    public String delete2(@RequestParam("petId") Long petId, @RequestParam("himage") String imageName) {
+
+        petService.delete(petId); //ㄹㅇ 삭제
+
+        String path = new File("src/main/resources/static/image").getAbsolutePath();
+        //상대경로
+
+        File file = new File(path,imageName);
+
+        if(file.exists()) {
+            file.delete();
+        }
+
+        return "redirect:/Pet/PetOut";
     }
 }

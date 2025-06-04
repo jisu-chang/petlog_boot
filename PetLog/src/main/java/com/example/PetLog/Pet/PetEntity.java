@@ -45,6 +45,9 @@ public class PetEntity {
     @Column(name = "pet_neuter")
     String petNeuter;
 
+    public String getPetImg() {
+        return petImg;
+    }
 
 
 }

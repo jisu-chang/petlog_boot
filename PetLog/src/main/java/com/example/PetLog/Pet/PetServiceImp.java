@@ -31,5 +31,10 @@ public class PetServiceImp implements PetService {
         petRepository.save(petEntity);
     }
 
+    @Override
+    public void delete(Long petId) {
+        petRepository.deleteById(petId);
+    }
+
 
 }

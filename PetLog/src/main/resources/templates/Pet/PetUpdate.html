@@ -8,7 +8,6 @@
       background-color: #fff6f6;
       margin: 0;
       padding: 0;
-      font-family: 'Pretendard', sans-serif;
       color: #333;
     }
 
@@ -128,7 +127,7 @@
   <h2>🐾 펫 수정하기</h2>
 
   <form th:action="@{/PetUpdateSave}" method="post" enctype="multipart/form-data" onsubmit="return confirm_update()">
-    <input type="hidden" name="himage" th:value="${petEntity.petImg}">
+    <input type="hidden" name="himage" th:value="${dto.petImgName}">
     <input type="hidden" name="petId" th:value="${petEntity.petId}">
 
     <div class="form-group">

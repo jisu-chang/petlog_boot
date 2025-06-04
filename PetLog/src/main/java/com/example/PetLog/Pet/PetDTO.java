@@ -29,7 +29,6 @@ public class PetDTO {
     String petNeuter;
 
     public PetEntity entity() {
-        String filename = petImgName;
 
         //UserEntity user = new UserEntity();
         //user.setUserId((long) userId);
@@ -40,7 +39,7 @@ public class PetDTO {
                 .petBog(petBog)
                 .petHbd(petHbd)
                 //.user(user)
-                .petImg(filename)
+                .petImg(petImgName)
                 .petNeuter(petNeuter)
                 .build();
     }
