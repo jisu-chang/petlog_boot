@@ -10,4 +10,8 @@ public interface DiaryService {
     List<PetDTO> petByUser(); //유저의 반려동물 목록 선택하기
 
     void save(DiaryEntity diaryEntity);
+
+    List<DiaryDTO> findDiaryByUserId(Long userId);
+
+
 }

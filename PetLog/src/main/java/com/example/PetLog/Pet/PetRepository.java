@@ -10,4 +10,7 @@ import java.util.List;
 public interface PetRepository extends JpaRepository<PetEntity,Long> {
 
     List<PetEntity> findByUser(UserEntity user);
+
+    List<PetEntity> findByUserUserId(Long userId);
+    //from diary
 }

@@ -17,4 +17,6 @@ public interface PetService {
     void delete(Long petId);
 
     List<PetEntity> petOut(UserEntity loginUser);
+
+    List<PetDTO> findPetById(Long userId);
 }

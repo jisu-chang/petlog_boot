@@ -9,4 +9,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     UserEntity findByUserLoginId(String user_login_id);  //중복 확인용
 
 
+
 }
