@@ -30,6 +30,8 @@ public class DiaryController {
     @Autowired
     UserService userService;
 
+    String path = System.getProperty("user.dir") + "/src/main/resources/static/image";
+
     @GetMapping (value = "/Diary/DiaryInput")
     public String in(Model mo, HttpSession hs, Principal principal) {
 
@@ -52,20 +54,20 @@ public class DiaryController {
         // 2. DTO에 userId 세팅
         dto.setUserId(userId);
 
-        // 3. 이미지 저장 (서버가 인식하는 경로로 저장!)
         MultipartFile file = dto.getDiaryImage();
         if (file != null && !file.isEmpty()) {
             String filename = file.getOriginalFilename();
-            
-            String path = new File("src/main/resources/static/image").getAbsolutePath();
+
+            // 저장 경로: 현재 프로젝트 위치 + static/image
+            String path = System.getProperty("user.dir") + "/src/main/resources/static/image";
             File dir = new File(path);
             if (!dir.exists()) {
-                dir.mkdirs();
+                dir.mkdirs(); // 폴더 없으면 생성
             }
-            file.transferTo(new File(dir, filename));
 
-            // 4. DTO에 파일명 저장
-            dto.setDiaryImageName(filename);
+            // 실제 저장
+            file.transferTo(new File(dir, filename));
+            dto.setDiaryImageName(filename); // DTO에 파일명 저장
         }
 
         // 5. Entity로 변환 후 저장
