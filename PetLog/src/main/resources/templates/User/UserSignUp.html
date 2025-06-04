@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{top::menu}"></div>
+<style>
+  p{color:red;}
+
+</style>
+<body>
+<head>
+
+</head>
+
+<div class="container">
+  <form th:action="@{/signUpSave}" method="post" modelAttribute="userDTO" th:object="${userDTO}" enctype="multipart/form-data">
+
+    <div class="form-group">
+      <label for="user_login_id">아이디</label>
+      <input type="text" class="form-control" id="user_login_id" name="user_login_id">
+
+    </div>
+
+    <div class="form-group">
+      <label for="password">패스워드</label>
+      <input type="password" class="form-control" id="password" name="password">
+    </div>
+
+    <div class="form-group">
+      <label for="name">이름</label>
+      <input type="text" class="form-control" id="name" th:field="*{name}">
+      <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+    </div>
+
+    <div class="form-group">
+      <label for="phone">전화번호</label>
+      <input type="text" class="form-control" id="phone" name="phone">
+    </div>
+
+    <div class="form-group">
+      <label for="email">이메일</label>
+      <input type="text" class="form-control" id="email" name="email">
+    </div>
+
+
+    <div class="form-group">
+      <label for="profileimg">프로필이미지</label>
+      <input type="file" class="form-control" id="profileimg" name="profileimg">
+    </div>
+
+    <button type="submit" class="btn btn-primary">저장</button>
+    <button type="reset" class="btn btn-primary" onclick="location.href='/'">취소</button>
+  </form>
+</div>
+</body>
+
+</html>
