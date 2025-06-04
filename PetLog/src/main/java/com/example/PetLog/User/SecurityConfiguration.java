@@ -38,7 +38,7 @@ public class SecurityConfiguration {
         /* @formatter:off */
         http
                 .authorizeRequests()
-                .requestMatchers("/", "/login","/signUp","/signUpSave").permitAll() //로그인이 필요없는 url 작성, 액션 부분 url 작성하면 됨
+                .requestMatchers("/", "/login","/signUp","/signUpSave","/PetInput").permitAll() //로그인이 필요없는 url 작성, 액션 부분 url 작성하면 됨
                 .requestMatchers("/image/**").permitAll()
                 .anyRequest().authenticated()//위의 url 외에는 로그인하라는 뜻
                 .and()

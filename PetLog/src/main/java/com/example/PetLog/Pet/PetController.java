@@ -86,8 +86,7 @@ public class PetController {
         if (mf != null &&!mf.isEmpty()) {
             String filename = mf.getOriginalFilename();
 
-            File saveFile = new File(path+"\\"+filename);
-            mf.transferTo(saveFile);
+            mf.transferTo(new File(path+"\\"+filename));;
 
             // 파일명 DTO에 저장
             petDTO.setPetImgName(filename);
