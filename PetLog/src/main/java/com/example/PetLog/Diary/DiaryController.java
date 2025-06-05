@@ -1,7 +1,10 @@
 package com.example.PetLog.Diary;
 
 import com.example.PetLog.Pet.PetDTO;
+import com.example.PetLog.Pet.PetEntity;
+import com.example.PetLog.Pet.PetRepository;
 import com.example.PetLog.Pet.PetService;
+import com.example.PetLog.User.UserEntity;
 import com.example.PetLog.User.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -29,6 +31,9 @@ public class DiaryController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    PetRepository petRepository;
 
     String path = System.getProperty("user.dir") + "/src/main/resources/static/image";
 
@@ -90,6 +95,53 @@ public class DiaryController {
         mo.addAttribute("list", diaryList);
 
         return "Diary/DiaryOut";
+    }
+
+    @GetMapping(value = "/Diary/DiaryDetail")
+    public String det(Model mo, @RequestParam("diaryId") long diaryId) {
+        DiaryDTO diaryEntity = diaryService.detail(diaryId);
+
+        if (diaryEntity == null) {
+            return "redirect:/Diary/DiaryOut"; // 또는 에러 페이지
+        }
+
+        mo.addAttribute("dto", diaryEntity);
+        return "Diary/DiaryDetail";
+    }
+
+    @GetMapping(value = "Diary/DiaryUpdate")
+    public String up(@RequestParam("diaryId") Long diaryId, Model mo, Principal principal) {
+        if (principal == null) return "redirect:/login";
+
+        DiaryEntity diaryEntity = diaryService.detailEntity(diaryId);
+        PetEntity petEntity = petRepository.findById(diaryEntity.getPetId()).orElseThrow();
+
+        DiaryDTO dto = new DiaryDTO();
+        dto.setDiaryId(diaryEntity.getDiaryId());
+        dto.setDiaryTitle(diaryEntity.getDiaryTitle());
+        dto.setDiaryDate(diaryEntity.getDiaryDate());
+        dto.setDiaryImageName(diaryEntity.getDiaryImage());
+        dto.setDiaryContent(diaryEntity.getDiaryContent());
+        dto.setPetName(petEntity.getPetName());
+        dto.setUserId(diaryEntity.getUserId());
+        dto.setPetId(diaryEntity.getPetId());
+
+        mo.addAttribute("dto", dto);
+        mo.addAttribute("pet", petEntity);
+
+        return "Diary/DiaryUpdate";
+    }
+
+    @PostMapping(value = "UpdateSave")
+    public String save() {
+
+        return "";
+    }
+
+    @GetMapping("/Diary/DiaryDelete")
+    public String delete(@RequestParam("diaryId") Long diaryId) {
+
+        return "";
     }
 
 }
