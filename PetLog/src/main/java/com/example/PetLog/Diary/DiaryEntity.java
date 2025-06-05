@@ -1,18 +1,16 @@
 package com.example.PetLog.Diary;
 
-import com.example.PetLog.Pet.PetEntity;
-import com.example.PetLog.User.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "diary")
 @Getter
 @Setter
-@Table(name = "diary")
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class DiaryEntity {
 
@@ -25,30 +23,27 @@ public class DiaryEntity {
             initialValue = 1
     )
     @Column(name = "diary_id")
-    long diaryId;
+    private Long diaryId;
 
     @Column(name = "diary_title")
-    String diaryTitle;
+    private String diaryTitle;
 
     @Column(name = "diary_date")
-    LocalDate diaryDate;
+    private LocalDate diaryDate;
 
     @Column(name = "diary_image")
-    String diaryImage;
+    private String diaryImage;
+
+    @Column(name = "diary_content")
+    private String diaryContent;
 
     @Column(name = "get_grape")
-    int getGrape;
+    private int getGrape;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    UserEntity user;
+    @Column(name = "user_id")
+    private Long userId;    // 직접 숫자 ID 필드로 변경
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pet_id")
-    PetEntity pet;
-
-//    @Column(name = "pet_name")
-//    String petName;
-
+    @Column(name = "pet_id")
+    private Long petId;     // 직접 숫자 ID 필드로 변경
 
 }

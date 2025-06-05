@@ -14,22 +14,35 @@ import java.time.LocalDate;
 @Setter
 public class DiaryDTO {
 
-    int diaryId;
+    Long diaryId;
     String diaryTitle;
     LocalDate diaryDate;
     MultipartFile diaryImage;
     String diaryContent;
 
-    int getGrape; //일기 쓰고 포도알 적립 되었는지 확인하는 용도!
+    int getGrape;
 
-    //UserDTO & PetDTO 필요함
-    int userId;
-    int petId;
-
+    Long userId;
+    Long petId;
     String petName;
 
+    // ★ 파일명 저장용 필드
+    String diaryImageName;
+
     public DiaryEntity entity() {
-        String filename = (diaryImage != null) ? diaryImage.getOriginalFilename() : null;
-        return null;//수정해야함!!
+        return DiaryEntity.builder()
+                .diaryId(diaryId)
+                .diaryTitle(diaryTitle)
+                .diaryDate(diaryDate)
+                .diaryImage(diaryImageName) // ★ 이게 DB에 들어감
+                .diaryContent(diaryContent)
+                .getGrape(getGrape)
+                .userId(userId)
+                .petId(petId)
+                .build();
+    }
+
+    public void setDiaryImageName(String filename) {
+        this.diaryImageName = filename;
     }
 }

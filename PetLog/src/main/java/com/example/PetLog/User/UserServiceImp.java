@@ -23,15 +23,13 @@ public class UserServiceImp implements UserService{
         return userRepository.findById(id).orElse(null);
     }
 
-    @Override
-    public UserEntity updateById(Long userId) {
-        return userRepository.findById(userId).orElse(null);
-    }
 
     @Override
-    public void updatesave(UserEntity userEntity) {
-        userRepository.save(userEntity);
+    public Long findUserIdByLoginId(String loginId) {
+        UserEntity user = userRepository.findByUserLoginId(loginId);
+        if (user != null) {
+            return user.getUserId();
+        }
+        return null;  // 로그인 정보 없으면 null 반환하거나 예외 처리
     }
-
-
 }

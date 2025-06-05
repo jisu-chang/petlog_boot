@@ -9,7 +9,7 @@ public interface UserService {
     //pet에서 추가
     UserEntity findById(Long id);
 
-    UserEntity updateById(Long userId);
+    //diary에서 추가
+    Long findUserIdByLoginId(String loginId);
 
-    void updatesave(UserEntity userEntity);
 }
