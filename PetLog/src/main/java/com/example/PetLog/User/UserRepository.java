@@ -8,6 +8,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
+    @Query("select u from UserEntity u where u.userId=:userId")
+    UserEntity MyPagefindById(@Param("userId") Long userId);
+
+
     UserEntity findByUserLoginId(String userLoginId);
 
 

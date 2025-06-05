@@ -23,6 +23,15 @@ public class UserServiceImp implements UserService{
         return userRepository.findById(id).orElse(null);
     }
 
+    @Override
+    public UserEntity updateById(Long userId) {
+        return userRepository.findById(userId).orElse(null);
+    }
+
+    @Override
+    public void updatesave(UserEntity userEntity) {
+        userRepository.save(userEntity);
+    }
 
     @Override
     public Long findUserIdByLoginId(String loginId) {
