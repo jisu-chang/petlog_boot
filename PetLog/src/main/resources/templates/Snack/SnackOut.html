@@ -125,11 +125,11 @@
 
     <div th:if="${#lists.isEmpty(list)}">
         <p class="no-recipe">작성된 레시피가 없습니다. 🍪</p>
-        <a th:href="@{/snack/input}" class="btn-write">레시피 작성하러 가기 ✍️</a>
+        <a th:href="@{Snack/SnackInput}" class="btn-write">레시피 작성하러 가기 ✍️</a>
     </div>
 
     <div th:if="${not #lists.isEmpty(list)}">
-        <a th:href="@{/snack/input}" class="btn-write">레시피 작성</a>
+        <a th:href="@{/Snack/SnackInput}" class="btn-write">레시피 작성</a>
 
         <table>
             <thead>
@@ -145,7 +145,7 @@
             <tr th:each="rec : ${list}">
                 <td th:text="${rec.snackId}"></td>
                 <td class="title">
-                    <a th:href="@{/snack/detail(dnum=${rec.snackId})}" th:text="${rec.snackTitle}"></a>
+                    <a th:href="@{/Snack/SnackDetail(snackId=${rec.snackId})}" th:text="${rec.snackTitle}"></a>
                     <span style="margin-left: 8px; color: #888;">
               🗨️ <span th:text="${rec.commentCount}"></span>
               ❤️ <span th:text="${rec.likeCount}"></span>
@@ -157,13 +157,14 @@
             </tr>
             </tbody>
         </table>
-
+<!--
         <div class="pagination">
             <a th:each="i : ${#numbers.sequence(1, pageCount)}"
-               th:href="@{/snack/out(page=${i})}"
+               th:href="@{/Snack/SnackOut(page=${i})}"
                th:classappend="${i == page} ? 'current' : ''"
                th:text="${i}"></a>
         </div>
+     -->
     </div>
 </div>
 </body>

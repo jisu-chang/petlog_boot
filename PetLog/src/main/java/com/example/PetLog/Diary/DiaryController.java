@@ -90,7 +90,6 @@ public class DiaryController {
         String loginId = principal.getName();
         Long userId = userService.findUserIdByLoginId(loginId);
 
-        // 페이징 없이 전부 조회
         List<DiaryDTO> diaryList = diaryService.findDiaryByUserId(userId);
 
         mo.addAttribute("list", diaryList);

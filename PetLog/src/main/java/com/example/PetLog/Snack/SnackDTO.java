@@ -12,30 +12,30 @@ import java.time.LocalDate;
 @Data
 public class SnackDTO {
 
-    long snack_id;
-    String snack_title;
-    String snack_recipe;
-    MultipartFile snack_image;
-    String snack_imagename; //이미지 파일명 저장용
-    LocalDate snack_date;
-    int snack_readcnt;
-    int comment_count; //entity x
-    int like_count; //entity x
+    long snackId;
+    String snackTitle;
+    String snackRecipe;
+    MultipartFile snackImage;
+    String snackImagename; //이미지 파일명 저장용
+    LocalDate snackDate;
+    int snackReadcnt;
+    int commentCount; //entity x
+    int likeCount; //entity x
 
-    String get_grape; //entity x
+    String getGrape; //entity x
 
-    long user_id;
-    String user_login_id; //entity x
+    long userId;
+    String userLoginId; //entity x
 
     public SnackEntity entity() {
         return SnackEntity.builder()
                 .snackId(null)
-                .snackTitle(snack_title)
-                .snackRecipe(snack_recipe)
-                .snackImage(snack_imagename)
-                .snackDate(snack_date)
-                .snackReadcnt(snack_readcnt)
-                .userId(user_id)
+                .snackTitle(snackTitle)
+                .snackRecipe(snackRecipe)
+                .snackImage(snackImagename)
+                .snackDate(snackDate)
+                .snackReadcnt(snackReadcnt)
+                .userId(userId)
                 .build();
     }
 }

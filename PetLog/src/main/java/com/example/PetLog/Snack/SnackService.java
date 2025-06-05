@@ -8,4 +8,8 @@ import java.util.List;
 public interface SnackService {
 
     void save(SnackEntity snackEntity);
+
+    List<SnackDTO> out();
+
+    SnackDTO detail(long snackId);
 }
