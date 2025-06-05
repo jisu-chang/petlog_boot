@@ -1,11 +1,14 @@
 package com.example.PetLog.Community;
 
+import com.example.PetLog.Comments.CommentsEntity;
+import com.example.PetLog.Likes.LikesEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -20,9 +23,9 @@ import java.time.LocalDate;
 public class CommunityEntity {
     @Id
     @Column (name = "post_id")
-            @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "community")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "community")
     Long postId;
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id", nullable = false) //nullable = false => null 값 허용x
     int userId;
     @Column(name = "post_title", nullable = false)
     String postTitle;
@@ -35,15 +38,15 @@ public class CommunityEntity {
     int postReadcnt;
     @Column(name = "post_date")
     LocalDate postDate;
-//    @Column
-//     String user_login_id;
-//    @Column
-//    int comment_count;
-//    @Column
-//    int like_count;
-//    @Column
-//    String profileimg;
     @Column(name = "post_type")
     String postType;
+
+    // 댓글과의 관계 (게시글은 여러 댓글을 가질 수 있음)
+    @OneToMany(mappedBy = "community", fetch = FetchType.LAZY)
+    List<CommentsEntity> comments;
+
+    // 좋아요와의 관계 (게시글은 여러 좋아요를 가질 수 있음)
+    @OneToMany(mappedBy = "community", fetch = FetchType.LAZY)
+    List<LikesEntity> likes;
 }
 
