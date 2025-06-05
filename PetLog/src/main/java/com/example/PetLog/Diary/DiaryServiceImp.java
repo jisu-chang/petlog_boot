@@ -85,4 +85,14 @@ public DiaryEntity detailEntity(Long diaryId) {
             .orElseThrow(() -> new RuntimeException("일기를 찾을 수 없습니다: " + diaryId));
 }
 
-}// DiaryServiceImp
+    @Override
+    public void update(DiaryEntity entity) {
+    diaryRepository.save(entity);
+    }
+
+    @Override
+    public void delete(Long diaryId) {
+        diaryRepository.deleteById(diaryId);
+    }
+
+}

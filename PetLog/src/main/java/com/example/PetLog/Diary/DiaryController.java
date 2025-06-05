@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -133,15 +134,49 @@ public class DiaryController {
     }
 
     @PostMapping(value = "UpdateSave")
-    public String save() {
+    public String save(@ModelAttribute DiaryDTO dto,
+                       @RequestParam("himage") String himage,
+                       Principal principal) throws IOException {
 
-        return "";
+        MultipartFile mf = dto.getDiaryImage();
+        File dir = new File(path);
+        if (!dir.exists()) dir.mkdirs();
+
+        if (mf != null && !mf.isEmpty()) {
+            String filename = mf.getOriginalFilename();
+            mf.transferTo(new File(path + File.separator + filename));
+            dto.setDiaryImageName(filename);
+        } else {
+            dto.setDiaryImageName(himage);
+        }
+
+        // 유저 ID 세팅 (보안상 세션 또는 Principal로 처리 추천)
+        String loginId = principal.getName();
+        Long userId = userService.findUserIdByLoginId(loginId);
+        dto.setUserId(userId);
+
+        // 다이어리 업데이트
+        DiaryEntity entity = dto.entity();
+        diaryService.update(entity);
+
+        return "redirect:/Diary/DiaryOut";
     }
 
     @GetMapping("/Diary/DiaryDelete")
-    public String delete(@RequestParam("diaryId") Long diaryId) {
+    public String delete(@RequestParam("delete") Long diaryId, Model mo) {
+        DiaryDTO dto = diaryService.detail(diaryId);  // DTO에 이미지명 포함되어 있음
+        mo.addAttribute("dto", dto);
+        return "Diary/DiaryDelete";
+    }
 
-        return "";
+    @PostMapping("/Delete")
+    public String dd(@RequestParam("diaryId") Long diaryId, @RequestParam("himage") String image1) {
+
+        diaryService.delete(diaryId);
+        File file = new File(path,image1);
+        if (file.exists()) file.delete();
+
+        return "redirect:/Diary/DiaryOut";
     }
 
 }

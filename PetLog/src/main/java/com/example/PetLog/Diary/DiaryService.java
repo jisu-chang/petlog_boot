@@ -16,4 +16,8 @@ public interface DiaryService {
     DiaryDTO detail(long diaryId);
 
     DiaryEntity detailEntity(Long diaryId);
+
+    void update(DiaryEntity entity);
+
+    void delete(Long diaryId);
 }

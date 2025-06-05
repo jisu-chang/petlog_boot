@@ -138,7 +138,8 @@
                 <a th:href="@{'/Diary/DiaryUpdate?diaryId=' + *{diaryId}}">✏️</a>
             </td>
             <td>
-                <a th:href="@{'/Diary/DiaryDelete(diaryId=' + *{diaryId} + ')'}">🗑️</a>
+                <!--<a th:href="@{'/Diary/DiaryDelete(diaryId=' + *{diaryId} + ')'}">🗑️</a>-->
+                <a th:href="@{'/Diary/DiaryDelete?delete=' + ${dto.diaryId} + '&dfimage=' + ${dto.diaryImage}}">🗑️</a>
             </td>
         </tr>
 
