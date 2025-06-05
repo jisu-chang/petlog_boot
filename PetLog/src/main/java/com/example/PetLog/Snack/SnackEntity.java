@@ -3,6 +3,7 @@ package com.example.PetLog.Snack;
 import com.example.PetLog.User.UserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 @Table(name = "snack")
 @SequenceGenerator(
         name = "snack_seq",
@@ -22,6 +24,9 @@ import java.time.LocalDate;
 public class SnackEntity {
     @Id
     @Column (name = "snack_id")
+    @SequenceGenerator(
+            name = "snack_seq",sequenceName = "snack_seq",
+            allocationSize = 1, initialValue = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "snack_seq")
     Long snackId;
     @Column (name = "snack_title")
@@ -33,7 +38,7 @@ public class SnackEntity {
     @Column (name = "snack_date")
     LocalDate snackDate;
     @Column (name = "user_id")
-    int userId;
+    Long userId;
     @Column (name = "snack_readcnt")
     int snackReadcnt;
 
