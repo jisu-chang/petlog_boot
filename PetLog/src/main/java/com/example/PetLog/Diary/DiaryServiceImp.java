@@ -80,7 +80,7 @@ public DiaryDTO detail(long diaryId) {
 }
 
 @Override
-public DiaryEntity detailEntity(Long diaryId) {
+public DiaryEntity detailEntity(Long diaryId) { //diaryId에 해당하는 데이터 가져오기
     return diaryRepository.findById(diaryId)
             .orElseThrow(() -> new RuntimeException("일기를 찾을 수 없습니다: " + diaryId));
 }

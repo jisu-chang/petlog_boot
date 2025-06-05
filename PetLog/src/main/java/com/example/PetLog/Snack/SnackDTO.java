@@ -29,7 +29,7 @@ public class SnackDTO {
 
     public SnackEntity entity() {
         return SnackEntity.builder()
-                .snackId(null)
+                .snackId(snackId)
                 .snackTitle(snackTitle)
                 .snackRecipe(snackRecipe)
                 .snackImage(snackImagename)

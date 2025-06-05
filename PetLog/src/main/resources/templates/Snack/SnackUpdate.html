@@ -110,7 +110,7 @@
 <div class="container">
   <h2>🦴 레시피 수정하기</h2>
 
-  <form th:action="@{/Snack/SnackUpdateSave}" method="post" enctype="multipart/form-data" onsubmit="return confirm_update()">
+  <form th:action="@{/SnackUpdateSave}" method="post" enctype="multipart/form-data" onsubmit="return confirm_update()">
     <input type="hidden" name="himage" th:value="${dto.snackImagename}" />
 
     <div class="form-group">
@@ -136,8 +136,8 @@
     </div>
 
     <div class="form-group">
-      <label for="snack_date">날짜</label>
-      <input type="date" id="snack_date" name="snackDate" th:value="${#dates.format(dto.snackDate, 'yyyy-MM-dd')}" />
+      <label for="snackDate">날짜</label>
+      <input type="date" id="snackDate" name="snackDate" th:value="*{snackDate}" required />
     </div>
 
     <div class="form-actions">

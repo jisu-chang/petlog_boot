@@ -12,4 +12,10 @@ public interface SnackService {
     List<SnackDTO> out();
 
     SnackDTO detail(long snackId);
+
+    SnackEntity getSnack(Long snackId);
+
+    void update(SnackEntity entity);
+
+    void delete(Long snackId);
 }

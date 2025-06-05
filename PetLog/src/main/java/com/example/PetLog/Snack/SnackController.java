@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -95,13 +96,69 @@ public class SnackController {
         return "Snack/SnackDetail";
     }
 
+    @GetMapping(value = "/Snack/SnackUpdate")
+    public String up(@RequestParam("snackId")Long snackId, Model mo, Principal pri) {
 
+        if (pri == null) return "redirect:/login";
 
+        SnackEntity snackEntity = snackService.getSnack(snackId);
 
-    @PostMapping(value = "/SnackUpdateSave")
-    public String us() {
+        SnackDTO dto = new SnackDTO();
+        dto.setSnackId(snackEntity.getSnackId());
+        dto.setSnackTitle(snackEntity.getSnackTitle());
+        dto.setSnackRecipe(snackEntity.getSnackRecipe());
+        dto.setSnackImagename(snackEntity.getSnackImage()); // 이미지 이름
+        dto.setSnackDate(snackEntity.getSnackDate());
+        dto.setSnackReadcnt(snackEntity.getSnackReadcnt());
+        //dto.setGetGrape(snackEntity.getGetGrape());
+        dto.setUserId(snackEntity.getUserId());
 
-        return "";
+        mo.addAttribute("dto", dto);
+
+        return "Snack/SnackUpdate";
     }
 
+    @PostMapping(value = "/SnackUpdateSave")
+    public String us(@ModelAttribute SnackDTO dto,@RequestParam("himage") String himage, HttpSession hs, Principal pri) throws IOException {
+
+        MultipartFile mf = dto.getSnackImage();
+        File dir = new File(path);
+        if (!dir.exists()) dir.mkdirs();
+
+        if (mf != null && !mf.isEmpty()) {
+            String filename = mf.getOriginalFilename();
+            mf.transferTo(new File(path + File.separator + filename));
+            dto.setSnackImagename(filename);
+        } else {
+            dto.setSnackImagename(himage);
+        }
+
+        String loginId = pri.getName();
+        Long userId = userService.findUserIdByLoginId(loginId);
+        dto.setUserId(userId);
+
+        SnackEntity entity = dto.entity();
+        snackService.update(entity);
+
+        return "redirect:/Snack/SnackOut";
+    }
+
+    @GetMapping(value = "/Snack/SnackDelete")
+    public String dd(@RequestParam("delete")Long snackId, Model mo) {
+
+        SnackDTO dto = snackService.detail(snackId);
+        mo.addAttribute("dto",dto);
+
+        return "Snack/SnackDelete";
+    }
+
+    @PostMapping(value = "/DeleteSnack")
+    public String dd2(@RequestParam("snackId")Long snackId,@RequestParam("himage")String imagename) {
+
+        snackService.delete(snackId);
+        File file = new File(path, imagename);
+        if(file.exists()) file.delete();
+
+        return "redirect:/Snack/SnackOut";
+    }
 }

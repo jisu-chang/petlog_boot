@@ -60,4 +60,19 @@ public class SnackServiceImp implements SnackService {
         return dto;
     }
 
+    @Override
+    public SnackEntity getSnack(Long snackId) { //snackId에 해당하는 데이터 가져오기 from DB
+        return snackRepository.findById(snackId).orElseThrow(() -> new RuntimeException("레시피를 찾을 수 없습니다: " + snackId));
+    }
+
+    @Override
+    public void update(SnackEntity entity) {
+        snackRepository.save(entity);
+    }
+
+    @Override
+    public void delete(Long snackId) {
+        snackRepository.deleteById(snackId);
+    }
+
 }

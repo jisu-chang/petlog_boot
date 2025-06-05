@@ -154,7 +154,7 @@
 
     <tr>
       <th>게시일</th>
-      <td th:text="${#strings.substring(dto.snackDate.toString(), 0, 10)}"></td>
+      <td th:text="${#temporals.format(dto.snackDate, 'yyyy-MM-dd')}"></td>
     </tr>
 
     <!-- 중략 (위쪽은 네가 올린 그대로 유지) -->
@@ -164,11 +164,15 @@
         <div class="btn-group" style="margin-bottom: 6px;">
           <input type="button" value="목록" onclick="location.href='/Snack/SnackOut'"/>
           <th:block th:if="${session.user_id == dto.userId or session.user_role == 'admin'}">
-            <input type="button" value="수정"
-                   th:attr="data-id=${dto.snackId}, data-img=${dto.snackImagename}"
-                   onclick="goUpdate(this)" />
-            <input type="button" value="삭제"
-                   th:attr="data-id=${dto.snackId}, data-imgname=${dto.snackImagename}" onclick="confirmDelete(this)" />
+
+            <a th:href="@{'/Snack/SnackUpdate?snackId=' + ${dto.snackId}}">
+              <input type="button" value="수정"/>
+            </a>
+
+            <a th:href="@{'/Snack/SnackDelete?delete=' + ${dto.snackId} + '&dfimage=' + ${dto.snackImagename}}">
+              <input type="button" value="삭제"/>
+            </a>
+
           </th:block>
         </div>
       </td>

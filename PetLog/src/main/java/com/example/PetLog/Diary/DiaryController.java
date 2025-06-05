@@ -109,7 +109,7 @@ public class DiaryController {
         return "Diary/DiaryDetail";
     }
 
-    @GetMapping(value = "Diary/DiaryUpdate")
+    @GetMapping(value = "/Diary/DiaryUpdate")
     public String up(@RequestParam("diaryId") Long diaryId, Model mo, Principal principal) {
         if (principal == null) return "redirect:/login";
 
