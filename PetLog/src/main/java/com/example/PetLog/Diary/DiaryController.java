@@ -132,7 +132,7 @@ public class DiaryController {
         return "Diary/DiaryUpdate";
     }
 
-    @PostMapping(value = "UpdateSave")
+    @PostMapping(value = "/UpdateSave")
     public String save(@ModelAttribute DiaryDTO dto,
                        @RequestParam("himage") String himage,
                        Principal principal) throws IOException {

@@ -95,4 +95,13 @@ public class SnackController {
         return "Snack/SnackDetail";
     }
 
+
+
+
+    @PostMapping(value = "/SnackUpdateSave")
+    public String us() {
+
+        return "";
+    }
+
 }
