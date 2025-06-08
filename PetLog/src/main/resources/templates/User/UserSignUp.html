@@ -1,55 +1,170 @@
 <!DOCTYPE html>
-
 <html xmlns:th="http://www.thymeleaf.org">
-<div th:replace="~{top::menu}"></div>
-<style>
-  p{color:red;}
-
-</style>
-<body>
 <head>
+  <meta charset="UTF-8">
+  <title>회원가입</title>
+  <style>
+    body {
+      background-color: #fff6f6;
+      font-family: 'Pretendard', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
 
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background-color: white;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 6px;
+      color: #333;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    input[type="file"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 15px;
+      background-color: #fffdfd;
+    }
+
+    input[type="file"] {
+      padding: 8px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-right: 10px;
+    }
+
+    .btn-primary {
+      background-color: #f48aa5;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #db7093;
+    }
+
+    .btn-reset {
+      background-color: #e0e0e0;
+      color: #333;
+    }
+
+    .btn-reset:hover {
+      background-color: #cfcfcf;
+    }
+
+    .kakao-login {
+      margin-bottom: 30px;
+    }
+
+    .kakao-login img {
+      width: 100%;
+      max-width: 320px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    p {
+      color: red;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+  .kakao-button {
+    background-color: #FEE500;
+    color: #3c1e1e;
+    font-weight: bold;
+    font-size: 16px;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    max-width: 320px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin: 0 auto 30px auto;
+    display: block;
+  }
+
+  .kakao-button:hover {
+    background-color: #ffd600;
+  }
+
+  .kakao-button::before {
+    content: "🐤 ";
+  }
+  </style>
 </head>
 
-<div class="container">
-  <form th:action="@{/signUpSave}" method="post" modelAttribute="userDTO" th:object="${userDTO}" enctype="multipart/form-data">
+<body>
+<div th:replace="~{top::menu}"></div>
 
+<div class="container">
+
+  <div class="kakao-login">
+    <form th:action="@{/oauth2/authorization/kakao}" method="get">
+      <button type="submit" class="kakao-button">카카오로 회원가입</button>
+    </form>
+  </div>
+
+  <form th:action="@{/signUpSave}" method="post" th:object="${userDTO}" enctype="multipart/form-data">
     <div class="form-group">
       <label for="user_login_id">아이디</label>
-      <input type="text" class="form-control" id="user_login_id" name="user_login_id">
+      <input type="text" id="user_login_id" th:field="*{user_login_id}" />
     </div>
 
     <div class="form-group">
       <label for="password">패스워드</label>
-      <input type="password" class="form-control" id="password" name="password">
+      <input type="password" id="password" th:field="*{password}" />
     </div>
 
     <div class="form-group">
       <label for="name">이름</label>
-      <input type="text" class="form-control" id="name" th:field="*{name}">
+      <input type="text" id="name" th:field="*{name}" required />
       <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
     </div>
 
     <div class="form-group">
       <label for="phone">전화번호</label>
-      <input type="text" class="form-control" id="phone" name="phone">
+      <input type="text" id="phone" th:field="*{phone}" />
     </div>
 
     <div class="form-group">
       <label for="email">이메일</label>
-      <input type="text" class="form-control" id="email" name="email">
+      <input type="email" id="email" th:field="*{email}" />
     </div>
 
-
     <div class="form-group">
-      <label for="profileimg">프로필이미지</label>
-      <input type="file" class="form-control" id="profileimg" name="profileimg">
+      <label for="profileimg">프로필 이미지</label>
+      <input type="file" id="profileimg" name="profileimg" />
     </div>
 
     <button type="submit" class="btn btn-primary">저장</button>
-    <button type="reset" class="btn btn-primary" onclick="location.href='/'">취소</button>
+    <button type="reset" class="btn btn-reset" onclick="location.href='/'">취소</button>
   </form>
 </div>
 </body>
-
 </html>

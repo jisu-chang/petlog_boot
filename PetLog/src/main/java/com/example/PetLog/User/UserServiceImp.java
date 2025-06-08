@@ -41,4 +41,9 @@ public class UserServiceImp implements UserService{
         }
         return null;  // 로그인 정보 없으면 null 반환하거나 예외 처리
     }
+
+    @Override
+    public void save(UserDTO dto) {
+        userRepository.save(dto.toEntity());
+    }
 }

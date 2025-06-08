@@ -131,7 +131,7 @@
 
     <!-- 프로필 이미지 출력 -->
     <div class="profile-frame-container">
-      <img th:src="@{./image/}+${list.profileimg}" class="profile-img" alt="프로필 이미지"/>
+      <img th:src="${list.profileimg}" class="profile-img" alt="프로필 이미지"/>
     </div>
 
     <p><strong>아이디:</strong> <span th:text= "${list.userLoginId}"></span></p>

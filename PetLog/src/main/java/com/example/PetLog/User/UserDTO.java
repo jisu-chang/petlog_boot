@@ -18,6 +18,8 @@ public class UserDTO {
     String phone;
     String email;
     MultipartFile profileimg;
+    //실제 저장되는 파일명 or 카카오 URL
+    String profileimgName;
     String rank;
     String user_role;
     int grape_count;
@@ -31,8 +33,8 @@ public class UserDTO {
                 .name(name)
                 .phone(phone)
                 .email(email)
-                .profileimg(profileimg.getOriginalFilename()) // 여기서 직접 파일명 추출
-                .rank(null)  //null 혹은 0
+                .profileimg(profileimgName) // 여기서 직접 url, 파일명 추출
+                .rank("일반회원")  //null 혹은 "일반, 우수"
                 .userRole("USER") //일반회원 고정
                 .grapeCount(0)
                 .build();

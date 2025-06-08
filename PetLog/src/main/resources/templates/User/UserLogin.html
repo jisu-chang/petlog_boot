@@ -1,29 +1,160 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org">
 <head>
+  <meta charset="UTF-8">
   <title>로그인</title>
+  <style>
+    body {
+      background-color: #fff6f6;
+      font-family: 'Pretendard', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 80px auto;
+      background-color: white;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 30px;
+      font-size: 24px;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 15px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      font-size: 15px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      margin: 8px 6px;
+    }
+
+    .btn-success {
+      background-color: #f48aa5;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background-color: #db7093;
+    }
+
+    .btn-primary {
+      background-color: #fddde6;
+      color: #333;
+    }
+
+    .btn-primary:hover {
+      background-color: #ffcdd5;
+    }
+
+    .kakao-login {
+      margin: 20px 0;
+    }
+
+    .kakao-login a {
+      display: inline-block;
+      background-color: #FEE500;
+      padding: 12px 20px;
+      border-radius: 10px;
+      color: #3c1e1e;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .kakao-login a:hover {
+      background-color: #ffe000;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .find-links {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .find-links a {
+      margin: 0 8px;
+      color: #666;
+      text-decoration: none;
+    }
+
+    .find-links a:hover {
+      text-decoration: underline;
+      color: #444;
+    }
+  </style>
 </head>
+
 <body>
 <div th:replace="~{top::menu}"></div>
 
 <div class="container">
   <h1>로그인 후 이용해주세요.</h1>
-  <div th:if="${param.error}">사용자 이름 및 암호가 잘못되었습니다.</div>
-  <div th:if="${param.logout}">로그아웃 되었습니다.</div>
 
-  <form th:action="@{/loginProcess}" method="post">  <!-- config 에서 loginProcessingUrl와 똑같이 작성해야함-->
+  <div class="error-message" th:if="${param.error}">
+    사용자 이름 및 암호가 잘못되었습니다.
+  </div>
+  <div class="error-message" th:if="${param.logout}">
+    로그아웃 되었습니다.
+  </div>
+
+  <form th:action="@{/loginProcess}" method="post">
     <div class="form-group">
-      <label for="userLoginId">아이디: </label>
-      <input type="text" class="form-control" id="userLoginId" name="userLoginId">
+      <label for="userLoginId">아이디</label>
+      <input type="text" id="userLoginId" name="userLoginId" />
     </div>
 
     <div class="form-group">
-      <label for="password">패스워드: </label>
-      <input type="text" class="form-control" id="password" name="password">
+      <label for="password">패스워드</label>
+      <input type="password" id="password" name="password" />
     </div>
+
+    <div class="kakao-login">
+      <a href="/oauth2/authorization/kakao">🐤 카카오 로그인</a>
+    </div>
+
     <div>
       <button type="submit" class="btn btn-success">로그인</button>
-      <input type="button" onclick="location.href='/signUp';"  class="btn btn-primary" value="회원가입" />
+      <input type="button" onclick="location.href='/signUp';" class="btn btn-primary" value="회원가입" />
+    </div>
+
+    <div class="find-links">
+      <a href="/user/findId">아이디 찾기</a> |
+      <a href="/user/findPw">비밀번호 찾기</a>
     </div>
   </form>
 </div>

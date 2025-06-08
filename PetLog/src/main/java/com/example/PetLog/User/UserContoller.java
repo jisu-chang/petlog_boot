@@ -59,6 +59,39 @@ public class UserContoller {
         }
     }
 
+    @GetMapping("/signUpKakao")
+    public String signUpKakao(HttpSession session, Model model) {
+        String email = (String) session.getAttribute("kakao_email");
+        String name = (String) session.getAttribute("kakao_name");
+        String profileImg = (String) session.getAttribute("kakao_profile");
+//        String phone = (String) session.getAttribute("kakao_phone");
+
+        // 세션에서 꺼낸 값을 모델에 다시 담기
+        model.addAttribute("kakao_name", name);
+        model.addAttribute("kakao_profile", profileImg);
+        model.addAttribute("kakao_email", email);
+//        model.addAttribute("kakao_phone", phone);
+        return "/User/signUpKakao";
+    }
+
+    @PostMapping("/signUpKakaoSave")
+    public String signUpKakaoSave(@ModelAttribute UserDTO dto, HttpSession session) {
+        // 카카오에서 받아온 이미지 URL을 직접 저장
+        String kakaoImageUrl = dto.getProfileimgName();  // 또는 dto.getProfileimg()로 받아온 경우
+        dto.setProfileimg(null); // MultipartFile 안 씀
+        dto.setProfileimgName(kakaoImageUrl); // 여기에 URL 문자열 직접 세팅
+
+        dto.setPassword("kakao"); // 의미 없는 비번
+        dto.setUser_role("USER");
+        dto.setRank("일반회원");
+        dto.setGrape_count(0);
+
+        userService.save(dto);
+        session.setAttribute("user_id", dto.getUser_id());
+        session.setAttribute("user_login_id", dto.getUser_login_id());
+        return "redirect:/"; // 회원가입 후 홈으로
+    }
+
     @GetMapping("/MyPage")
     public String MyPage(Model mo, HttpSession session) {
         // 세션에서 로그인한 사용자 ID 가져오기
@@ -70,11 +103,9 @@ public class UserContoller {
             return "redirect:/login";
         }
 
-        log.info("User is logged in with user_id: " + userId); // 로그 추가
-
         // UserService를 사용하여 userId로 UserEntity 객체 가져오기
         UserEntity userEntity = userService.findById(userId);  // userDTO가 아닌 userId 사용
-
+        log.info("프로필 이미지: " + userEntity.getProfileimg());
         // UserEntity 객체를 모델에 추가하여 뷰에 전달
         mo.addAttribute("list", userEntity);
         return "User/UserMyPage";

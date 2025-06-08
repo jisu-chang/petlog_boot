@@ -16,4 +16,5 @@ public interface UserService {
     //diary에서 추가
     Long findUserIdByLoginId(String loginId);
 
+    void save(UserDTO dto);
 }

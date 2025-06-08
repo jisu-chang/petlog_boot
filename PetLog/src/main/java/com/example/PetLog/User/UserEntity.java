@@ -33,7 +33,7 @@ public class UserEntity {
     String phone;
     @Column
     String email;
-    @Column
+    @Column(name = "profileimg")
     String profileimg;
     @Column
     String rank;   //int -> String 수정

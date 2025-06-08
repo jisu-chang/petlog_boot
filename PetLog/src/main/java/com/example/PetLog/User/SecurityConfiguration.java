@@ -29,22 +29,24 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import java.io.IOException;
 
 @Configuration
-@AllArgsConstructor
 @EnableWebSecurity
+@AllArgsConstructor
 @Slf4j
 public class SecurityConfiguration {
-
+    @Autowired
+    private OAuth2SuccessHandler oAuth2SuccessHandler;
     private final UserDetailsService userDetailsService;
-//    private final UserRepository userRepository;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public static BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService); // 너의 CustomUserDetailsService
+        authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(bCryptPasswordEncoder());
         return authProvider;
     }
@@ -55,56 +57,57 @@ public class SecurityConfiguration {
                 .authenticationProvider(authenticationProvider())
                 .build();
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests()
-                .requestMatchers("/", "/login", "/signUp", "/signUpSave").permitAll()
-                .requestMatchers("/image/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .permitAll()
-                .loginPage("/login")
-                .loginProcessingUrl("/loginProcess")
-                .usernameParameter("userLoginId")
-                .passwordParameter("password")
-                .defaultSuccessUrl("/")
-                .successHandler((request, response, authentication) -> {
-                    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-                    UserEntity loginUser = userDetails.getUser(); //유저 테이블에 있는 객체를 세션에서 자유롭게 꺼내쓸 수 있음
+                .csrf().disable()
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/", "/login", "/signUp", "/signUpSave", "/image/**", "/css/**", "/js/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .loginProcessingUrl("/loginProcess")
+                        .usernameParameter("userLoginId")
+                        .passwordParameter("password")
+                        .successHandler((request, response, authentication) -> {
+                            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+                            UserEntity loginUser = userDetails.getUser();
 
-                    // 유저 정보 세션에 저장
-                    request.getSession().setAttribute("user_id", loginUser.getUserId());
-                    request.getSession().setAttribute("user_login_id", loginUser.getUserLoginId());
-                    request.getSession().setAttribute("user_role", loginUser.getUserRole());
-                    request.getSession().setAttribute("name", loginUser.getName());
-                    request.getSession().setAttribute("grape_count", loginUser.getGrapeCount());
-                    request.getSession().setAttribute("rank", loginUser.getRank());
+                            request.getSession().setAttribute("user_id", loginUser.getUserId());
+                            request.getSession().setAttribute("user_login_id", loginUser.getUserLoginId());
+                            request.getSession().setAttribute("user_role", loginUser.getUserRole());
+                            request.getSession().setAttribute("name", loginUser.getName());
+                            request.getSession().setAttribute("grape_count", loginUser.getGrapeCount());
+                            request.getSession().setAttribute("rank", loginUser.getRank());
+                            request.getSession().setAttribute("loginUser", loginUser);
 
-                    // user_id를 세션에 저장
-                    request.getSession().setAttribute("user_id", loginUser.getUserId());
-
-                    // 반드시 세션에 저장해줘야 PetInput 페이지 등에서 인식 가능
-                    request.getSession().setAttribute("loginUser", loginUser);
-
-                    // 홈 또는 원하는 페이지로 이동
-                    response.sendRedirect("/");
-                })
-                .failureUrl("/login?error=true")
-                .and()
-                .logout()
-                .logoutUrl("/logout")
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .deleteCookies("JSESSIONID")
-                .invalidateHttpSession(true)
-                .clearAuthentication(true);
+                            Boolean socialSignup = (Boolean) request.getSession().getAttribute("social_signup");
+                            if (socialSignup != null && socialSignup) {
+                                request.getSession().removeAttribute("social_signup");
+                                response.sendRedirect("/signUpKakao"); // 카카오 전용 회원가입 창
+                                return;
+                            }
+                        })
+                        .failureUrl("/login?error=true")
+                        .permitAll()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/login")
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService) //주입 받아서 사용
+                        )
+                        .successHandler(oAuth2SuccessHandler)  //
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .clearAuthentication(true)
+                );
 
         return http.build();
     }
-
-//    @Autowired
-//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-//    }
 }
