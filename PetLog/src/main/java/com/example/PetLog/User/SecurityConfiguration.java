@@ -1,12 +1,17 @@
 package com.example.PetLog.User;
 
+import com.example.PetLog.Diary.DiaryEntity;
+import com.example.PetLog.Diary.DiaryRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,16 +29,30 @@ import java.io.IOException;
 @Configuration
 @AllArgsConstructor
 @EnableWebSecurity
+@Slf4j
 public class SecurityConfiguration {
 
     private final UserDetailsService userDetailsService;
-    private UserRepository userRepository;
+//    private final UserRepository userRepository;
 
     @Bean
     public static BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService); // 너의 CustomUserDetailsService
+        authProvider.setPasswordEncoder(bCryptPasswordEncoder());
+        return authProvider;
+    }
 
+    @Bean
+    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .authenticationProvider(authenticationProvider())
+                .build();
+    }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -50,15 +69,16 @@ public class SecurityConfiguration {
                 .passwordParameter("password")
                 .defaultSuccessUrl("/")
                 .successHandler((request, response, authentication) -> {
-                    // 로그인 성공 시 세션에 유저 저장
-                    String loginId = authentication.getName();
-                    UserEntity loginUser = userRepository.findByUserLoginId(loginId);
+                    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+                    UserEntity loginUser = userDetails.getUser(); //유저 테이블에 있는 객체를 세션에서 자유롭게 꺼내쓸 수 있음
 
-                    // user_id를 세션에 저장
-                    request.getSession().setAttribute("user_id", loginUser.getUserId());  // user_id 세션에 저장
-
-                    // 반드시 세션에 저장해줘야 PetInput 페이지 등에서 인식 가능
-                    request.getSession().setAttribute("loginUser", loginUser);
+                    // 유저 정보 세션에 저장
+                    request.getSession().setAttribute("user_id", loginUser.getUserId());
+                    request.getSession().setAttribute("user_login_id", loginUser.getUserLoginId());
+                    request.getSession().setAttribute("user_role", loginUser.getUserRole());
+                    request.getSession().setAttribute("name", loginUser.getName());
+                    request.getSession().setAttribute("grape_count", loginUser.getGrapeCount());
+                    request.getSession().setAttribute("rank", loginUser.getRank());
 
                     // 홈 또는 원하는 페이지로 이동
                     response.sendRedirect("/");
@@ -75,8 +95,8 @@ public class SecurityConfiguration {
         return http.build();
     }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-    }
+//    @Autowired
+//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+//    }
 }

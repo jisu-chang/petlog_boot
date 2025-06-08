@@ -2,8 +2,10 @@ package com.example.PetLog.Community;
 
 import com.example.PetLog.Comments.CommentsEntity;
 import com.example.PetLog.Likes.LikesEntity;
+import com.example.PetLog.User.UserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +15,7 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Data
 @Table(name = "community")
 @SequenceGenerator(
@@ -26,7 +29,7 @@ public class CommunityEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "community")
     Long postId;
     @Column(name = "user_id", nullable = false) //nullable = false => null 값 허용x
-    int userId;
+    Long userId;
     @Column(name = "post_title", nullable = false)
     String postTitle;
     @Lob
@@ -41,6 +44,11 @@ public class CommunityEntity {
     @Column(name = "post_type")
     String postType;
 
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    UserEntity user;  //userEntity 객체 설정하여 컬럼 추가 없이 유저 로그인 아이디도 가져다 쓸 수 있음
+
     // 댓글과의 관계 (게시글은 여러 댓글을 가질 수 있음)
     @OneToMany(mappedBy = "community", fetch = FetchType.LAZY)
     List<CommentsEntity> comments;
@@ -49,4 +57,3 @@ public class CommunityEntity {
     @OneToMany(mappedBy = "community", fetch = FetchType.LAZY)
     List<LikesEntity> likes;
 }
-

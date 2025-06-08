@@ -27,7 +27,6 @@ public class UserContoller {
 
     String path = new File("src/main/resources/static/image").getAbsolutePath();
 
-
     @GetMapping(value = "/login")
     public String loginpage(){
         return "User/UserLogin";

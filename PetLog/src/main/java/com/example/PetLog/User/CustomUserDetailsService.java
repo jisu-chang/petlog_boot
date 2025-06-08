@@ -1,6 +1,7 @@
 package com.example.PetLog.User;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.Set;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
@@ -22,15 +24,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String userLoginId) {
-        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
+
         UserEntity userEntity = userRepository.findByUserLoginId(userLoginId);
 
         if (userEntity != null) {
-            grantedAuthorities.add(new SimpleGrantedAuthority("USER"));
-            return new User(userEntity.getUserLoginId(),userEntity.getPassword(), grantedAuthorities);
-        }
-
-        else {
+            return new CustomUserDetails(userEntity);
+        }else {
             throw new UsernameNotFoundException("can not find User : " + userLoginId);
         }
     }

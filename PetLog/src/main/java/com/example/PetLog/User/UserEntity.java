@@ -23,7 +23,7 @@ public class UserEntity {
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "user_id")
     Long userId;
-    @Column(name = "user_login_id")
+    @Column(name = "user_login_id", nullable = false)
     String userLoginId;
     @Column
     String password;
