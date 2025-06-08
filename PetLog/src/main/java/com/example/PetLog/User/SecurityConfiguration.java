@@ -35,7 +35,7 @@ import java.io.IOException;
 public class SecurityConfiguration {
 
     private final UserDetailsService userDetailsService;
-    private final UserRepository userRepository;
+//    private final UserRepository userRepository;
 
     @Bean
     public static BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -74,6 +74,13 @@ public class SecurityConfiguration {
                     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
                     UserEntity loginUser = userDetails.getUser(); //유저 테이블에 있는 객체를 세션에서 자유롭게 꺼내쓸 수 있음
 
+                    // 유저 정보 세션에 저장
+                    request.getSession().setAttribute("user_id", loginUser.getUserId());
+                    request.getSession().setAttribute("user_login_id", loginUser.getUserLoginId());
+                    request.getSession().setAttribute("user_role", loginUser.getUserRole());
+                    request.getSession().setAttribute("name", loginUser.getName());
+                    request.getSession().setAttribute("grape_count", loginUser.getGrapeCount());
+                    request.getSession().setAttribute("rank", loginUser.getRank());
 
                     // user_id를 세션에 저장
                     request.getSession().setAttribute("user_id", loginUser.getUserId());
@@ -96,8 +103,8 @@ public class SecurityConfiguration {
         return http.build();
     }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-    }
+//    @Autowired
+//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+//    }
 }
