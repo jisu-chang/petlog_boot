@@ -134,7 +134,7 @@
       <tr th:each="di : ${list}">
         <td th:text="${di.petName}"></td>
         <td>
-          <a th:href="@{/diary_detail(diary_id=${di.diaryId})}" th:text="${di.diaryTitle}"></a>
+          <a th:href="@{/Diary/DiaryDetail(diaryId=${di.diaryId})}" th:text="${di.diaryTitle}"></a>
         </td>
         <td th:text="${di.diaryDate}"></td>
         <td>

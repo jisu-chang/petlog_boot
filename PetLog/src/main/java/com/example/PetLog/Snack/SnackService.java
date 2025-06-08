@@ -1,0 +1,21 @@
+package com.example.PetLog.Snack;
+
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public interface SnackService {
+
+    void save(SnackEntity snackEntity);
+
+    List<SnackDTO> out();
+
+    SnackDTO detail(long snackId);
+
+    SnackEntity getSnack(Long snackId);
+
+    void update(SnackEntity entity);
+
+    void delete(Long snackId);
+}

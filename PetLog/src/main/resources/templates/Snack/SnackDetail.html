@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>간식 레시피</title>
+  <style>
+    body {
+      background-color: #fff6f6;
+      margin: 0;
+      padding: 0;
+      font-family: 'Pretendard', sans-serif;
+      color: #333;
+    }
+    .table-wrapper {
+      background-color: white;
+      width: 100%;
+      max-width: 1000px;
+      margin: 40px auto 0 auto;
+      border-radius: 12px;
+      padding: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    caption {
+      caption-side: top;
+      text-align: center;
+      font-size: 1.6em;
+      color: #f48aa5;
+      margin-bottom: 20px;
+    }
+    th, td {
+      padding: 14px 12px;
+      font-size: 1em;
+      border-bottom: 1px solid #eee;
+    }
+    table tr:last-child td {
+      border-bottom: none;
+    }
+    th {
+      width: 17%;
+      background-color: #fff0f4;
+      color: #555;
+      text-align: center;
+    }
+    td img {
+      max-width: 70px;
+      height: auto;
+    }
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .btn-group input[type="button"] {
+      background-color: #ffe1e1;
+      color: #333;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .btn-group input[type="button"]:hover {
+      background-color: #ffd2d2;
+    }
+    .profile-img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    .reply-btn {
+      font-size: 14px;
+      padding: 2px 10px;
+      background-color: #f8c8dc;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      position: absolute;
+      top: 15px;
+      right: 10px;
+    }
+    .reply-btn:hover {
+      background-color: #f4aac9;
+    }
+    .comment-box {
+      margin-top: 5px;
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 30px;
+    }
+    .comment-form textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      resize: none;
+      font-size: 14px;
+    }
+    .comment-form button {
+      margin-top: 10px;
+      background-color: #ffe1e1;
+      color: #333;
+      border: none;
+      border-radius: 10px;
+      padding: 8px 16px;
+      cursor: pointer;
+    }
+    .comment-form {
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+<div class="table-wrapper">
+  <table>
+    <caption>
+      <img th:src="@{/image/{img}(img=${profileimg})}" class="profile-img" />
+      <span th:text="${dto.userLoginId} + '님의 간식 레시피 🦴'"></span>
+    </caption>
+
+    <tr><td colspan="2" style="height: 1px; border-bottom: 1px solid #eee;"></td></tr>
+
+    <tr>
+      <th>레시피명</th>
+      <td th:text="${dto.snackTitle}"></td>
+    </tr>
+
+    <tr>
+      <th>레시피 내용</th>
+      <td><div style="white-space: pre-line;" th:text="${dto.snackRecipe}"></div></td>
+    </tr>
+
+    <tr>
+      <th>이미지</th>
+      <td>
+        <th:block th:if="${dto.snackImagename != null}">
+          <img th:src="@{/image/{img}(img=${dto.snackImagename})}" width="300px"/>
+        </th:block>
+      </td>
+    </tr>
+
+    <tr>
+      <th>작성자</th>
+      <td th:text="${dto.userLoginId}"></td>
+    </tr>
+
+    <tr>
+      <th>게시일</th>
+      <td th:text="${#temporals.format(dto.snackDate, 'yyyy-MM-dd')}"></td>
+    </tr>
+
+    <!-- 중략 (위쪽은 네가 올린 그대로 유지) -->
+
+    <tr>
+      <td colspan="2" style="border-bottom: none;">
+        <div class="btn-group" style="margin-bottom: 6px;">
+          <input type="button" value="목록" onclick="location.href='/Snack/SnackOut'"/>
+          <th:block th:if="${session.user_id == dto.userId or session.user_role == 'admin'}">
+
+            <a th:href="@{'/Snack/SnackUpdate?snackId=' + ${dto.snackId}}">
+              <input type="button" value="수정"/>
+            </a>
+
+            <a th:href="@{'/Snack/SnackDelete?delete=' + ${dto.snackId} + '&dfimage=' + ${dto.snackImagename}}">
+              <input type="button" value="삭제"/>
+            </a>
+
+          </th:block>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <script>
+    function confirmDelete(button) {
+      const snackId = button.getAttribute('data-id');
+      const imgname = button.getAttribute('data-imgname') || '';
+      if (confirm("정말 삭제하시겠습니까?")) {
+        window.location.href = '/Snack/SnackDelete?delete=' + snackId + '&dfimage=' + imgname;
+      }
+    }
+
+    function goUpdate(button) {
+      const snackId = button.getAttribute('data-id');
+      const imgname = button.getAttribute('data-img');
+      location.href = `/Snack/SnackUpdate?update=${snackId}&dfimage=${imgname}`;
+    }
+  </script>
+
+</div>
+</body>
+</html>
