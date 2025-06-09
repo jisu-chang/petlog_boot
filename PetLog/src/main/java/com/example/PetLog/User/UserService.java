@@ -27,4 +27,5 @@ public interface UserService {
     String changePw(Long userId, String currentPw, String newPw, String newPwConfirm);
 
     boolean idCheck(String userLoginId);
+
 }

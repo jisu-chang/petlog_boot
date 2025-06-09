@@ -116,6 +116,28 @@
   .kakao-button::before {
     content: "🐤 ";
   }
+   #pwRules {
+    display: none;
+    list-style: none;
+    padding-left: 0;
+    font-size: 13px;
+    margin-top: 6px;
+  }
+
+  /* 포커스 시 조건 보이기 */
+  #password:focus + #pwRules {
+    display: block;
+  }
+
+  /* 조건 만족 여부 색상 */
+  #pwRules li {
+    color: red;
+  }
+
+  #pwRules li.valid {
+    color: green;
+    font-weight: bold;
+  }
   </style>
 </head>
 
@@ -129,7 +151,8 @@
     </form>
   </div>
 
-  <form th:action="@{/signUpSave}" method="post" th:object="${userDTO}" enctype="multipart/form-data">
+  <form id="signUpForm" th:action="@{/signUpSave}" method="post" th:object="${userDTO}" enctype="multipart/form-data">
+    <input type="hidden" name="email" id="fullEmail" />
 
     <div class="form-group">
       <label for="user_login_id">아이디</label>
@@ -143,8 +166,12 @@
 
     <div class="form-group">
       <label for="password">패스워드</label>
-      <input type="password" id="password" th:field="*{password}" required/>
-      <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+      <input type="password" id="password" th:field="*{password}" oninput="validatePassword()" required />
+      <ul id="pwRules">
+        <li id="rule-length">8~20자</li>
+        <li id="rule-combo">영문자 + 숫자 조합</li>
+        <li id="rule-space">공백 없음</li>
+      </ul>
     </div>
 
     <div class="form-group">
@@ -163,12 +190,30 @@
 
     <div class="form-group">
       <label for="phone">전화번호</label>
-      <input type="text" id="phone" th:field="*{phone}" required/>
+      <input type="text" id="phone" name="phone" placeholder="전화번호는 010으로 시작하는 숫자 11자리여야 합니다."
+             maxlength="13" oninput="autoFormatPhone(this)"  required />
     </div>
 
     <div class="form-group">
-      <label for="email">이메일</label>
-      <input type="email" id="email" th:field="*{email}" required/>
+      <label for="emailId">이메일</label>
+      <div style="display: flex; gap: 10px;">
+        <input type="text" id="emailId" name="emailId" placeholder="이메일 아이디 입력" required
+               style="flex: 1;" />
+
+        <span>@</span>
+
+        <select id="emailDomain" name="emailDomain" required style="flex: 1;">
+          <option value="">도메인 선택</option>
+          <option value="naver.com">naver.com</option>
+          <option value="gmail.com">gmail.com</option>
+          <option value="daum.net">daum.net</option>
+          <option value="nate.com">nate.com</option>
+          <option value="direct">직접 입력</option>
+        </select>
+
+        <input type="text" id="emailCustom" name="emailCustom"
+               style="flex: 1; display: none;" placeholder="직접 입력" />
+      </div>
     </div>
 
     <div class="form-group">
@@ -232,6 +277,70 @@
       msg.style.color = "red";
     }
   }
+</script>
+
+<script>
+  function validatePassword() {
+    const pw = document.getElementById("password").value;
+
+    const lengthCheck = pw.length >= 8 && pw.length <= 20;
+    const comboCheck = /[A-Za-z]/.test(pw) && /\d/.test(pw);
+    const spaceCheck = !/\s/.test(pw);
+
+    // 조건별 항목 색상 반영
+    document.getElementById("rule-length").classList.toggle("valid", lengthCheck);
+    document.getElementById("rule-combo").classList.toggle("valid", comboCheck);
+    document.getElementById("rule-space").classList.toggle("valid", spaceCheck);
+  }
+</script>
+
+<script>
+  function autoFormatPhone(input) {
+    let value = input.value.replace(/[^0-9]/g, "");
+
+    // 010 자동 시작
+    if (!value.startsWith("010")) {
+      value = "010" + value;
+    }
+
+    if (value.length <= 3) {
+      input.value = value;
+    } else if (value.length <= 7) {
+      input.value = value.slice(0, 3) + "-" + value.slice(3);
+    } else if (value.length <= 11) {
+      input.value = value.slice(0, 3) + "-" + value.slice(3, 7) + "-" + value.slice(7);
+    } else {
+      input.value = value.slice(0, 3) + "-" + value.slice(3, 7) + "-" + value.slice(7, 11);
+    }
+  }
+</script>
+
+<script>
+  const domainSelect = document.getElementById("emailDomain");
+  const customInput = document.getElementById("emailCustom");
+
+  domainSelect.addEventListener("change", function () {
+    if (this.value === "direct") {
+      customInput.style.display = "inline-block";
+      customInput.required = true;
+    } else {
+      customInput.style.display = "none";
+      customInput.required = false;
+    }
+  });
+</script>
+
+
+<!--서버 전송시 이메일 합쳐서 보내기 -->
+<script>
+  document.getElementById("signUpForm").addEventListener("submit", function () {
+    const id = document.getElementById("emailId").value;
+    const domain = domainSelect.value === "direct"
+      ? customInput.value
+      : domainSelect.value;
+
+    document.getElementById("fullEmail").value = id + "@" + domain;
+  });
 </script>
 </body>
 </html>

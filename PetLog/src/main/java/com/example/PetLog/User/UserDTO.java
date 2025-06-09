@@ -22,10 +22,9 @@ public class UserDTO {
     String user_login_id;
 
     @NotBlank(message = "비밀번호를 입력해주세요.")
-    @Size(min = 8, max = 20, message = "비밀번호는 8자 이상 20자 이하로 입력하세요.")
     @Pattern(
-            regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!@#$%^&*()_+\\-=\\[\\]{}|;:',.<>/?]{8,}$",
-            message = "비밀번호는 영문자와 숫자를 포함한 8자 이상이어야 합니다."
+            regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!@#$%^&*()_+\\-=\\[\\]{}|;:',.<>/?]{8,20}$",
+            message = "비밀번호는 영문자와 숫자를 포함한 8자 이상 20자 이하이어야 합니다."
     )
     String password;
 
@@ -36,12 +35,14 @@ public class UserDTO {
     @NotBlank(message = "이름에 공백이 포함될 수 없습니다.")
     String name;
 
+    @Pattern(regexp = "^010-\\d{4}-\\d{4}$", message = "전화번호 형식은 010-1234-5678 이어야 합니다.")
+    @NotBlank(message = "전화번호를 입력해주세요.")
     String phone;
 
+    @NotBlank(message = "이메일을 입력해주세요.")
     String email;
 
     MultipartFile profileimg; //실제 저장되는 파일명 or 카카오 URL
-
     String profileimgName;
     String rank;
     String user_role;

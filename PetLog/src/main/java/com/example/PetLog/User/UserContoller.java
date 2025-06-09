@@ -79,7 +79,7 @@ public class UserContoller {
     }
 
     @PostMapping("/signUpSave")
-    public String member2(@ModelAttribute("userDTO") @Valid UserDTO userDTO, BindingResult bindingResult,
+    public String member2(@ModelAttribute("userDTO") @Valid UserDTO userDTO, BindingResult bindingResult, @RequestParam("phoneCheckStatus") String phoneCheckStatus,
                           @RequestParam("idCheckStatus") String idCheckStatus, MultipartHttpServletRequest mul, Model mo) throws IOException {
         // 유효성 검사 에러 (ex. 이름, 이메일 등)
         if (bindingResult.hasErrors()) {
@@ -103,6 +103,7 @@ public class UserContoller {
             mo.addAttribute("idError", "아이디 중복 확인을 먼저 해주세요.");
             return "User/UserSignUp";
         }
+
         // 정상 로직 실행
         mf.transferTo(new File(path + "\\" + mf.getOriginalFilename()));
         userDTO.setProfileimgName(mf.getOriginalFilename());
