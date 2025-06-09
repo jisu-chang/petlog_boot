@@ -18,4 +18,9 @@ public interface SnackService {
     void update(SnackEntity entity);
 
     void delete(Long snackId);
+
+    //지수 추가 - 회원탈퇴
+    List<SnackEntity> findByUserId(Long userId);
+    //지수 추가 - 회원탈퇴
+    void deleteByUserId(Long userId);
 }

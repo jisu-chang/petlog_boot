@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 탈퇴</title>
+    <style>
+        body {
+          background-color: #fff6f6;
+          font-family: 'Pretendard', sans-serif;
+          color: #333;
+          padding: 40px;
+        }
+        .container {
+          max-width: 800px;
+          margin: auto;
+          background: white;
+          padding: 30px;
+          border-radius: 16px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        h2 {
+          text-align: center;
+          color: #f48aa5;
+        }
+        .section {
+          margin-top: 30px;
+        }
+        .section h4 {
+          color: #d65b7b;
+          margin-bottom: 10px;
+        }
+        ul {
+          list-style-type: disc;
+          margin-left: 20px;
+        }
+        .btn-wrap {
+          text-align: center;
+          margin-top: 40px;
+        }
+        .btn-wrap form {
+          display: inline-block;
+        }
+        .btn {
+          background-color: #ffd2d2;
+          border: none;
+          padding: 12px 24px;
+          margin: 0 10px;
+          border-radius: 8px;
+          font-weight: bold;
+          cursor: pointer;
+        }
+        .btn:hover {
+          background-color: #f8b3b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>정말 탈퇴하시겠습니까?</h2>
+
+    <div class="section">
+        <h4>🧸 회원 정보</h4>
+        <p><strong>ID:</strong> <span th:text="${user.userLoginId}"></span></p>
+        <p><strong>이름:</strong> <span th:text="${user.name}"></span></p>
+        <p><strong>보유 포도알:</strong> <span th:text="${user.grapeCount}"></span>개</p>
+    </div>
+
+    <div class="section" th:if="${#lists.size(myPost) > 0}">
+        <h4>📝 작성한 게시글</h4>
+        <ul>
+            <li th:each="post : ${myPost}" th:text="${post.postTitle}"></li>
+        </ul>
+    </div>
+
+    <div class="section" th:if="${#lists.size(myDiary) > 0}">
+        <h4>📔 작성한 일기</h4>
+        <ul>
+            <li th:each="diary : ${myDiary}" th:text="${diary.diaryTitle}"></li>
+        </ul>
+    </div>
+
+    <div class="section" th:if="${#lists.size(mySnack) > 0}">
+        <h4>🍪 간식 레시피</h4>
+        <ul>
+            <li th:each="snack : ${mySnack}" th:text="${snack.snackTitle}"></li>
+        </ul>
+    </div>
+
+    <div class="section" th:if="${#lists.size(myComment) > 0}">
+        <h4>💬 댓글</h4>
+        <p th:text="'총 ' + ${#lists.size(myComment)} + '개 작성하셨습니다.'"></p>
+    </div>
+
+    <div class="section" th:if="${#lists.size(myLike) > 0}">
+        <h4>❤️ 좋아요</h4>
+        <p th:text="'총 ' + ${#lists.size(myLike)} + '개 누르셨습니다.'"></p>
+    </div>
+
+    <div class="btn-wrap">
+        <form th:action="@{/user/withdraw}" method="post">
+            <button type="submit" class="btn">🚪 회원 탈퇴</button>
+        </form>
+        <form th:action="@{/mypage}" method="get">
+            <button type="submit" class="btn">🏠 돌아가기</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

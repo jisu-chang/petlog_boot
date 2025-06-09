@@ -1,0 +1,102 @@
+<!-- templates/user/UserFindId.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>아이디 찾기</title>
+    <style>
+        body {
+            background-color: #fff6f6;
+            font-family: 'Pretendard', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 60px auto;
+            background-color: #ffffff;
+            border: 2px solid #dbf5f0;
+            border-radius: 16px;
+            padding: 30px 40px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        h2 {
+            color: #f48aa5;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #f48aa5;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #e86c94;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #1c8d84;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{top::menu}"></div>
+
+<div class="container">
+    <h2>아이디 찾기</h2>
+
+    <form th:action="@{/findIdSave}" method="post">
+        <label for="name">이름</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">이메일</label>
+        <input type="email" id="email" name="email" required>
+
+        <button type="submit">아이디 찾기</button>
+    </form>
+
+    <p th:if="${error}" th:text="${error}" class="error"></p>
+
+    <a th:href="@{/login}" class="back-link">← 로그인 페이지로 돌아가기</a>
+</div>
+</body>
+</html>

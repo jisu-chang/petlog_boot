@@ -1,5 +1,6 @@
 package com.example.PetLog.Diary;
 
+import com.example.PetLog.User.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -45,5 +46,10 @@ public class DiaryEntity {
 
     @Column(name = "pet_id")
     private Long petId;     // 직접 숫자 ID 필드로 변경
+
+    //지수 추가
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    UserEntity user;
 
 }

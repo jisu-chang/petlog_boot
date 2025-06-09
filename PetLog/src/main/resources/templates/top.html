@@ -128,7 +128,7 @@
         <ul class="nav navbar-nav navbar-right" style="display: flex;">
           <li><a href="/signUp" sec:authorize="isAnonymous()"><span class="glyphicon glyphicon-user"></span> 회원가입</a>
             <a href="/MyPage" sec:authorize="isAuthenticated()">
-              <span style="color:yellow;" th:text="${#authentication.name}+'님의 마이페이지!'"></span></a>
+              <span style="color:#007f7f;" th:text="${#authentication.name}+'님의 마이페이지!'"></span></a>
           </li>
           <li>
             <a href="/login" sec:authorize="isAnonymous()"><span class="glyphicon glyphicon-log-in"></span> 로그인</a>

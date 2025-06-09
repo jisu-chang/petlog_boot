@@ -19,4 +19,8 @@ public interface CommunityService {
     CommunityEntity deleteById(Long dnum);
 
     void deletesave(Long dnum);
+
+    List<CommunityEntity> findByUserId(Long userId);
+
+    void deleteByUserId(Long userId);
 }

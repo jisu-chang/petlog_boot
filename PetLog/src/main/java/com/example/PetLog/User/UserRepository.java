@@ -1,5 +1,6 @@
 package com.example.PetLog.User;
 
+import aj.org.objectweb.asm.commons.Remapper;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,4 +17,10 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     UserEntity findByUserLoginId(String userLoginId);
 
     Optional<UserEntity> findOptionalByEmail(String email);
+
+   // Remapper findByNameAndEmail(String name, String email);
+
+    Optional<UserEntity> findByNameAndEmail(String name, String email);
+
+    Optional<UserEntity> findByNameAndUserLoginIdAndEmailAndPhone(String name, String userLoginId, String email, String phone);
 }

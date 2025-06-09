@@ -20,4 +20,11 @@ public interface DiaryService {
     void update(DiaryEntity entity);
 
     void delete(Long diaryId);
+
+    //지수 추가 - 회원탈퇴
+    List<DiaryEntity> findByDiaryUserId(Long userId);
+
+    //지수 추가 - 회원탈퇴
+    void deleteByUserId(Long userId);
+
 }

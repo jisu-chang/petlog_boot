@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @Repository
 public interface CommunityRepository extends JpaRepository<CommunityEntity, Long> {
 
@@ -15,4 +17,8 @@ public interface CommunityRepository extends JpaRepository<CommunityEntity, Long
     @Modifying
     @Query(value = "update community set post_readcnt=post_readcnt+1 where post_id=:post_id", nativeQuery = true)
     void readup(@Param("post_id") Long num);
+
+    void deleteByUser_UserId(Long userId);
+
+    List<CommunityEntity> findAllByUser_UserId(Long userId);
 }

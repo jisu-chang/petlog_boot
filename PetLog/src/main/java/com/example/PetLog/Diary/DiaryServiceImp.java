@@ -4,10 +4,6 @@ import com.example.PetLog.Pet.PetDTO;
 import com.example.PetLog.Pet.PetEntity;
 import com.example.PetLog.Pet.PetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -93,6 +89,18 @@ public DiaryEntity detailEntity(Long diaryId) { //diaryId에 해당하는 데이
     @Override
     public void delete(Long diaryId) {
         diaryRepository.deleteById(diaryId);
+    }
+
+    //지수 추가 - 회원탈퇴
+    @Override
+    public List<DiaryEntity> findByDiaryUserId(Long userId) {
+        return diaryRepository.findAllByUser_UserId(userId);
+    }
+
+    //지수 추가 - 회원탈퇴
+    @Override
+    public void deleteByUserId(Long userId) {
+        diaryRepository.deleteByUser_UserId(userId);
     }
 
 }

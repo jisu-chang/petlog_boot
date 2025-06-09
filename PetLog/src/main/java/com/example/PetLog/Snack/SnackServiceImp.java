@@ -75,4 +75,15 @@ public class SnackServiceImp implements SnackService {
         snackRepository.deleteById(snackId);
     }
 
+    //지수 추가 - 회원탈퇴
+    @Override
+    public List<SnackEntity> findByUserId(Long userId) {
+        return snackRepository.findAllByUser_UserId(userId);
+    }
+    //지수 추가 - 회원탈퇴
+    @Override
+    public void deleteByUserId(Long userId) {
+        snackRepository.deleteByUser_UserId(userId);
+    }
+
 }

@@ -46,4 +46,14 @@ public class CommunityServiceImp implements CommunityService{
     public void deletesave(Long dnum) {
         communityRepository.deleteById(dnum);
     }
+
+    @Override
+    public List<CommunityEntity> findByUserId(Long userId) {
+        return communityRepository.findAllByUser_UserId(userId);
+    }
+
+    @Override
+    public void deleteByUserId(Long userId) {
+        communityRepository.deleteByUser_UserId(userId);
+    }
 }

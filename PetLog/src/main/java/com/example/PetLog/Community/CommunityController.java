@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -54,7 +55,12 @@ public class CommunityController {
     @GetMapping(value = "/CommunityOut")
     public String comout(Model mo){
         List<CommunityEntity> list = communityService.allout();
-        mo.addAttribute("list", list);
+        // 탈퇴회원 글 제외
+        List<CommunityEntity> filtered = list.stream()
+                .filter(cc -> cc.getUser() != null)
+                .collect(Collectors.toList());
+
+        mo.addAttribute("list", filtered);
         return "Community/CommunityOut";
     }
 

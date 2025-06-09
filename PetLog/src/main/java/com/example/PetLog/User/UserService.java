@@ -17,4 +17,10 @@ public interface UserService {
     Long findUserIdByLoginId(String loginId);
 
     void save(UserDTO dto);
+
+    void deleteUser(Long userId);
+
+    String findLoginIdByNameAndEmail(String name, String email);
+
+    boolean processPasswordReset(String name, String userLoginId, String email, String phone);
 }

@@ -21,10 +21,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.spring6.SpringTemplateEngine;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import java.io.IOException;
 
@@ -59,11 +64,34 @@ public class SecurityConfiguration {
     }
 
     @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+//    @Bean
+//    public ClassLoaderTemplateResolver templateResolver() {
+//        ClassLoaderTemplateResolver resolver = new ClassLoaderTemplateResolver();
+//        resolver.setPrefix("templates/");
+//        resolver.setSuffix(".html");
+//        resolver.setTemplateMode(TemplateMode.HTML);
+//        resolver.setCharacterEncoding("UTF-8");
+//        resolver.setCacheable(false); // 개발 중 캐시 비활성화
+//        return resolver;
+//    }
+
+//    @Bean
+//    public TemplateEngine templateEngine(ClassLoaderTemplateResolver templateResolver) {
+//        SpringTemplateEngine engine = new SpringTemplateEngine();
+//        engine.setTemplateResolver(templateResolver);
+//        return engine;
+//    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/signUp", "/signUpSave", "/image/**", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/", "/login", "/signUp", "/signUpSave","/findId", "/findIdSave", "/findPw", "/findPwSave", "/image/**", "/css/**", "/js/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -89,6 +117,7 @@ public class SecurityConfiguration {
                                 response.sendRedirect("/signUpKakao"); // 카카오 전용 회원가입 창
                                 return;
                             }
+                            response.sendRedirect("/");
                         })
                         .failureUrl("/login?error=true")
                         .permitAll()
