@@ -1,0 +1,60 @@
+<!-- templates/user/UserChangePw.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{top::menu}"></div>
+<head>
+  <meta charset="UTF-8">
+  <title>비밀번호 변경</title>
+  <style>
+    body {
+      background-color: #fff6f6;
+      font-family: 'Pretendard', sans-serif;
+    }
+    .container {
+      max-width: 500px;
+      margin: 50px auto;
+      padding: 30px;
+      background-color: #fff;
+      border-radius: 12px;
+      border: 2px solid #f48aa5;
+    }
+    input, button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+    button {
+      background-color: #f48aa5;
+      color: white;
+      border: none;
+      font-weight: bold;
+    }
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+    .success {
+      color: green;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>비밀번호 변경</h2>
+  <form th:action="@{/changePw}" method="post">
+    <input type="password" name="currentPw" placeholder="현재 비밀번호" required>
+    <input type="password" name="newPw" placeholder="새 비밀번호" required>
+    <input type="password" name="newPwConfirm" placeholder="새 비밀번호 확인" required>
+    <button type="submit">비밀번호 변경</button>
+  </form>
+
+  <p class="error" th:if="${error}" th:text="${error}"></p>
+  <p class="success" th:if="${success}" th:text="${success}"></p>
+</div>
+</body>
+</html>

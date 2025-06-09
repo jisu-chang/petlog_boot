@@ -37,6 +37,12 @@ public class UserServiceImp implements UserService{
     @Override
     public void signUpInsert(UserDTO userDTO) {
         userDTO.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword())); //패스워드 암호화
+        //기본 이미지 파일 처리
+        if (userDTO.getProfileimg() == null || userDTO.getProfileimg().isEmpty()) {
+            userDTO.setProfileimgName("default.png");
+        } else {
+            userDTO.setProfileimgName(userDTO.getProfileimg().getOriginalFilename());
+        }
         userRepository.save(userDTO.toEntity());
     }
 
@@ -117,6 +123,37 @@ public class UserServiceImp implements UserService{
         }
 
         return false;
+    }
+
+    @Override
+    public String changePw(Long userId, String currentPw, String newPw, String newPwConfirm) {
+        Optional<UserEntity> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()){
+            UserEntity user = userOpt.get();
+            //현재 비밀번호 확인
+            if (!passwordEncoder.matches(currentPw, user.getPassword())){
+                return "wrong_current";
+            }
+            //새 비밀번호와 일치여부 확인
+            if (!newPw.equals(newPwConfirm)){
+                return "mismatch_confirm";
+            }
+            // 현재 비밀번호와 새 비밀번호가 같을 경우 변경 불가
+            if (passwordEncoder.matches(newPw, user.getPassword())) {
+                return "same_as_old";
+            }
+            //비밀번호 변경 후 저장
+            String encryptedNewPw = passwordEncoder.encode(newPw);
+            user.setPassword(encryptedNewPw);
+            userRepository.save(user);
+            return "success";
+        }
+        return "not_found";
+    }
+
+    @Override
+    public boolean idCheck(String userLoginId) {
+        return userRepository.existsByUserLoginIdNative(userLoginId) == 1;
     }
 
 

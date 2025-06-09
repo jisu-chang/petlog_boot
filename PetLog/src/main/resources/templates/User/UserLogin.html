@@ -120,6 +120,7 @@
 </head>
 
 <body>
+
 <div th:replace="~{top::menu}"></div>
 
 <div class="container">
@@ -158,5 +159,15 @@
     </div>
   </form>
 </div>
+
+<script th:inline="javascript">
+  /*<![CDATA[*/
+  const urlParams = new URLSearchParams(window.location.search);
+  const msg = urlParams.get('msg');
+  if (msg === 'sent') {
+    alert('임시 비밀번호가 이메일로 전송되었습니다.');
+  }
+  /*]]>*/
+</script>
 </body>
 </html>

@@ -119,7 +119,6 @@
   </style>
 </head>
 <body>
-
 <div class="container">
   <h1>🐾 마이페이지</h1>
 
@@ -152,6 +151,16 @@
   </div>
 </div>
 </div>
+
+<script th:inline="javascript">
+  if ([[${msg} != null]]) {
+    alert([[${msg}]]);
+  }
+
+  if ([[${error} != null]]) {
+    alert([[${error}]]);
+  }
+</script>
 </body>
 
 </html>

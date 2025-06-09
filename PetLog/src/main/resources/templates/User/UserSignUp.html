@@ -123,7 +123,6 @@
 <div th:replace="~{top::menu}"></div>
 
 <div class="container">
-
   <div class="kakao-login">
     <form th:action="@{/oauth2/authorization/kakao}" method="get">
       <button type="submit" class="kakao-button">카카오로 회원가입</button>
@@ -131,14 +130,29 @@
   </div>
 
   <form th:action="@{/signUpSave}" method="post" th:object="${userDTO}" enctype="multipart/form-data">
+
     <div class="form-group">
       <label for="user_login_id">아이디</label>
-      <input type="text" id="user_login_id" th:field="*{user_login_id}" />
+      <input type="text" id="user_login_id" th:field="*{user_login_id}" required/>
+        <button type="button" onclick="checkId()">중복 확인</button> <!-- 중복 확인 버튼 -->
+        <span id="idCheckResult" style="margin-left:10px;"></span> <!-- 중복 결과 출력 -->
+      <input type="hidden" id="idCheckStatus" name="idCheckStatus" value="false" /> <!-- 중복검사 없이 회원가입 진행 시 필요-->
+      <div th:if="${idError}" th:text="${idError}" style="color:red;"></div> <!-- 에러메세지 출력용 -->
+        <p th:if="${#fields.hasErrors('user_login_id')}" th:errors="*{user_login_id}"></p> <!-- 유효성 검사 메시지 -->
     </div>
 
     <div class="form-group">
       <label for="password">패스워드</label>
-      <input type="password" id="password" th:field="*{password}" />
+      <input type="password" id="password" th:field="*{password}" required/>
+      <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+    </div>
+
+    <div class="form-group">
+      <label for="passwordCheck">패스워드 확인</label>
+      <input type="password" id="passwordCheck" th:field="*{passwordCheck}" required oninput="checkPasswordMatch()"/>
+      <p th:if="${#fields.hasErrors('passwordCheck')}" th:errors="*{passwordCheck}"></p>
+      <div th:if="${passwordMismatch}" style="color: red;">[[${passwordMismatch}]]</div>
+      <span id="passwordMatchMsg"></span>
     </div>
 
     <div class="form-group">
@@ -149,22 +163,75 @@
 
     <div class="form-group">
       <label for="phone">전화번호</label>
-      <input type="text" id="phone" th:field="*{phone}" />
+      <input type="text" id="phone" th:field="*{phone}" required/>
     </div>
 
     <div class="form-group">
       <label for="email">이메일</label>
-      <input type="email" id="email" th:field="*{email}" />
+      <input type="email" id="email" th:field="*{email}" required/>
     </div>
 
     <div class="form-group">
       <label for="profileimg">프로필 이미지</label>
-      <input type="file" id="profileimg" name="profileimg" />
+      <input type="file" id="profileimg" name="profileimg"/>
+      <p th:if="${error}" th:text="${error}" style="color:red;"></p>
+      <div th:if="${imageError}" style="color: red;">프로필 이미지를 다시 업로드해주세요.</div>
     </div>
 
     <button type="submit" class="btn btn-primary">저장</button>
     <button type="reset" class="btn btn-reset" onclick="location.href='/'">취소</button>
   </form>
 </div>
+
+<script>
+  function checkId() {
+     const userLoginId = document.getElementById("user_login_id").value;
+     if (userLoginId === "") {
+         alert("아이디를 입력해주세요.");
+         return;
+     }
+
+     fetch(`/idCheck?userLoginId=${encodeURIComponent(userLoginId)}`)
+         .then(response => response.text())
+         .then(data => {
+             if (data === "duplicate") {
+                 alert("이미 사용 중인 아이디입니다.");
+                 document.getElementById("idCheckStatus").value = "false";
+                 document.getElementById("idCheckResult").textContent = "이미 사용 중인 아이디 입니다.";
+                 document.getElementById("idCheckResult").style.color = "red";
+             } else {
+                 alert("사용 가능한 아이디입니다.");
+                 document.getElementById("idCheckStatus").value = "true";
+                 document.getElementById("idCheckResult").textContent = "사용 가능한 아이디 입니다.";
+                 document.getElementById("idCheckResult").style.color = "green";
+             }
+         })
+         .catch(err => {
+             console.error("중복 검사 중 에러 발생:", err);
+         });
+ }
+</script>
+
+
+<script>
+  function checkPasswordMatch() {
+    const pw = document.getElementById("password").value;
+    const pwCheck = document.getElementById("passwordCheck").value;
+    const msg = document.getElementById("passwordMatchMsg");
+
+    if (pwCheck === "") {
+      msg.textContent = "";
+      return;
+    }
+
+    if (pw === pwCheck) {
+      msg.textContent = "비밀번호가 일치합니다.";
+      msg.style.color = "green";
+    } else {
+      msg.textContent = "비밀번호가 일치하지 않습니다.";
+      msg.style.color = "red";
+    }
+  }
+</script>
 </body>
 </html>

@@ -23,4 +23,8 @@ public interface UserService {
     String findLoginIdByNameAndEmail(String name, String email);
 
     boolean processPasswordReset(String name, String userLoginId, String email, String phone);
+
+    String changePw(Long userId, String currentPw, String newPw, String newPwConfirm);
+
+    boolean idCheck(String userLoginId);
 }

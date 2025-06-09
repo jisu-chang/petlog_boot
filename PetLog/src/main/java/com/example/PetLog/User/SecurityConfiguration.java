@@ -68,30 +68,13 @@ public class SecurityConfiguration {
         return new BCryptPasswordEncoder();
     }
 
-//    @Bean
-//    public ClassLoaderTemplateResolver templateResolver() {
-//        ClassLoaderTemplateResolver resolver = new ClassLoaderTemplateResolver();
-//        resolver.setPrefix("templates/");
-//        resolver.setSuffix(".html");
-//        resolver.setTemplateMode(TemplateMode.HTML);
-//        resolver.setCharacterEncoding("UTF-8");
-//        resolver.setCacheable(false); // 개발 중 캐시 비활성화
-//        return resolver;
-//    }
-
-//    @Bean
-//    public TemplateEngine templateEngine(ClassLoaderTemplateResolver templateResolver) {
-//        SpringTemplateEngine engine = new SpringTemplateEngine();
-//        engine.setTemplateResolver(templateResolver);
-//        return engine;
-//    }
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/signUp", "/signUpSave","/findId", "/findIdSave", "/findPw", "/findPwSave", "/image/**", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/", "/login", "/signUp", "/signUpSave","/findId", "/findIdSave", "/findPw", "/findPwSave", "/idCheck").permitAll()
+                        .requestMatchers("/image/**").permitAll()  //로그인이 필요없는 url 작성
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

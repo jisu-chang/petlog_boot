@@ -9,7 +9,6 @@ import com.example.PetLog.Diary.DiaryService;
 import com.example.PetLog.Likes.LikesEntity;
 import com.example.PetLog.Likes.LikesService;
 import com.example.PetLog.Snack.SnackEntity;
-import com.example.PetLog.Snack.SnackRepository;
 import com.example.PetLog.Snack.SnackService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -23,14 +22,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 import java.io.File;
@@ -45,14 +42,18 @@ public class UserContoller {
 
     @Autowired
     UserService userService;
+    @Autowired
     UserRepository userRepository;
+    @Autowired
     CommunityService communityService;
+    @Autowired
     DiaryService diaryService;
+    @Autowired
     SnackService snackService;
+    @Autowired
     CommentsService commentsService;
+    @Autowired
     LikesService likesService;
-    JavaMailSender mailSender;
-    PasswordEncoder passwordEncoder;
 
     String path = new File("src/main/resources/static/image").getAbsolutePath();
 
@@ -77,19 +78,44 @@ public class UserContoller {
         return "User/UserSignUp";
     }
 
-    //회원가입 처리
     @PostMapping("/signUpSave")
-    public String member2(@ModelAttribute("userDTO") @Valid UserDTO userDTO , BindingResult bindingResult, MultipartHttpServletRequest mul) throws IOException {
-        if(bindingResult.hasErrors()){
-            //유효성검시시 에러가 있으면
-            return "User/UserSignUp";//입력폼 다시 호출
+    public String member2(@ModelAttribute("userDTO") @Valid UserDTO userDTO, BindingResult bindingResult,
+                          @RequestParam("idCheckStatus") String idCheckStatus, MultipartHttpServletRequest mul, Model mo) throws IOException {
+        // 유효성 검사 에러 (ex. 이름, 이메일 등)
+        if (bindingResult.hasErrors()) {
+            return "User/UserSignUp";
         }
-        else {
-            MultipartFile mf=mul.getFile("profileimg");
-            mf.transferTo(new File(path+"\\"+mf.getOriginalFilename()));
-            userService.signUpInsert(userDTO); //서비스로 데이터 보냄
-            return "redirect:/main";
+
+        // 비밀번호와 비밀번호 확인이 일치하는지 체크
+        if (!userDTO.getPassword().equals(userDTO.getPasswordCheck())) {
+            mo.addAttribute("passwordMismatch", "입력한 비밀번호가 일치하지 않습니다.");
+            return "User/UserSignUp";
         }
+
+        // 프로필 이미지 유무 확인
+        MultipartFile mf = mul.getFile("profileimg");
+        if (mf == null || mf.isEmpty()) {
+            mo.addAttribute("error", "프로필 이미지를 다시 업로드해주세요.");
+            return "User/UserSignUp";
+        }
+        // 아이디 중복검사 여부 확인
+        if (!"true".equals(idCheckStatus)) {
+            mo.addAttribute("idError", "아이디 중복 확인을 먼저 해주세요.");
+            return "User/UserSignUp";
+        }
+        // 정상 로직 실행
+        mf.transferTo(new File(path + "\\" + mf.getOriginalFilename()));
+        userDTO.setProfileimgName(mf.getOriginalFilename());
+        userService.signUpInsert(userDTO);
+        return "redirect:/main";
+    }
+
+    //아이디 중복체크
+    @GetMapping("/idCheck")
+    @ResponseBody
+    public String idcheck(@RequestParam("userLoginId") String userLoginId) {
+        boolean isDuplicate = userService.idCheck(userLoginId);
+        return isDuplicate ? "duplicate" : "ok";
     }
 
     //카카오 회원가입
@@ -135,7 +161,6 @@ public class UserContoller {
 
         // 로그인되지 않은 경우 로그인 페이지로 리디렉트
         if (userId == null) {
-            System.out.println("세션에 user_id 없음");
             return "redirect:/login";
         }
 
@@ -143,7 +168,7 @@ public class UserContoller {
         if (user.isPresent()) {
             model.addAttribute("user", user.get());
         } else {
-            System.out.println("DB에 해당 유저 없음");
+
         }
 
         // UserService를 사용하여 userId로 UserEntity 객체 가져오기
@@ -195,18 +220,44 @@ public class UserContoller {
                          @RequestParam String phone,
                          @RequestParam String userLoginId,
                          @RequestParam String email,
+                         RedirectAttributes redirectAttributes,
                          Model mo) {
 
         boolean result = userService.processPasswordReset(name, userLoginId, email, phone);
         if (result) {
-            mo.addAttribute("msg", "임시 비밀번호가 이메일로 전송되었습니다.");
-            return "redirect:/login";
+            return "redirect:/login?msg=sent";
         } else {
             mo.addAttribute("error", "입력한 정보와 일치하는 회원이 없습니다.");
             return "User/UserFindPw";
         }
     }
 
+    //비밀번호 변경
+    @GetMapping("/UserPwChange")
+    public String changePwForm() {
+        return "User/UserPwChange";
+    }
+
+    //비밀번호 변경 처리
+    @PostMapping("/changePw")
+    public String changePasswrod( @RequestParam String currentPw, @RequestParam String newPw, @RequestParam String newPwConfirm,
+                                  HttpSession session,RedirectAttributes redirectAttributes) {
+        Long userId = (Long) session.getAttribute("user_id");
+        if (userId == null) {
+            return "redirect:/login";
+        }
+
+        String result = userService.changePw(userId, currentPw, newPw, newPwConfirm);
+
+        switch (result) {
+            case "success" -> redirectAttributes.addFlashAttribute("msg", "비밀번호가 성공적으로 변경되었습니다.");
+            case "wrong_current" -> redirectAttributes.addFlashAttribute("error", "현재 비밀번호가 틀립니다.");
+            case "mismatch_confirm" -> redirectAttributes.addFlashAttribute("error", "새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
+            case "same_as_old" -> redirectAttributes.addFlashAttribute("error", "새 비밀번호가 기존 비밀번호와 같습니다.");
+            case "not_found" -> redirectAttributes.addFlashAttribute("error", "사용자 정보를 찾을 수 없습니다.");
+        }
+        return result.equals("success") ? "redirect:/MyPage" : "redirect:/UserPwChange";
+    }
 
     //회원정보 수정 처리
     @PostMapping("/UserUpdateSave")
@@ -265,7 +316,4 @@ public class UserContoller {
         session.invalidate(); // 세션 종료
         return "redirect:/DeleteMessage";
     }
-
-    //아이디찾기
-
 }
