@@ -2,19 +2,15 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:replace="~{top::menu}"></div>
-<style>
-  p{color:red;}
-
-</style>
-<body>
 <head>
 
 </head>
 
+<body>
 <div class="container">
   <form th:action="@{/UserUpdateSave}" method="post" th:object="${dto}" enctype="multipart/form-data">
     <input type="hidden" name="userId" th:value="${dto.userId}">
-    <input type="hidden" name="dfname" th:value="${userDTO.profileimgName}" />
+    <input type="hidden" name="dfname" th:value="${dto.profileimgName}" />
     <input type="hidden" name="email" id="fullEmail" />
     <input type="hidden" name="phoneCheckStatus" id="phoneCheckStatus" value="false" />
 
@@ -125,7 +121,5 @@
   });
 </script>
 
-
 </body>
-
 </html>

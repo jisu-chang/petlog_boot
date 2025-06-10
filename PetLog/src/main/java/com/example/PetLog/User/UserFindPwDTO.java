@@ -20,6 +20,7 @@ public class UserFindPwDTO {
 
     @NotBlank(message = "이메일 도메인을 선택 또는 입력해주세요.")
     String emailDomain;
+    @Email(message = "도메인 형식이 올바르지 않습니다.")
     String emailDomainCustom;
 
     @Pattern(regexp = "^010-\\d{4}-\\d{4}$", message = "전화번호 형식은 010-1234-5678 이어야 합니다.")

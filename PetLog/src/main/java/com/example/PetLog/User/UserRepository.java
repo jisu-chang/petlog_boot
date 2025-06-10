@@ -26,4 +26,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     int existsByUserLoginIdNative(@Param("userLoginId") String userLoginId);
 
     Optional<UserEntity> findByNameAndEmailAndPhone(String name, String email, String phone);
+
 }

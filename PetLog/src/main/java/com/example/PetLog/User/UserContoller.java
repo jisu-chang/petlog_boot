@@ -277,33 +277,43 @@ public class UserContoller {
 
     //회원정보 수정
     @GetMapping("/UserUpdate")
-    public String userUpdate(HttpSession session, Model mo){
+    public String userUpdate(HttpSession session, Model model) {
         Long userId = (Long) session.getAttribute("userId");
-        UserEntity dto = userService.updateById(userId);
-       // UserDTO dto = entityToDto(entity); //엔티티 -> DTO 변환 메서드
-        mo.addAttribute("dto", dto);
-        return "User/UserUpdate";
+
+        if (userId == null) {
+            // 세션에 userId가 없으면 에러를 발생시킴
+            return "redirect:/login";  // 로그인 페이지로 리다이렉트
+        }
+
+        // UserUpdateDTO 생성 (또는 서비스에서 가져오기)
+        UserUpdateDTO userUpdateDTO = userService.updateById(userId);
+
+        // 모델에 전달
+        model.addAttribute("dto", userUpdateDTO);  // 모델에 dto를 추가
+        return "User/UserUpdate";  // UserUpdate.html을 반환
     }
 
-//    private UserDTO entityToDto(UserEntity entity) {
-//        UserDTO dto = new UserDTO();
-//        dto.setUser_id(entity.getUserId());
-//        dto.setUser_login_id(entity.getUserLoginId());
-//        dto.setPassword(entity.getPassword());
-//        dto.setName(entity.getName());
-//        dto.setPhone(entity.getPhone());
-//        dto.setEmail(entity.getEmail());
-//        dto.setProfileimgName(entity.getProfileimg());
-//        dto.setRank(entity.getRank());
-//        dto.setUser_role(entity.getUserRole());
-//        dto.setGrape_count(entity.getGrapeCount());
-//        return dto;
-//    }
+    private UserDTO entityToDto(UserEntity entity) {
+        UserDTO dto = new UserDTO();
+        dto.setUserId(entity.getUserId());
+        dto.setUserLoginId(entity.getUserLoginId());
+        dto.setPassword(entity.getPassword());
+        dto.setName(entity.getName());
+        dto.setPhone(entity.getPhone());
+        dto.setEmail(entity.getEmail());
+        dto.setProfileimgName(entity.getProfileimg());
+        dto.setRank(entity.getRank());
+        dto.setUserRole(entity.getUserRole());
+        dto.setGrapeCount(entity.getGrapeCount());
+        return dto;
+    }
 
     //회원정보 수정 처리
     @PostMapping("/UserUpdateSave")
-    public String userUpdateSave(@Valid @ModelAttribute("userDTO") UserDTO userDTO, BindingResult bindingResult, @RequestParam("profileimg") MultipartFile mf,
-                                 @RequestParam("dfname") String dfname, HttpSession session, Model mo) throws IOException {
+    public String userUpdateSave(@Valid @ModelAttribute UserUpdateDTO updateDTO, BindingResult bindingResult,
+                                 @RequestParam("profileimg") MultipartFile mf, @RequestParam("dfname") String dfname,
+                                 HttpSession session, Model mo) throws IOException {
+
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) {
             mo.addAttribute("error", "로그인이 필요합니다.");
@@ -317,29 +327,40 @@ public class UserContoller {
 
         // 기존 유저 정보 가져오기
         UserEntity userEntity = userService.findById(userId);
-        userDTO.setPassword(userEntity.getPassword()); // 기존 비밀번호 유지
 
-        // 기존 프로필 이미지 삭제
-        if (!dfname.equals("default.png")) { // 기본 이미지는 삭제하지 않음
-            File oldFile = new File(path + "\\" + dfname);
-            if (oldFile.exists()) oldFile.delete();
-        }
+        // 기존 비밀번호는 그대로 유지 (암호화된 비밀번호 유지)
+        String encryptedPassword = userEntity.getPassword();
 
-        // 새로운 프로필 이미지 업로드
+        // 프로필 이미지 처리
+        String profileImageName = dfname;
         if (mf != null && !mf.isEmpty()) {
             String originalFilename = mf.getOriginalFilename();
             String extension = originalFilename != null ? originalFilename.substring(originalFilename.lastIndexOf(".")) : "";
-            String newFilename = UUID.randomUUID().toString() + extension;
-            mf.transferTo(new File(path + "\\" + newFilename));
-            userDTO.setProfileimgName(newFilename);
-        } else {
-            userDTO.setProfileimgName(dfname); // 이미지가 없으면 기존 유지
+            profileImageName = UUID.randomUUID().toString() + extension;
+            mf.transferTo(new File(path + "\\" + profileImageName));
+
+            // 기존 이미지 삭제
+            if (!dfname.equals("default.png")) {
+                File oldFile = new File(path + "\\" + dfname);
+                if (oldFile.exists()) oldFile.delete();
+            }
         }
 
+        // 업데이트된 UserDTO 객체 생성 (기존 데이터 유지)
+        UserDTO userDTO = new UserDTO();
         userDTO.setUserId(userId);
-        userService.updatesave(userDTO.toEntity());
+        userDTO.setEmail(updateDTO.getEmail());
+        userDTO.setName(updateDTO.getName());
+        userDTO.setPhone(updateDTO.getPhone());
+        userDTO.setProfileimgName(profileImageName);
+        userDTO.setPassword(encryptedPassword); // 암호화된 기존 비밀번호 유지
+
+        // 업데이트된 정보 저장
+        userService.updateUser(userDTO.toEntity());
+
         return "redirect:/MyPage";
     }
+
 
     //회원탈퇴- 활동이력 보이기
     @GetMapping("/UserDelete")

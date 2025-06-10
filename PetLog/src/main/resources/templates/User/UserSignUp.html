@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{top::menu}"></div>
 <head>
   <meta charset="UTF-8">
   <title>회원가입</title>
@@ -142,7 +143,6 @@
 </head>
 
 <body>
-<div th:replace="~{top::menu}"></div>
 
 <div class="container">
   <div class="kakao-login">
@@ -152,7 +152,6 @@
   </div>
 
   <form id="signUpForm" th:action="@{/signUpSave}" method="post" th:object="${userDTO}" enctype="multipart/form-data">
-
     <input type="hidden" name="email" id="fullEmail" />
     <input type="hidden" name="phoneCheckStatus" id="phoneCheckStatus" value="false" />
 

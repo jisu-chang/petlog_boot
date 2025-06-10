@@ -1,6 +1,5 @@
 package com.example.PetLog.User;
 
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -9,16 +8,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.spring6.SpringTemplateEngine;
-
 import java.util.Optional;
 import java.util.UUID;
-import jakarta.mail.internet.MimeMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-
 import org.thymeleaf.context.Context;
-import org.thymeleaf.spring6.SpringTemplateEngine;
-
 
 @Service
 public class UserServiceImp implements UserService{
@@ -52,9 +44,44 @@ public class UserServiceImp implements UserService{
     }
 
     @Override
-    public UserEntity updateById(Long userId) {
-        return userRepository.findById(userId).orElse(null);
+    public UserUpdateDTO updateById(Long userId) {
+        // 유저가 존재하는지 확인하고, 존재하면 UserEntity를 가져옴
+        System.out.println("updateById() called with userId: " + userId);  // userId가 들어오는지 확인
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        System.out.println("UserEntity retrieved: " + userEntity);  // 유저가 제대로 조회되었는지 확인
+
+        // UserEntity를 UserUpdateDTO로 변환
+        UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
+
+        // UserEntity에서 값을 가져와서 UserUpdateDTO로 세팅
+        userUpdateDTO.setUserId(userEntity.getUserId());  // userId 설정
+        userUpdateDTO.setName(userEntity.getName());
+
+        System.out.println("UserUpdateDTO created: " + userUpdateDTO);  // DTO 생성된 후 로그
+
+        // email과 emailDomain 분리하여 세팅
+        String email = userEntity.getEmail();
+        String emailDomain = email.substring(email.indexOf('@') + 1);
+        String emailPrefix = email.substring(0, email.indexOf('@'));
+
+        userUpdateDTO.setEmail(emailPrefix);  // email의 앞부분
+        if ("self".equals(emailDomain)) {
+            userUpdateDTO.setEmailDomain("self");
+            userUpdateDTO.setEmailDomainCustom(emailDomain);  // custom domain을 추가
+        } else {
+            userUpdateDTO.setEmailDomain(emailDomain);
+        }
+
+        userUpdateDTO.setPhone(userEntity.getPhone());
+        userUpdateDTO.setProfileimg(userEntity.getProfileimg());  // profileimg 추가
+
+        // 반환
+        return userUpdateDTO;
     }
+
+
 
     @Override
     public void updatesave(UserEntity userEntity) {
@@ -180,6 +207,25 @@ public class UserServiceImp implements UserService{
     public String findLoginIdByInfo(String name, String email, String phone) {
         Optional<UserEntity> user = userRepository.findByNameAndEmailAndPhone(name, email, phone);
         return user.map(UserEntity::getUserLoginId).orElse(null);
+    }
+
+    @Override
+    public void updateUser(UserEntity entity) {
+        // 유저가 존재하는지 확인하고, 존재하지 않으면 예외를 던짐
+        UserEntity userToUpdate = userRepository.findById(entity.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // 필요한 업데이트 필드를 설정
+        userToUpdate.setEmail(entity.getEmail());
+        userToUpdate.setName(entity.getName());
+        userToUpdate.setPhone(entity.getPhone());
+        userToUpdate.setProfileimg(entity.getProfileimg());  // 이미지 업데이트
+
+        // 비밀번호는 기존 값을 그대로 유지 (암호화된 상태로)
+        userToUpdate.setPassword(entity.getPassword());
+
+        // 유저 정보를 DB에 저장 (업데이트)
+        userRepository.save(userToUpdate);
     }
 
 }
