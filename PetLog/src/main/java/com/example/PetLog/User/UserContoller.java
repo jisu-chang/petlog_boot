@@ -67,7 +67,7 @@ public class UserContoller {
     @PostMapping("/login")
     public String login(@RequestParam("userId") Long userId, HttpSession session) {
         // 로그인 성공 시 세션에 user_id 저장
-        session.setAttribute("user_id", userId);
+        session.setAttribute("userId", userId);
         return "redirect:/"; // 로그인 후 홈 페이지로 리디렉션
     }
 
@@ -78,6 +78,7 @@ public class UserContoller {
         return "User/UserSignUp";
     }
 
+    //회원가입 처리
     @PostMapping("/signUpSave")
     public String member2(@ModelAttribute("userDTO") @Valid UserDTO userDTO, BindingResult bindingResult, @RequestParam("phoneCheckStatus") String phoneCheckStatus,
                           @RequestParam("idCheckStatus") String idCheckStatus, MultipartHttpServletRequest mul, Model mo) throws IOException {
@@ -92,21 +93,29 @@ public class UserContoller {
             return "User/UserSignUp";
         }
 
-        // 프로필 이미지 유무 확인
-        MultipartFile mf = mul.getFile("profileimg");
-        if (mf == null || mf.isEmpty()) {
-            mo.addAttribute("error", "프로필 이미지를 다시 업로드해주세요.");
-            return "User/UserSignUp";
-        }
         // 아이디 중복검사 여부 확인
         if (!"true".equals(idCheckStatus)) {
             mo.addAttribute("idError", "아이디 중복 확인을 먼저 해주세요.");
             return "User/UserSignUp";
         }
 
-        // 정상 로직 실행
-        mf.transferTo(new File(path + "\\" + mf.getOriginalFilename()));
-        userDTO.setProfileimgName(mf.getOriginalFilename());
+        // 프로필 이미지 유무 확인
+        MultipartFile mf = mul.getFile("profileimg");
+        if (mf == null || mf.isEmpty()) {
+            mo.addAttribute("error", "프로필 이미지를 다시 업로드해주세요.");
+            return "User/UserSignUp";
+        }
+
+        // UUID 생성 (파일 이름 고유화)
+        String ff = mf.getOriginalFilename(); // 원본 파일 이름
+        String fname = ff != null ? ff.substring(ff.lastIndexOf(".")) : "";  // 파일 확장자 추출
+        String nfname = UUID.randomUUID().toString() + fname;  // UUID로 고유한 파일명 만들기
+
+        // UUID로 파일 저장
+        mf.transferTo(new File(path + "\\" + nfname));
+
+        // 새로운 파일명을 DTO에 설정
+        userDTO.setProfileimgName(nfname);
         userService.signUpInsert(userDTO);
         return "redirect:/main";
     }
@@ -144,68 +153,41 @@ public class UserContoller {
         dto.setProfileimgName(kakaoImageUrl); // 여기에 URL 문자열 직접 세팅
 
         dto.setPassword("kakao"); // 의미 없는 비번
-        dto.setUser_role("USER");
+        dto.setUserRole("USER");
         dto.setRank("일반회원");
-        dto.setGrape_count(0);
+        dto.setGrapeCount(0);
 
         userService.save(dto);
-        session.setAttribute("user_id", dto.getUser_id());
-        session.setAttribute("user_login_id", dto.getUser_login_id());
+        session.setAttribute("userId", dto.getUserId());
+        session.setAttribute("userLoginId", dto.getUserLoginId());
         return "redirect:/"; // 회원가입 후 홈으로
-    }
-
-    //마이페이지
-    @GetMapping("/MyPage")
-    public String MyPage(Model mo, HttpSession session, Model model) {
-        // 세션에서 로그인한 사용자 ID 가져오기
-        Long userId = (Long) session.getAttribute("user_id");
-
-        // 로그인되지 않은 경우 로그인 페이지로 리디렉트
-        if (userId == null) {
-            return "redirect:/login";
-        }
-
-        Optional<UserEntity> user = userRepository.findById(userId);
-        if (user.isPresent()) {
-            model.addAttribute("user", user.get());
-        } else {
-
-        }
-
-        // UserService를 사용하여 userId로 UserEntity 객체 가져오기
-        UserEntity userEntity = userService.findById(userId);  // userDTO가 아닌 userId 사용
-        log.info("프로필 이미지: " + userEntity.getProfileimg());
-        // UserEntity 객체를 모델에 추가하여 뷰에 전달
-        mo.addAttribute("list", userEntity);
-        return "User/UserMyPage";
-    }
-
-    //회원정보 수정
-    @GetMapping("/UserUpdate")
-    public String userUpdate(HttpSession session, Model mo){
-        Long userId = (Long) session.getAttribute("user_id");
-        UserEntity udto = userService.updateById(userId);
-        mo.addAttribute("dto", udto);
-        return "User/UserUpdate";
     }
 
     //아이디 찾기
     @GetMapping("/findId")
-    public String findid() {
+    public String findid(Model mo) {
+        mo.addAttribute("userFindIdDTO", new UserFindIdDTO());
         return "User/UserFindId";
     }
 
     //아이디 찾기 처리
     @PostMapping("/findIdSave")
-    public String findidsave(@RequestParam String name, @RequestParam String email, Model mo){
-        String loginId=userService.findLoginIdByNameAndEmail(name, email);
+    public String findidsave(@Valid @ModelAttribute UserFindIdDTO dto, BindingResult bindingResult, Model mo) {
 
-        if(loginId != null){
-            mo.addAttribute("foundId", loginId);
-            return "User/UserFindIdResult";
+        // 유효성 검사
+        if (bindingResult.hasErrors()) {
+            return "User/UserFindId"; // 다시 아이디 찾기 화면으로
+        }
+
+        // 이름, 이메일, 전화번호로 아이디를 찾는 로직
+        String userId = userService.findLoginIdByInfo(dto.getName(), dto.getEmail(), dto.getPhone());
+
+        if (userId != null) {
+            mo.addAttribute("userId", userId);
+            return "User/UserFindIdResult"; // 아이디 찾기 결과 화면으로 리다이렉트
         } else {
-            mo.addAttribute("error", "일치하는 정보가 없습니다.");
-            return "User/UserFindId";
+            mo.addAttribute("error", "입력한 정보와 일치하는 회원이 없습니다.");
+            return "User/UserFindId"; // 에러 메시지 출력 후 다시 아이디 찾기 화면
         }
     }
 
@@ -217,18 +199,16 @@ public class UserContoller {
 
     //비밀번호 찾기 처리
     @PostMapping("/findPwSave")
-    public String findPw(@RequestParam String name,
-                         @RequestParam String phone,
-                         @RequestParam String userLoginId,
-                         @RequestParam String email,
-                         RedirectAttributes redirectAttributes,
-                         Model mo) {
+    public String findPw(@Valid @ModelAttribute UserFindPwDTO dto, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "User/UserFindPw";
+        }
 
-        boolean result = userService.processPasswordReset(name, userLoginId, email, phone);
+        boolean result = userService.processPasswordReset(dto.getName(), dto.getUserLoginId(), dto.getEmail(), dto.getPhone());
         if (result) {
             return "redirect:/login?msg=sent";
         } else {
-            mo.addAttribute("error", "입력한 정보와 일치하는 회원이 없습니다.");
+            model.addAttribute("error", "입력한 정보와 일치하는 회원이 없습니다.");
             return "User/UserFindPw";
         }
     }
@@ -241,38 +221,122 @@ public class UserContoller {
 
     //비밀번호 변경 처리
     @PostMapping("/changePw")
-    public String changePasswrod( @RequestParam String currentPw, @RequestParam String newPw, @RequestParam String newPwConfirm,
-                                  HttpSession session,RedirectAttributes redirectAttributes) {
-        Long userId = (Long) session.getAttribute("user_id");
+    public String changePw(@ModelAttribute UserPasswordUpdateDTO dto, BindingResult bindingResult,
+                           Model model, HttpSession session) {
+
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            model.addAttribute("error", "로그인이 필요합니다.");
+            return "User/UserLogin"; // 로그인 페이지로
+        }
+
+        // 유효성 검사 오류가 있으면 다시 폼으로 .. BindingResult -> 유효성 검사 결과
+        if (bindingResult.hasErrors()) {
+            return "User/UserPwChange";
+        }
+
+        // 현재 비밀번호 확인
+        boolean success = userService.changePassword(userId, dto.getCurrentPw(), dto.getNewPw(), dto.getNewPwConfirm());
+
+        if (success) {
+            model.addAttribute("success", "비밀번호가 성공적으로 변경되었습니다.");
+        } else {
+            model.addAttribute("error", "비밀번호 변경에 실패했습니다. 입력값을 확인해주세요.");
+        }
+
+        return "redirect:/MyPage";
+    }
+
+    //마이페이지
+    @GetMapping("/MyPage")
+    public String MyPage(Model mo, HttpSession session) {
+        // 세션에서 로그인한 사용자 ID 가져오기
+        Long userId = (Long) session.getAttribute("userId");
+
+        // 로그인되지 않은 경우 로그인 페이지로 리디렉트
         if (userId == null) {
             return "redirect:/login";
         }
 
-        String result = userService.changePw(userId, currentPw, newPw, newPwConfirm);
-
-        switch (result) {
-            case "success" -> redirectAttributes.addFlashAttribute("msg", "비밀번호가 성공적으로 변경되었습니다.");
-            case "wrong_current" -> redirectAttributes.addFlashAttribute("error", "현재 비밀번호가 틀립니다.");
-            case "mismatch_confirm" -> redirectAttributes.addFlashAttribute("error", "새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
-            case "same_as_old" -> redirectAttributes.addFlashAttribute("error", "새 비밀번호가 기존 비밀번호와 같습니다.");
-            case "not_found" -> redirectAttributes.addFlashAttribute("error", "사용자 정보를 찾을 수 없습니다.");
+        Optional<UserEntity> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            mo.addAttribute("user", user.get());
+        } else {
         }
-        return result.equals("success") ? "redirect:/MyPage" : "redirect:/UserPwChange";
+
+        //프로필 이미지 변경 후 바로 로드되게 하기 위해 추가
+        long timestamp = System.currentTimeMillis();
+        mo.addAttribute("timestamp", timestamp);
+
+        // UserService를 사용하여 userId로 UserEntity 객체 가져오기
+        UserEntity userEntity = userService.findById(userId);  // userDTO가 아닌 userId 사용
+        // UserEntity 객체를 모델에 추가하여 뷰에 전달
+        mo.addAttribute("list", userEntity);
+        return "User/UserMyPage";
     }
+
+    //회원정보 수정
+    @GetMapping("/UserUpdate")
+    public String userUpdate(HttpSession session, Model mo){
+        Long userId = (Long) session.getAttribute("userId");
+        UserEntity dto = userService.updateById(userId);
+       // UserDTO dto = entityToDto(entity); //엔티티 -> DTO 변환 메서드
+        mo.addAttribute("dto", dto);
+        return "User/UserUpdate";
+    }
+
+//    private UserDTO entityToDto(UserEntity entity) {
+//        UserDTO dto = new UserDTO();
+//        dto.setUser_id(entity.getUserId());
+//        dto.setUser_login_id(entity.getUserLoginId());
+//        dto.setPassword(entity.getPassword());
+//        dto.setName(entity.getName());
+//        dto.setPhone(entity.getPhone());
+//        dto.setEmail(entity.getEmail());
+//        dto.setProfileimgName(entity.getProfileimg());
+//        dto.setRank(entity.getRank());
+//        dto.setUser_role(entity.getUserRole());
+//        dto.setGrape_count(entity.getGrapeCount());
+//        return dto;
+//    }
 
     //회원정보 수정 처리
     @PostMapping("/UserUpdateSave")
-    public String userUpdateSave(UserDTO userDTO,@RequestParam("profileimg") MultipartFile mf, @RequestParam("dfname") String dfname, HttpSession session, Model mo) throws IOException {
-        Long userId = (Long) session.getAttribute("user_id");
-        //기존 유저 정보 가져오기
+    public String userUpdateSave(@Valid @ModelAttribute("userDTO") UserDTO userDTO, BindingResult bindingResult, @RequestParam("profileimg") MultipartFile mf,
+                                 @RequestParam("dfname") String dfname, HttpSession session, Model mo) throws IOException {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            mo.addAttribute("error", "로그인이 필요합니다.");
+            return "User/UserLogin";
+        }
+
+        // 유효성 검사
+        if (bindingResult.hasErrors()) {
+            return "User/UserUpdate"; // 유효성 에러 시 다시 폼으로
+        }
+
+        // 기존 유저 정보 가져오기
         UserEntity userEntity = userService.findById(userId);
-        //기존 비밀번호 유지
-        userDTO.setPassword(userEntity.getPassword());
+        userDTO.setPassword(userEntity.getPassword()); // 기존 비밀번호 유지
 
-        new File(path+"\\"+dfname).delete();
-        mf.transferTo(new File(path+"\\"+mf.getOriginalFilename()));
+        // 기존 프로필 이미지 삭제
+        if (!dfname.equals("default.png")) { // 기본 이미지는 삭제하지 않음
+            File oldFile = new File(path + "\\" + dfname);
+            if (oldFile.exists()) oldFile.delete();
+        }
 
-        userDTO.setUser_id(userId);
+        // 새로운 프로필 이미지 업로드
+        if (mf != null && !mf.isEmpty()) {
+            String originalFilename = mf.getOriginalFilename();
+            String extension = originalFilename != null ? originalFilename.substring(originalFilename.lastIndexOf(".")) : "";
+            String newFilename = UUID.randomUUID().toString() + extension;
+            mf.transferTo(new File(path + "\\" + newFilename));
+            userDTO.setProfileimgName(newFilename);
+        } else {
+            userDTO.setProfileimgName(dfname); // 이미지가 없으면 기존 유지
+        }
+
+        userDTO.setUserId(userId);
         userService.updatesave(userDTO.toEntity());
         return "redirect:/MyPage";
     }
@@ -280,7 +344,7 @@ public class UserContoller {
     //회원탈퇴- 활동이력 보이기
     @GetMapping("/UserDelete")
     public String userdelete(HttpSession session, Model mo){
-        Long userId = (Long) session.getAttribute("user_id");
+        Long userId = (Long) session.getAttribute("userId");
         if (userId == null) {
             return "redirect:/login";
         }
@@ -304,7 +368,7 @@ public class UserContoller {
     //회원탈퇴 처리
     @PostMapping("/user/withdraw")
     public String withdraw(HttpSession session) {
-        Long userId = (Long) session.getAttribute("user_id");
+        Long userId = (Long) session.getAttribute("userId");
         if (userId == null) return "redirect:/login";
 
         likesService.deleteByUserId(userId); //좋아요 삭제

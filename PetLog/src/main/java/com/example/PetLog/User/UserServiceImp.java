@@ -156,6 +156,30 @@ public class UserServiceImp implements UserService{
         return userRepository.existsByUserLoginIdNative(userLoginId) == 1;
     }
 
+    @Override
+    public boolean changePassword(Long userId, String currentPw, String newPw, String newPwConfirm) {
+        if (!newPw.equals(newPwConfirm)) return false;
 
+        Optional<UserEntity> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) return false;
+
+        UserEntity user = optionalUser.get();
+
+        // 현재 비밀번호 일치 확인
+        if (!passwordEncoder.matches(currentPw, user.getPassword())) return false;
+
+        // 새 비밀번호 암호화 후 저장
+        String encodedNewPw = passwordEncoder.encode(newPw);
+        user.setPassword(encodedNewPw);
+        userRepository.save(user);
+
+        return true;
+    }
+
+    @Override
+    public String findLoginIdByInfo(String name, String email, String phone) {
+        Optional<UserEntity> user = userRepository.findByNameAndEmailAndPhone(name, email, phone);
+        return user.map(UserEntity::getUserLoginId).orElse(null);
+    }
 
 }

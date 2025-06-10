@@ -152,16 +152,18 @@
   </div>
 
   <form id="signUpForm" th:action="@{/signUpSave}" method="post" th:object="${userDTO}" enctype="multipart/form-data">
+
     <input type="hidden" name="email" id="fullEmail" />
+    <input type="hidden" name="phoneCheckStatus" id="phoneCheckStatus" value="false" />
 
     <div class="form-group">
-      <label for="user_login_id">아이디</label>
-      <input type="text" id="user_login_id" th:field="*{user_login_id}" required/>
+      <label for="userLoginId">아이디</label>
+      <input type="text" id="userLoginId" th:field="*{userLoginId}" required/>
         <button type="button" onclick="checkId()">중복 확인</button> <!-- 중복 확인 버튼 -->
         <span id="idCheckResult" style="margin-left:10px;"></span> <!-- 중복 결과 출력 -->
       <input type="hidden" id="idCheckStatus" name="idCheckStatus" value="false" /> <!-- 중복검사 없이 회원가입 진행 시 필요-->
       <div th:if="${idError}" th:text="${idError}" style="color:red;"></div> <!-- 에러메세지 출력용 -->
-        <p th:if="${#fields.hasErrors('user_login_id')}" th:errors="*{user_login_id}"></p> <!-- 유효성 검사 메시지 -->
+        <p th:if="${#fields.hasErrors('userLoginId')}" th:errors="*{userLoginId}"></p> <!-- 유효성 검사 메시지 -->
     </div>
 
     <div class="form-group">
@@ -228,9 +230,10 @@
   </form>
 </div>
 
+<!-- 아이디 중복검사 -->
 <script>
   function checkId() {
-     const userLoginId = document.getElementById("user_login_id").value;
+     const userLoginId = document.getElementById("userLoginId").value;
      if (userLoginId === "") {
          alert("아이디를 입력해주세요.");
          return;
@@ -257,7 +260,7 @@
  }
 </script>
 
-
+<!-- 비밀번호 일치 검사 -->
 <script>
   function checkPasswordMatch() {
     const pw = document.getElementById("password").value;
@@ -279,6 +282,7 @@
   }
 </script>
 
+<!-- 비밀번호 유효성 검사 -->
 <script>
   function validatePassword() {
     const pw = document.getElementById("password").value;
@@ -294,6 +298,7 @@
   }
 </script>
 
+<!-- 전화번호 유효성 검사 -->
 <script>
   function autoFormatPhone(input) {
     let value = input.value.replace(/[^0-9]/g, "");
@@ -315,6 +320,7 @@
   }
 </script>
 
+<!-- 이메일 유효성 검사 -->
 <script>
   const domainSelect = document.getElementById("emailDomain");
   const customInput = document.getElementById("emailCustom");
@@ -329,7 +335,6 @@
     }
   });
 </script>
-
 
 <!--서버 전송시 이메일 합쳐서 보내기 -->
 <script>

@@ -51,7 +51,14 @@
 <div th:replace="~{top::menu}"></div>
 
 <h2>아이디 찾기 결과</h2>
-<p>회원님의 아이디는 <strong th:text="${foundId}"></strong> 입니다.</p>
+<p>회원님의 아이디는 <strong th:text="${userId}"></strong> 입니다.</p>
 <a th:href="@{/login}">로그인 하러 가기</a>
+
+<!--<div class="container">-->
+<!--    <h2>아이디 찾기 결과</h2>-->
+<!--    <p>아이디: <span th:text="${userId}"></span></p>-->
+<!--    <a th:href="@{/login}" class="back-link">← 로그인 페이지로 돌아가기</a>-->
+<!--</div>-->
 </body>
+
 </html>

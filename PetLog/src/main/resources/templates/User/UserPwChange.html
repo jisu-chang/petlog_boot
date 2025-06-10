@@ -1,4 +1,3 @@
-<!-- templates/user/UserChangePw.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:replace="~{top::menu}"></div>
@@ -41,20 +40,79 @@
       color: green;
       margin-top: 10px;
     }
+    ul#pwRules {
+      list-style: none;
+      padding-left: 0;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+    #pwRules li {
+      color: red;
+    }
+    #pwRules li.valid {
+      color: green;
+      font-weight: bold;
+    }
+    #pwMatchMsg {
+      font-size: 13px;
+      margin-top: 5px;
+    }
   </style>
 </head>
+
 <body>
 <div class="container">
   <h2>비밀번호 변경</h2>
   <form th:action="@{/changePw}" method="post">
     <input type="password" name="currentPw" placeholder="현재 비밀번호" required>
-    <input type="password" name="newPw" placeholder="새 비밀번호" required>
-    <input type="password" name="newPwConfirm" placeholder="새 비밀번호 확인" required>
+
+    <input type="password" id="newPw" name="newPw" placeholder="새 비밀번호" required oninput="validatePassword()">
+    <ul id="pwRules">
+      <li id="rule-length">8~20자</li>
+      <li id="rule-combo">영문자 + 숫자 조합</li>
+      <li id="rule-space">공백 없음</li>
+    </ul>
+
+    <input type="password" id="newPwConfirm" name="newPwConfirm" placeholder="새 비밀번호 확인" required oninput="checkPasswordMatch()">
+    <span id="pwMatchMsg"></span>
+
     <button type="submit">비밀번호 변경</button>
   </form>
 
   <p class="error" th:if="${error}" th:text="${error}"></p>
   <p class="success" th:if="${success}" th:text="${success}"></p>
 </div>
+
+<script>
+  function validatePassword() {
+    const pw = document.getElementById("newPw").value;
+    const lengthCheck = pw.length >= 8 && pw.length <= 20;
+    const comboCheck = /[A-Za-z]/.test(pw) && /\d/.test(pw);
+    const spaceCheck = !/\s/.test(pw);
+
+    document.getElementById("rule-length").classList.toggle("valid", lengthCheck);
+    document.getElementById("rule-combo").classList.toggle("valid", comboCheck);
+    document.getElementById("rule-space").classList.toggle("valid", spaceCheck);
+  }
+
+  function checkPasswordMatch() {
+    const pw = document.getElementById("newPw").value;
+    const pwCheck = document.getElementById("newPwConfirm").value;
+    const msg = document.getElementById("pwMatchMsg");
+
+    if (pwCheck === "") {
+      msg.textContent = "";
+      return;
+    }
+
+    if (pw === pwCheck) {
+      msg.textContent = "비밀번호가 일치합니다.";
+      msg.style.color = "green";
+    } else {
+      msg.textContent = "비밀번호가 일치하지 않습니다.";
+      msg.style.color = "red";
+    }
+  }
+</script>
 </body>
 </html>

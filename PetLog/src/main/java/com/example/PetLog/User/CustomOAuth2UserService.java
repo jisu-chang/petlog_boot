@@ -42,9 +42,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         if (userOpt.isPresent()) {
             UserEntity user = userOpt.get();
-            session.setAttribute("user_id", user.getUserId());
-            session.setAttribute("user_login_id", user.getUserLoginId());
-            session.setAttribute("user_role", user.getUserRole());
+            session.setAttribute("userId", user.getUserId());
+            session.setAttribute("userLoginId", user.getUserLoginId());
+            session.setAttribute("userRole", user.getUserRole());
             session.setAttribute("loginUser", user);
             session.removeAttribute("social_signup"); // 중복 회원가입 방지
         }

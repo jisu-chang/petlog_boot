@@ -1,6 +1,9 @@
 package com.example.PetLog.User;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 public interface UserService {
 
@@ -28,4 +31,7 @@ public interface UserService {
 
     boolean idCheck(String userLoginId);
 
+    boolean changePassword(Long userId, String currentPw, String newPw, String newPwConfirm);
+
+    String findLoginIdByInfo(@NotBlank(message = "이름을 입력해주세요.") String name, @NotBlank(message = "이메일 아이디를 입력해주세요.") String email, @NotBlank(message = "전화번호를 입력해주세요.") @Pattern(regexp = "^010\\d{8}$", message = "전화번호는 010으로 시작하는 숫자 11자리여야 합니다.") String phone);
 }

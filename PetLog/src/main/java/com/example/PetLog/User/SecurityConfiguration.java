@@ -86,11 +86,11 @@ public class SecurityConfiguration {
                             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
                             UserEntity loginUser = userDetails.getUser();
 
-                            request.getSession().setAttribute("user_id", loginUser.getUserId());
-                            request.getSession().setAttribute("user_login_id", loginUser.getUserLoginId());
-                            request.getSession().setAttribute("user_role", loginUser.getUserRole());
+                            request.getSession().setAttribute("userId", loginUser.getUserId());
+                            request.getSession().setAttribute("userLoginId", loginUser.getUserLoginId());
+                            request.getSession().setAttribute("userRole", loginUser.getUserRole());
                             request.getSession().setAttribute("name", loginUser.getName());
-                            request.getSession().setAttribute("grape_count", loginUser.getGrapeCount());
+                            request.getSession().setAttribute("grapeCount", loginUser.getGrapeCount());
                             request.getSession().setAttribute("rank", loginUser.getRank());
                             request.getSession().setAttribute("loginUser", loginUser);
 

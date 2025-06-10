@@ -14,12 +14,12 @@ import jakarta.validation.constraints.Size;
 @NoArgsConstructor
 @Data
 public class UserDTO {
-    Long user_id;
+    Long userId;
 
     @NotBlank(message = "아이디는 필수 입력 값입니다.")
     @Size(min = 4, max = 20, message = "아이디는 4자 이상 20자 이하로 입력하세요.")
     @Pattern(regexp = "[a-zA-Z0-o_]+$", message = "아이디는 영문, 숫자, _만 사용 가능합니다.")
-    String user_login_id;
+    String userLoginId;
 
     @NotBlank(message = "비밀번호를 입력해주세요.")
     @Pattern(
@@ -45,8 +45,8 @@ public class UserDTO {
     MultipartFile profileimg; //실제 저장되는 파일명 or 카카오 URL
     String profileimgName;
     String rank;
-    String user_role;
-    int grape_count;
+    String userRole;
+    int grapeCount;
 
     public UserEntity toEntity() {
         String filename = (profileimg != null && !profileimg.isEmpty())
@@ -54,8 +54,8 @@ public class UserDTO {
                 : "default.png";
 
         return UserEntity.builder()
-                .userId(user_id)
-                .userLoginId(user_login_id)
+                .userId(userId)
+                .userLoginId(userLoginId)
                 .password(password)
                 .name(name)
                 .phone(phone)

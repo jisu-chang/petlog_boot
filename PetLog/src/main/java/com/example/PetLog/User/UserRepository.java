@@ -25,5 +25,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM user1 WHERE user_login_id = :userLoginId", nativeQuery = true)
     int existsByUserLoginIdNative(@Param("userLoginId") String userLoginId);
 
-
+    Optional<UserEntity> findByNameAndEmailAndPhone(String name, String email, String phone);
 }
