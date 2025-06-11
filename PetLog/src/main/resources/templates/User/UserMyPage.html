@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<div th:replace="~{top::menu}"></div>
-
 <head>
   <style>
     body {
@@ -129,25 +127,25 @@
       <!-- 프로필 이미지 + 프레임 -->
       <div class="profile-frame-container">
         <!-- 프로필 이미지 경로 수정 -->
-        <img th:src="@{/images/{fileName}(fileName=${list.profileimg != null ? list.profileimg : 'default.png'})}" alt="Profile Image" />
+        <img th:src="@{/images/{fileName}(fileName=${list.profileimg != null ? list.profileimg : 'default.png'})}" alt="Profile Image" class="profile-img" />
       </div>
 
-    <!-- 회원 정보 -->
-    <p><strong>아이디:</strong> <span th:text= "${list.userLoginId}"></span></p>
-    <p><strong>이름:</strong> <span th:text= "${list.name}"></span></p>
-    <p><strong>전화번호:</strong> <span th:text= "${list.phone}"></span></p>
-    <p><strong>포도알:</strong> <span th:text= "'🍇'+${list.grapeCount}+'개'"></span></p>
-    <p><strong>퀴즈 등급:</strong> <span th:text="${list.rank}"></span></p>
-  </div>
+      <!-- 회원 정보 -->
+      <p><strong>아이디:</strong> <span th:text="${list.userLoginId}"></span></p>
+      <p><strong>이름:</strong> <span th:text="${list.name}"></span></p>
+      <p><strong>전화번호:</strong> <span th:text="${list.phone}"></span></p>
+      <p><strong>포도알:</strong> <span th:text="'🍇'+${list.grapeCount}+'개'"></span></p>
+      <p><strong>퀴즈 등급:</strong> <span th:text="${list.rank}"></span></p>
+    </div>
 
-  <!-- 버튼 그룹 -->
-  <div class="btn-group">
-    <a th:href="@{/UserPwChange}">비밀번호 변경</a>
-    <a th:href="@{/UserUpdate}">회원정보 수정</a>
-    <a th:href="@{/PetOut}">펫 정보</a>
-    <a th:href="@{/UserDelete}">회원탈퇴</a>
+    <!-- 버튼 그룹 -->
+    <div class="btn-group">
+      <a th:href="@{/UserPwChange}">비밀번호 변경</a>
+      <a th:href="@{/UserUpdate}">회원정보 수정</a>
+      <a th:href="@{/PetOut}">펫 정보</a>
+      <a th:href="@{/UserDelete}">회원탈퇴</a>
+    </div>
   </div>
-</div>
 </div>
 
 <script th:inline="javascript">
@@ -160,6 +158,4 @@
   }
 </script>
 </body>
-
 </html>
-

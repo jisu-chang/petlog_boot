@@ -79,16 +79,25 @@ public class UserServiceImp implements UserService{
 
     @Override
     public UserDTO getUserDTOById(Long userId) {
-        // DB에서 userId에 해당하는 UserEntity를 조회
+        // DB에서 UserEntity를 가져온다.
         Optional<UserEntity> userEntityOptional = userRepository.findById(userId);
 
-        // 유저가 존재하는 경우, UserEntity를 UserDTO로 변환하여 반환
         if (userEntityOptional.isPresent()) {
             UserEntity userEntity = userEntityOptional.get();
-            return convertToDTO(userEntity);  // UserEntity를 UserDTO로 변환하는 메서드 호출
-        } else {
-            return null;  // 유저가 없으면 null 반환
+
+            // UserEntity를 UserDTO로 변환하는 로직
+            UserDTO userDTO = new UserDTO();
+            userDTO.setUserId(userEntity.getUserId());
+            userDTO.setUserLoginId(userEntity.getUserLoginId());
+            userDTO.setName(userEntity.getName());
+            userDTO.setPhone(userEntity.getPhone());
+            userDTO.setEmail(userEntity.getEmail());
+            userDTO.setProfileimgName(userEntity.getProfileimg());  // 여기서 이미지 값을 제대로 전달
+
+            // 나머지 필드 설정
+            return userDTO;
         }
+        return null;  // 유저가 없다면 null 반환
     }
 
     private UserDTO convertToDTO(UserEntity userEntity) {
@@ -130,7 +139,6 @@ public class UserServiceImp implements UserService{
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
     }
-
 
     @Override
     public boolean processPasswordReset(String name, String userLoginId, String email, String phone) {

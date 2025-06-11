@@ -8,7 +8,7 @@
 <div class="container">
   <form th:action="@{/UserUpdateSave}" method="post" th:object="${userDTO}" enctype="multipart/form-data" id="userUpdateForm">
     <input type="hidden" name="userId" th:value="${userDTO.userId}" th:field="*{userId}" />
-    <input type="hidden" name="dfname" th:value="${userDTO.profileimg != null ? userDTO.profileimg : 'default.png'}">
+    <input type="hidden" name="dfname" th:value="${userDTO.profileimgName != null ? userDTO.profileimgName : 'default.png'}">
     <input type="hidden" name="phoneCheckStatus" id="phoneCheckStatus" value="false" />
 
     <div class="form-group">
@@ -39,7 +39,7 @@
     <div class="form-group">
       <label for="profileimg">프로필 이미지</label>
       <!-- 프로필 이미지 출력 -->
-      <img th:src="@{${userDTO.profileimg != null ? '/images/' + userDTO.profileimg : '/images/default.png'}}" alt="Profile Image" />
+      <img th:src="@{${userDTO.profileimgName != null ? '/images/' + userDTO.profileimgName : '/images/default.png'}}" alt="Profile Image" />
       <!-- 프로필 이미지 파일 업로드 -->
       <input type="file" class="form-control" id="profileimg" name="profileimg" />
       <p th:if="${#fields.hasErrors('profileimg')}" th:errors="*{profileimg}"></p>
