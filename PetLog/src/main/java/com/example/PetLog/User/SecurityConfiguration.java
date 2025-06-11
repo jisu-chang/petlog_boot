@@ -1,9 +1,7 @@
 package com.example.PetLog.User;
 
 import com.example.PetLog.Diary.DiaryEntity;
-
 import com.example.PetLog.Diary.DiaryRepository;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -38,6 +36,7 @@ import java.io.IOException;
 @AllArgsConstructor
 @Slf4j
 public class SecurityConfiguration {
+
     @Autowired
     private OAuth2SuccessHandler oAuth2SuccessHandler;
     private final UserDetailsService userDetailsService;
@@ -86,22 +85,26 @@ public class SecurityConfiguration {
                             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
                             UserEntity loginUser = userDetails.getUser();
 
-                            request.getSession().setAttribute("userId", loginUser.getUserId());
+                            // 세션에 사용자 정보 저장
+                            request.getSession().setAttribute("userId", loginUser.getUserId());  // user_id로 세션에 저장
                             request.getSession().setAttribute("userLoginId", loginUser.getUserLoginId());
                             request.getSession().setAttribute("userRole", loginUser.getUserRole());
                             request.getSession().setAttribute("name", loginUser.getName());
                             request.getSession().setAttribute("grapeCount", loginUser.getGrapeCount());
                             request.getSession().setAttribute("rank", loginUser.getRank());
+                            request.getSession().setAttribute("profileimg", loginUser.getProfileimg());
                             request.getSession().setAttribute("loginUser", loginUser);
 
+                            // 소셜 로그인 처리 (카카오 등)
                             Boolean socialSignup = (Boolean) request.getSession().getAttribute("social_signup");
                             if (socialSignup != null && socialSignup) {
                                 request.getSession().removeAttribute("social_signup");
                                 response.sendRedirect("/signUpKakao"); // 카카오 전용 회원가입 창
                                 return;
                             }
-                            response.sendRedirect("/");
+                            response.sendRedirect("/");  // 기본 페이지로 리디렉션
                         })
+
                         .failureUrl("/login?error=true")
                         .permitAll()
                 )

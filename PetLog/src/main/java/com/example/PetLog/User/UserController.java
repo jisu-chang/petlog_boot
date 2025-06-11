@@ -10,35 +10,30 @@ import com.example.PetLog.Likes.LikesEntity;
 import com.example.PetLog.Likes.LikesService;
 import com.example.PetLog.Snack.SnackEntity;
 import com.example.PetLog.Snack.SnackService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-
 import java.io.File;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
 @Controller
-public class UserContoller {
+public class UserController {
 
     @Autowired
     UserService userService;
@@ -65,10 +60,41 @@ public class UserContoller {
 
     //로그인 처리
     @PostMapping("/login")
-    public String login(@RequestParam("userId") Long userId, HttpSession session) {
-        // 로그인 성공 시 세션에 user_id 저장
-        session.setAttribute("userId", userId);
-        return "redirect:/"; // 로그인 후 홈 페이지로 리디렉션
+    public String login(@RequestParam("userLoginId") String userLoginId,
+                        @RequestParam("password") String password,
+                        HttpSession session,
+                        Model model) {
+
+        // 서비스에서 아이디와 비밀번호로 사용자 조회 및 인증 처리
+        UserEntity user = userService.login(userLoginId, password);
+
+        if (user != null) {
+            // 로그인 성공 시 세션에 userId 저장
+            session.setAttribute("userId", user.getUserId());
+            session.setAttribute("userLoginId", user.getUserLoginId());
+            session.setAttribute("userRole", user.getUserRole());
+            session.setAttribute("userId", user.getUserId());
+            session.setAttribute("userLoginId", user.getUserLoginId());
+            session.setAttribute("userRole", user.getUserRole());
+            session.setAttribute("name", user.getName());
+            session.setAttribute("grapeCount", user.getGrapeCount());
+            session.setAttribute("rank", user.getRank());
+            session.setAttribute("profileimg", user.getProfileimg());
+            // 추가 세션 정보 필요하면 넣기
+
+            return "redirect:/";  // 홈 페이지로 이동
+        } else {
+            // 로그인 실패 시 에러 메시지 모델에 담아 로그인 페이지로 이동
+            model.addAttribute("loginError", "아이디 또는 비밀번호가 올바르지 않습니다.");
+            return "User/UserLogin";
+        }
+    }
+
+    @RequestMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        // 세션을 무효화
+        request.getSession().invalidate();
+        return "redirect:/login";  // 로그인 페이지로 리다이렉트
     }
 
     //회원가입
@@ -250,20 +276,22 @@ public class UserContoller {
     //마이페이지
     @GetMapping("/MyPage")
     public String MyPage(Model mo, HttpSession session) {
-        // 세션에서 로그인한 사용자 ID 가져오기
         Long userId = (Long) session.getAttribute("userId");
+        String profileimg = (String) session.getAttribute("profileimg");
 
         // 로그인되지 않은 경우 로그인 페이지로 리디렉트
         if (userId == null) {
+            System.out.println("세션에 userId가 없습니다. 로그인 페이지로 리디렉션됩니다.");
             return "redirect:/login";
         }
 
         Optional<UserEntity> user = userRepository.findById(userId);
         if (user.isPresent()) {
             mo.addAttribute("user", user.get());
-        } else {
+        }else {
+            mo.addAttribute("error", "유저 정보를 찾을 수 없습니다.");
+            return "User/UserError";  // 유저 정보가 없다면 에러 페이지로 이동
         }
-
         //프로필 이미지 변경 후 바로 로드되게 하기 위해 추가
         long timestamp = System.currentTimeMillis();
         mo.addAttribute("timestamp", timestamp);
@@ -277,58 +305,54 @@ public class UserContoller {
 
     //회원정보 수정
     @GetMapping("/UserUpdate")
-    public String userUpdate(HttpSession session, Model model) {
-        Long userId = (Long) session.getAttribute("userId");
-
+    public String userUpdate(HttpSession session, Model mo) {
+        // 세션에서 userId 가져오기
+        Long userId = (Long) session.getAttribute("userId");  // 세션에서 "userId"로 값 가져오기
         if (userId == null) {
-            // 세션에 userId가 없으면 에러를 발생시킴
-            return "redirect:/login";  // 로그인 페이지로 리다이렉트
+            mo.addAttribute("error", "로그인이 필요합니다.");
+            return "User/UserLogin";  // 로그인 페이지로 리디렉션
         }
 
-        // UserUpdateDTO 생성 (또는 서비스에서 가져오기)
-        UserUpdateDTO userUpdateDTO = userService.updateById(userId);
+        // userId를 사용해 사용자 정보 가져오기
+        UserEntity userEntity = userService.updateById(userId);  // userId로 사용자 정보 조회
 
-        // 모델에 전달
-        model.addAttribute("dto", userUpdateDTO);  // 모델에 dto를 추가
-        return "User/UserUpdate";  // UserUpdate.html을 반환
-    }
+        // UserDTO를 직접 생성하여 모델에 추가
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUserId(userEntity.getUserId());
+        userDTO.setUserLoginId(userEntity.getUserLoginId());
+        userDTO.setName(userEntity.getName());
+        userDTO.setPhone(userEntity.getPhone());
+        userDTO.setEmail(userEntity.getEmail());
+        userDTO.setProfileimgName(userEntity.getProfileimg());
 
-    private UserDTO entityToDto(UserEntity entity) {
-        UserDTO dto = new UserDTO();
-        dto.setUserId(entity.getUserId());
-        dto.setUserLoginId(entity.getUserLoginId());
-        dto.setPassword(entity.getPassword());
-        dto.setName(entity.getName());
-        dto.setPhone(entity.getPhone());
-        dto.setEmail(entity.getEmail());
-        dto.setProfileimgName(entity.getProfileimg());
-        dto.setRank(entity.getRank());
-        dto.setUserRole(entity.getUserRole());
-        dto.setGrapeCount(entity.getGrapeCount());
-        return dto;
+        mo.addAttribute("userDTO", userDTO);
+        return "User/UserUpdate"; // 회원 정보 수정 페이지로 리디렉션
     }
 
     //회원정보 수정 처리
     @PostMapping("/UserUpdateSave")
-    public String userUpdateSave(@Valid @ModelAttribute UserUpdateDTO updateDTO, BindingResult bindingResult,
-                                 @RequestParam("profileimg") MultipartFile mf, @RequestParam("dfname") String dfname,
-                                 HttpSession session, Model mo) throws IOException {
-
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            mo.addAttribute("error", "로그인이 필요합니다.");
-            return "User/UserLogin";
-        }
-
-        // 유효성 검사
+    public String userUpdateSave(@Valid @ModelAttribute UserUpdateDTO dto, BindingResult bindingResult,
+                                 @RequestParam("profileimg") MultipartFile mf,
+                                 @RequestParam("dfname") String dfname,
+                                 HttpSession session, Model model) throws IOException {
         if (bindingResult.hasErrors()) {
-            return "User/UserUpdate"; // 유효성 에러 시 다시 폼으로
+            System.out.println("⚠ 유효성 검사 실패:");
+            bindingResult.getAllErrors().forEach(error -> {
+                System.out.println(" - " + error.getDefaultMessage());
+            });
+            return "User/UserUpdate";
         }
 
         // 기존 유저 정보 가져오기
+        Long userId = (Long) session.getAttribute("userId");
         UserEntity userEntity = userService.findById(userId);
 
-        // 기존 비밀번호는 그대로 유지 (암호화된 비밀번호 유지)
+        if (userEntity == null) {
+            model.addAttribute("error", "사용자를 찾을 수 없습니다.");
+            return "User/UserError";
+        }
+
+        // 기존 비밀번호 유지
         String encryptedPassword = userEntity.getPassword();
 
         // 프로필 이미지 처리
@@ -337,30 +361,48 @@ public class UserContoller {
             String originalFilename = mf.getOriginalFilename();
             String extension = originalFilename != null ? originalFilename.substring(originalFilename.lastIndexOf(".")) : "";
             profileImageName = UUID.randomUUID().toString() + extension;
-            mf.transferTo(new File(path + "\\" + profileImageName));
+
+            // 파일 저장
+            String uploadPath = new File("src/main/resources/static/image").getAbsolutePath();
+            String filePath = uploadPath + File.separator + profileImageName;
+            mf.transferTo(new File(filePath));
 
             // 기존 이미지 삭제
             if (!dfname.equals("default.png")) {
-                File oldFile = new File(path + "\\" + dfname);
+                File oldFile = new File("src/main/resources/static/image/" + dfname);
                 if (oldFile.exists()) oldFile.delete();
             }
         }
 
-        // 업데이트된 UserDTO 객체 생성 (기존 데이터 유지)
-        UserDTO userDTO = new UserDTO();
-        userDTO.setUserId(userId);
-        userDTO.setEmail(updateDTO.getEmail());
-        userDTO.setName(updateDTO.getName());
-        userDTO.setPhone(updateDTO.getPhone());
-        userDTO.setProfileimgName(profileImageName);
-        userDTO.setPassword(encryptedPassword); // 암호화된 기존 비밀번호 유지
+        // UserEntity 업데이트
+        userEntity.setName(dto.getName());
+        userEntity.setPhone(dto.getPhone());
+        userEntity.setEmail(dto.getEmail());
+        userEntity.setProfileimg(profileImageName);
+        userEntity.setPassword(encryptedPassword);
+        try {
+            userService.updateUser(userEntity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        // 업데이트된 정보 저장
-        userService.updateUser(userDTO.toEntity());
+        // 세션 정보 업데이트
+        session.setAttribute("userId", userEntity.getUserId());
+        session.setAttribute("userLoginId", userEntity.getUserLoginId());
+        session.setAttribute("userRole", userEntity.getUserRole());
+        session.setAttribute("name", userEntity.getName());
+        session.setAttribute("grapeCount", userEntity.getGrapeCount());
+        session.setAttribute("rank", userEntity.getRank());
 
+//        // 세션에서 가져온 profileimg 값 타입 체크
+//        Object profileImgObj = session.getAttribute("profileimg");
+//        if (profileImgObj instanceof String) {
+//            System.out.println("▶ 세션에서 가져온 profileimg 값: " + profileImgObj);
+//        } else {
+//            System.out.println("⚠ profileimg 값이 예상과 다름! 타입: " + profileImgObj.getClass().getName());
+//        }
         return "redirect:/MyPage";
     }
-
 
     //회원탈퇴- 활동이력 보이기
     @GetMapping("/UserDelete")

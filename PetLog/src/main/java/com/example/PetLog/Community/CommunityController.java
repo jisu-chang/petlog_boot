@@ -32,7 +32,7 @@ public class CommunityController {
     @PostMapping(value = "/CommunityInSave")
     public String cominsave(CommunityDTO communityDTO, HttpSession session) throws IOException {
         //로그인 한 유저 정보가져옴
-        Long userId = (Long) session.getAttribute("user_id");
+        Long userId = (Long) session.getAttribute("userId");
 
         communityDTO.setUser_id(userId);
         communityDTO.setPost_date(LocalDate.now()); //오늘날짜
@@ -67,7 +67,7 @@ public class CommunityController {
     @GetMapping(value = "/CommunityDetail")
     public String comdetail(@RequestParam("num") Long num, Model mo, HttpSession session){
         // 세션에서 로그인한 사용자 정보 가져오기 (예: user_id, user_role)
-        Long userId = (Long) session.getAttribute("user_id");
+        Long userId = (Long) session.getAttribute("userId");
         String userLoginId = (String) session.getAttribute("user_login_id");
         String userRole = (String) session.getAttribute("user_role");
 
@@ -91,7 +91,7 @@ public class CommunityController {
     @PostMapping(value = "/CommunityUpdateSave")
     public String comupdatesave(@RequestParam("dfname") String dfname, @RequestParam("post_readcnt") int readcnt, CommunityDTO communityDTO, HttpSession session) throws IOException {
         //로그인 한 유저 정보가져옴
-        Long userId = (Long) session.getAttribute("user_id");
+        Long userId = (Long) session.getAttribute("userId");
         communityDTO.setUser_id(userId);
         communityDTO.setPost_readcnt(readcnt);
 

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<div th:replace="~{top::menu}"></div>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오류</title>
+</head>
+<body>
+<h1>에러</h1>
+<p th:text="${error}"></p>
+<a href="/login">로그인 페이지로 돌아가기</a>
+</body>
+</html>

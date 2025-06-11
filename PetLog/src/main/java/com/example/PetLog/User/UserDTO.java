@@ -1,14 +1,12 @@
 package com.example.PetLog.User;
 
 import jakarta.persistence.Transient;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,7 +26,7 @@ public class UserDTO {
     )
     String password;
 
-    @Transient //DB저장 없이 화면에서만 받음, @Transient는 JPA가 DB 컬럼으로 만들지 않게 함
+    @Transient // DB저장 없이 화면에서만 받음
     @NotBlank(message = "비밀번호를 한번 더 입력해주세요.")
     String passwordCheck;
 
@@ -40,18 +38,46 @@ public class UserDTO {
     String phone;
 
     @NotBlank(message = "이메일을 입력해주세요.")
+    @Email(message = "이메일 형식이 올바르지 않습니다.")
     String email;
+    String emailId;
 
-    MultipartFile profileimg; //실제 저장되는 파일명 or 카카오 URL
+    @NotBlank(message = "이메일 도메인을 선택 또는 입력해주세요.")
+    String emailDomain;
+
+    @Email(message = "도메인 형식이 올바르지 않습니다.")
+    String emailDomainCustom;
+
+    MultipartFile profileimg;
     String profileimgName;
+
     String rank;
     String userRole;
     int grapeCount;
 
+    public String getProfileimgName() {
+        return (profileimgName != null) ? profileimgName : "default.png";  // null일 경우 default.png
+    }
+
+    // 이메일을 아이디와 도메인으로 분리 - 회원정보 수정 시 보여주는 용도
+    public void splitEmail() {
+        if (this.email != null && this.email.contains("@")) {
+            String[] parts = this.email.split("@");
+            this.emailId = parts[0];  // 이메일 아이디 추출
+            String domainPart = parts[1];
+            this.emailDomain = domainPart; // 도메인 부분 추출
+        }
+    }
+
+    public String getFullEmail() {
+        if ("direct".equals(emailDomain)) {
+            return emailId + "@" + emailDomainCustom;
+        }
+        return emailId + "@" + emailDomain;
+    }
+
     public UserEntity toEntity() {
-        String filename = (profileimg != null && !profileimg.isEmpty())
-                ? profileimg.getOriginalFilename()
-                : "default.png";
+        String emailAddress = getFullEmail(); // 이메일 합치기
 
         return UserEntity.builder()
                 .userId(userId)
@@ -59,10 +85,10 @@ public class UserDTO {
                 .password(password)
                 .name(name)
                 .phone(phone)
-                .email(email)
-                .profileimg(profileimgName) // 여기서 직접 url, 파일명 추출
-                .rank("일반회원")  //null 혹은 "일반, 우수"
-                .userRole("USER") //일반회원 고정
+                .email(emailAddress)  // 이메일을 설정
+                .profileimg(profileimgName)
+                .rank("일반회원")
+                .userRole("USER")
                 .grapeCount(0)
                 .build();
     }
