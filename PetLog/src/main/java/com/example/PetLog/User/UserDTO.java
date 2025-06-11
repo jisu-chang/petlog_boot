@@ -8,6 +8,10 @@ import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 import jakarta.validation.constraints.NotBlank;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -56,7 +60,7 @@ public class UserDTO {
     int grapeCount;
 
     public String getProfileimgName() {
-        return (profileimgName != null) ? profileimgName : "default.png";  // null일 경우 default.png
+        return (profileimgName != null && !profileimgName.isEmpty()) ? profileimgName : "default.png";
     }
 
     // 이메일을 아이디와 도메인으로 분리 - 회원정보 수정 시 보여주는 용도

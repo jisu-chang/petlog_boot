@@ -77,6 +77,40 @@ public class UserServiceImp implements UserService{
         }
     }
 
+    @Override
+    public UserDTO getUserDTOById(Long userId) {
+        // DB에서 userId에 해당하는 UserEntity를 조회
+        Optional<UserEntity> userEntityOptional = userRepository.findById(userId);
+
+        // 유저가 존재하는 경우, UserEntity를 UserDTO로 변환하여 반환
+        if (userEntityOptional.isPresent()) {
+            UserEntity userEntity = userEntityOptional.get();
+            return convertToDTO(userEntity);  // UserEntity를 UserDTO로 변환하는 메서드 호출
+        } else {
+            return null;  // 유저가 없으면 null 반환
+        }
+    }
+
+    private UserDTO convertToDTO(UserEntity userEntity) {
+        UserDTO userDTO = new UserDTO();
+
+        userDTO.setUserId(userEntity.getUserId());
+        userDTO.setUserLoginId(userEntity.getUserLoginId());
+        userDTO.setName(userEntity.getName());
+        userDTO.setPhone(userEntity.getPhone());
+        userDTO.setEmail(userEntity.getEmail());
+
+        // 프로필 이미지 처리 (DB에 저장된 이미지 경로)
+        userDTO.setProfileimgName(userEntity.getProfileimg());  // 저장된 파일명 또는 경로를 DTO에 설정
+
+        userDTO.setRank(userEntity.getRank());
+        userDTO.setUserRole(userEntity.getUserRole());
+        userDTO.setGrapeCount(userEntity.getGrapeCount());
+
+        // 필요한 다른 필드도 추가
+
+        return userDTO;
+    }
 
     @Override
     public Long findUserIdByLoginId(String loginId) {

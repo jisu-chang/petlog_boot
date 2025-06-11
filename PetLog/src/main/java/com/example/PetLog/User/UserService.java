@@ -31,4 +31,6 @@ public interface UserService {
     UserEntity login(String userLoginId, String password);
 
     UserEntity updateById(Long userId);
+
+    UserDTO getUserDTOById(Long userId);
 }

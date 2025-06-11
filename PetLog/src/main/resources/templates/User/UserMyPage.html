@@ -121,17 +121,16 @@
 <body>
 <div class="container">
   <h1>🐾 마이페이지</h1>
+
   <div class="profile-frame-container">
     <h3><span class="nickname" th:text="${list.name}"></span>님의 회원정보</h3>
 
-  <div class="info-card">
-    <!-- 프로필 이미지 + 프레임 -->
-    <div class="profile-frame-container">
-      <img class="profile-img with-border"
-           th:src="${user != null and user.profileimg != null ? (#strings.contains(user.profileimg, 'http') ? user.profileimg : '/image/' + user.profileimg) : '/image/default.png'}"
-           alt="프로필 이미지" />
-      <img class="frame-img" src="/image/frame.png" />
-    </div>
+    <div class="info-card">
+      <!-- 프로필 이미지 + 프레임 -->
+      <div class="profile-frame-container">
+        <!-- 프로필 이미지 경로 수정 -->
+        <img th:src="@{/images/{fileName}(fileName=${list.profileimg != null ? list.profileimg : 'default.png'})}" alt="Profile Image" />
+      </div>
 
     <!-- 회원 정보 -->
     <p><strong>아이디:</strong> <span th:text= "${list.userLoginId}"></span></p>

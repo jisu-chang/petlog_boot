@@ -9,13 +9,12 @@
   <form th:action="@{/UserUpdateSave}" method="post" th:object="${userDTO}" enctype="multipart/form-data" id="userUpdateForm">
     <input type="hidden" name="userId" th:value="${userDTO.userId}" th:field="*{userId}" />
     <input type="hidden" name="dfname" th:value="${userDTO.profileimg != null ? userDTO.profileimg : 'default.png'}">
-<!--    <input type="hidden" id="fullEmail"  th:field="*{email}" />-->
     <input type="hidden" name="phoneCheckStatus" id="phoneCheckStatus" value="false" />
 
     <div class="form-group">
       <label for="userLoginId">아이디</label>
       <input type="text" class="form-control" id="userLoginId" name="userLoginId" th:value="${userDTO.userLoginId}" readonly />
-      '<p th:if="${#fields.hasErrors('userLoginId')}" th:errors="*{userLoginId}"></p>
+      <p th:if="${#fields.hasErrors('userLoginId')}" th:errors="*{userLoginId}"></p>
     </div>
 
     <div class="form-group">
@@ -39,34 +38,33 @@
 
     <div class="form-group">
       <label for="profileimg">프로필 이미지</label>
-        <img th:src="@{'/images/' + ${profileimg}}" alt="Profile Image"/>
-        <input type="file" class="form-control" id="profileimg" name="profileimg" th:value="${userDTO.profileimg}" />
-        <p th:if="${#fields.hasErrors('profileimg')}" th:errors="*{profileimg}"></p>
+      <!-- 프로필 이미지 출력 -->
+      <img th:src="@{${userDTO.profileimg != null ? '/images/' + userDTO.profileimg : '/images/default.png'}}" alt="Profile Image" />
+      <!-- 프로필 이미지 파일 업로드 -->
+      <input type="file" class="form-control" id="profileimg" name="profileimg" />
+      <p th:if="${#fields.hasErrors('profileimg')}" th:errors="*{profileimg}"></p>
     </div>
-
 
     <button type="submit" class="btn btn-primary">수정</button>
     <button type="reset" class="btn btn-primary" onclick="location.href='/'">취소</button>
   </form>
 </div>
 
-<!-- 도메인 선택 시 직접 입력 필드 보이기/숨기기 -->
+<!-- 이메일 합치기 -->
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const domainSelect = document.getElementById("emailDomain");
-    const customInput = document.getElementById("emailCustom");
+  document.getElementById("userUpdateForm").addEventListener("submit", function (e) {
+    const id = document.getElementById("email").value; // 이메일 아이디
+    const domain = document.getElementById("emailDomain").value === "direct"
+        ? document.getElementById("emailCustom").value
+        : document.getElementById("emailDomain").value;
 
-    if (domainSelect && customInput) {
-      domainSelect.addEventListener("change", function () {
-        if (this.value === "direct") {
-          customInput.style.display = "inline-block";
-          customInput.required = true;
-        } else {
-          customInput.style.display = "none";
-          customInput.required = false;
-        }
-      });
+    if (domain === "direct" && document.getElementById("emailCustom").value.trim() === "") {
+        alert("이메일 도메인을 입력해 주세요.");
+        e.preventDefault();
+        return false;
     }
+
+    document.getElementById("fullEmail").value = id + "@" + domain;
   });
 </script>
 
@@ -89,24 +87,6 @@
       input.value = value.slice(0, 3) + "-" + value.slice(3, 7) + "-" + value.slice(7, 11);
     }
   }
-</script>
-
-<!--서버 전송시 이메일 합쳐서 보내기 -->
-<script>
-  document.getElementById("userUpdateForm").addEventListener("submit", function (e) {
-     const id = document.getElementById("emailId").value;
-     const domain = document.getElementById("emailDomain").value === "direct"
-         ? document.getElementById("emailCustom").value
-         : document.getElementById("emailDomain").value;
-
-     if (domain === "direct" && document.getElementById("emailCustom").value.trim() === "") {
-         alert("이메일 도메인을 입력해 주세요.");
-         e.preventDefault();
-         return false;
-     }
-
-     document.getElementById("fullEmail").value = id + "@" + domain;
- });
 </script>
 
 </body>

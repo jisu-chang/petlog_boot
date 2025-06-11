@@ -42,4 +42,7 @@ public class UserEntity {
     @Column(name = "grape_count")
     int grapeCount;
 
+    @Transient
+    String profileimgName;
+
 }

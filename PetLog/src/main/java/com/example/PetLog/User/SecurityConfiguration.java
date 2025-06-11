@@ -24,6 +24,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -92,6 +94,7 @@ public class SecurityConfiguration {
                             request.getSession().setAttribute("name", loginUser.getName());
                             request.getSession().setAttribute("grapeCount", loginUser.getGrapeCount());
                             request.getSession().setAttribute("rank", loginUser.getRank());
+                            request.getSession().setAttribute("profileimgName", loginUser.getProfileimgName());
                             request.getSession().setAttribute("profileimg", loginUser.getProfileimg());
                             request.getSession().setAttribute("loginUser", loginUser);
 
@@ -124,5 +127,14 @@ public class SecurityConfiguration {
                 );
 
         return http.build();
+    }
+
+    @Configuration
+    public class WebConfig implements WebMvcConfigurer {
+        @Override
+        public void addResourceHandlers(ResourceHandlerRegistry registry) {
+            registry.addResourceHandler("/images/**")
+                    .addResourceLocations("file:///C:/upload/image/"); // 실제 이미지 파일 경로
+        }
     }
 }
