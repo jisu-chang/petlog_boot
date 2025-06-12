@@ -32,4 +32,15 @@ public class ItemServiceImp implements ItemService {
         }).toList();
     }
 
+    @Override
+    public ItemEntity up(Long itemId) {
+        return itemRepository.findById(itemId)
+                .orElseThrow(()->new RuntimeException("아이템을 찾을 수 없습니다: " + itemId));
+    }
+
+    @Override
+    public void update(ItemEntity entity) {
+        itemRepository.save(entity);
+    }
+
 }

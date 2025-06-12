@@ -147,7 +147,7 @@
                 <td th:text="${it.itemCost}"></td>
                 <td th:text="${it.itemCategory}"></td>
                 <td><img th:src="@{'/image/' + ${it.itemImageName}}" alt="아이템 이미지"></td>
-                <td><a th:href="@{'/Item/ItemUpdate?modify=' + ${it.itemId} + '&dfimage=' + ${it.itemImage}}">✏️</a></td>
+                <td><a th:href="@{/Item/ItemUpdate(itemId=${it.itemId}, dfimage=${it.itemImageName})}">✏️</a></td>
                 <td>
                     <form th:action="@{'/Item/ItemDelete'}" method="post" style="display:inline;">
                         <input type="hidden" name="delete" th:value="${it.itemId}">

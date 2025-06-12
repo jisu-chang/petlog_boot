@@ -1,10 +1,13 @@
 package com.example.PetLog.Item;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -57,16 +60,45 @@ public class ItemController {
     }
 
     @GetMapping(value = "/Item/ItemUpdate")
-    public String up(Model mo, Principal principal) {
+    public String up(@RequestParam("itemId") Long itemId, Model mo, Principal principal) {
 
+        ItemEntity itemEntity = itemService.up(itemId);
 
+        if (itemEntity == null) {
+            // 아이템이 없을 경우 오류 페이지나 리다이렉트 처리
+            return "error/itemNotFound";
+        }
 
+        ItemDTO dto = new ItemDTO();
+        dto.setItemId(itemEntity.getItemId());
+        dto.setItemName(itemEntity.getItemName());
+        dto.setItemCost(itemEntity.getItemCost());
+        dto.setItemCategory(itemEntity.getItemCategory());
+        dto.setItemImageName(itemEntity.getItemImage());
+        dto.setItemStatus(itemEntity.getItemStatus());
+
+        mo.addAttribute("dto",dto);
         return "Item/ItemUpdate";
 
     }
 
     @PostMapping(value = "/ItemUpdateSave")
-    public String updave() {
+    public String upsave(@ModelAttribute ItemDTO dto, @RequestParam("himage") String himage, HttpSession hs, Principal pri) throws IOException {
+
+        MultipartFile mf = dto.getItemImage();
+        File dir = new File(path);
+        if (!dir.exists()) dir.mkdirs();
+
+        if (mf != null && !mf.isEmpty()) {
+            String filename = mf.getOriginalFilename();
+            mf.transferTo(new File(path + File.separator + filename));
+            dto.setItemImageName(filename);
+        } else {
+            dto.setItemImageName(himage);
+        }
+
+        ItemEntity entity = dto.entity();
+        itemService.update(entity);
 
         return "redirect:/Item/ItemOut";
     }

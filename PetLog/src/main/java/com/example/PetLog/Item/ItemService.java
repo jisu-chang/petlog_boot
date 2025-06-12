@@ -9,4 +9,8 @@ public interface ItemService {
     void save(ItemEntity itemEntity);
 
     List<ItemDTO> out();
+
+    ItemEntity up(Long itemId);
+
+    void update(ItemEntity entity);
 }
