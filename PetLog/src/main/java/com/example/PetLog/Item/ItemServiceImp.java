@@ -68,4 +68,18 @@ public class ItemServiceImp implements ItemService {
         itemRepository.save(itemEntity);
     }
 
+    @Override
+    public void changeStatusSell(Long itemId) {
+
+        // 아이템을 ID로 찾아서 상태 변경
+        ItemEntity item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new RuntimeException("아이템을 찾을 수 없습니다: " + itemId));
+
+        // 상태를 '판매중'으로 설정
+        item.setItemStatus("판매중");
+
+        // 상태 변경 후 저장
+        itemRepository.save(item);
+    }
+
 }

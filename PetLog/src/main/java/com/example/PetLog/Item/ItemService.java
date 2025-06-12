@@ -17,4 +17,6 @@ public interface ItemService {
     List<ItemDTO> itemStopped();
 
     void changeStatus(Long itemId);
+
+    void changeStatusSell(Long itemId);
 }

@@ -106,19 +106,25 @@ public class ItemController {
     }
 
     @PostMapping(value = "/Item/ItemStopped")
-    public String stop(Model mo) {
+    public String stop(Model mo) { //판매완료된 아이템 보여주는 페이지
 
-        List<ItemDTO> list = itemService.itemStopped(); // service에서 메서드 호출
+        List<ItemDTO> list = itemService.itemStopped();
         mo.addAttribute("list", list);
 
         return "Item/ItemStopped";
     }
 
     @PostMapping(value = "/Item/ItemDelete")
-    public String del(HttpSession hs,@RequestParam("delete")Long itemId) {//삭제
+    public String del(HttpSession hs,@RequestParam("delete")Long itemId) { //판매중->판매완료
 
         itemService.changeStatus(itemId);
 
+        return "redirect:/Item/ItemOut";
+    }
+
+    @PostMapping(value = "/itemRestore")
+    public String restore(@RequestParam("itemId") Long itemId, HttpSession session) { //판매완료->판매중
+        itemService.changeStatusSell(itemId);
         return "redirect:/Item/ItemOut";
     }
 }

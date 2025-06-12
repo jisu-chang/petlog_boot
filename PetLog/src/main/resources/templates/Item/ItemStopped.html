@@ -105,7 +105,7 @@
         <td th:text="${item.itemName}"></td>
         <td th:text="${item.itemCategory}"></td>
         <td>
-          <img th:src="@{'/image/' + ${item.itemImage}}" alt="아이템 이미지">
+          <img th:src="@{'/image/' + ${item.itemImageName}}" alt="아이템 이미지">
         </td>
         <td>
           <form th:action="@{/itemRestore}" method="post" style="display:inline;">
