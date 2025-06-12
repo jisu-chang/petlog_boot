@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 public class CommentsDTO {
     Long com_id;
-    int user_id;
-    int post_id;
+    Long user_id;
+    Long post_id;
     String com_com;
     int parent_id;
     int depth;
-    int snack_id;
+    Long snack_id;
 }

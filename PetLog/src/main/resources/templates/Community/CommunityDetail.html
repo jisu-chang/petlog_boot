@@ -1,176 +1,173 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:replace="~{top::menu}"></div>
-
-<style>
-    body {
-      background-color: #fff6f6;
-      margin: 0;
-      padding: 0;
-      font-family: 'Pretendard', sans-serif;
-      color: #333;
-    }
-
-    .table-wrapper {
-      background-color: white;
-      width: 100%;
-      max-width: 1000px;
-      margin: 40px auto 40px auto;
-      border-radius: 12px;
-      box-shadow: none;
-      padding: 30px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background-color: #fff;
-      margin-top: 10px;
-      box-shadow: none;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-
-    caption {
-      caption-side: top;
-      text-align: center;
-      font-size: 1.6em;
-      font-weight: normal;
-      color: #f48aa5;
-      margin-bottom: 20px;
-    }
-
-    th, td {
-      padding: 14px 12px;
-      font-size: 1em;
-      border-bottom: 1px solid #eee;
-      text-align: left;
-    }
-
-    table tr:last-child td {
-      border-bottom: none;
-    }
-
-    th {
-      width: 17%;
-      background-color: #fff0f4;
-      color: #555;
-      font-weight: bold;
-      text-align: center;
-    }
-
-      td img {
-      max-width: 70px;
-      height: auto;
-    }
-
-    .btn-group {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .btn-group input[type="button"] {
-      background-color: #ffe1e1;
-      color: #333;
-      border: none;
-      padding: 8px 20px;
-      border-radius: 10px;
-      font-weight: normal;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    .btn-group input[type="button"]:hover {
-      background-color: #ffd2d2;
-    }
-
-    .profile-img {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      object-fit: cover;
-      vertical-align: middle;
-      margin-right: 6px;
-    }
-
-    .reply-btn {
-      font-size: 14px;
-      padding: 2px 10px;
-      background-color: #f8c8dc;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      position: absolute;
-      top: 15px;
-      right: 10px;
-    }
-
-    .reply-btn:hover {
-      background-color: #f4aac9;
-    }
-
-    .comment-box {
-      margin-top: 5px;
-      background-color: #fff;
-      border-radius: 12px;
-      padding: 30px;
-      box-shadow: none;
-    }
-
-    .comment-form textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      resize: none;
-      font-size: 14px;
-    }
-
-    .comment-form button {
-      margin-top: 10px;
-      background-color: #ffe1e1;
-      color: #333;
-      border: none;
-      border-radius: 10px;
-      padding: 8px 16px;
-      cursor: pointer;
-    }
-
-      .comment-form {
-      text-align: right;
-    }
-
-    #contentDiv img {
-    max-width: 200px !important;
-    height: auto !important;
-    display: block !important;
-    margin: 10px auto !important;
-
-  }
-</style>
-<body>
 <head>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
 
+        /* 컨테이너 스타일 */
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 제목 스타일 */
+        h2 {
+            color: #f48aa5;
+            text-align: center;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        /* 프로필 이미지 */
+        .profile-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        /* 게시글 정보 테이블 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            font-size: 1.1em;
+        }
+
+        th {
+            width: 120px;
+            color: #888;
+        }
+
+        td {
+            color: #333;
+            word-wrap: break-word;
+        }
+
+        /* 버튼 스타일 */
+        input[type="button"], input[type="submit"] {
+            background-color: #f48aa5;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        input[type="button"]:hover, input[type="submit"]:hover {
+            background-color: #db7093;
+        }
+
+        /* 좋아요 및 조회수 */
+        .like-info {
+            font-size: 15px;
+            color: #8b8386;
+        }
+
+        .like-info span {
+            margin-right: 10px;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* 내용 스타일 */
+        .post-content {
+            white-space: pre-line;
+            width: 100%;
+            min-height: 300px;
+            padding: 15px;
+            background-color: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+
+        .post-content img {
+            width: 100%;
+            max-width: 500px;
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+
+        /* 삭제 확인 */
+        input[type="submit"] {
+            background-color: #e74c3c;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #c0392b;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .container {
+                width: 90%;
+            }
+
+            table {
+                font-size: 1em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            .btn-group {
+                flex-direction: column;
+                align-items: flex-end;
+            }
+
+            input[type="button"], input[type="submit"] {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+    </style>
 </head>
+<body>
 <div class="container">
     <form th:action="@{/CommunityDelete}" method="post">
         <table>
             <tbody>
-            <h2 style="color: #f48aa5; text-align: center;">
-                <img th:src="@{'/image/' + ${dto.user.profileimg}}" class="profile-img"/>
+            <h2>
+<!--            <img th:src="@{/images/{fileName}(fileName=${dto.user.profileimg != null ? dto.user.profileimg : 'default.png'})}" alt="Profile Image" class="profile-img" />-->
+                <!-- 프로필 이미지가 있는 경우 -->
+                <img th:if="${dto != null and dto.user != null and dto.user.profileimg != null}"  th:src="@{/images/{img}(img=${dto.user.profileimg})}" />
+                <!-- 프로필 이미지가 없는 경우 기본 이미지로 -->
+                <img th:if="${dto == null or dto.user == null or dto.user.profileimg == null}" th:src="@{/images/default.png}" />
                 <span th:text="${dto.user.userLoginId} + '님의 게시물'"></span>
             </h2>
-            <input type="hidden" name="dnum" th:value="${dto.postId}" />
+
             <tr>
                 <td colspan="2" style="text-align: right; padding: 5px 10px; border-bottom: none;">
-                    <span style="font-size: 15px; color: #8B8386;">👁<span th:text="${dto.postReadcnt}"></span></span>
-                    <span style="font-size: 15px; color: #e74c3c;">❤️<span th:text="${LikeCount}"></span></span>
-                    &nbsp;&nbsp;
-<!--                    <span style="font-size: 15px; color: #8B8386;">💬<span th:text="${#lists.size(comments)}"></span></span>-->
+                    <div class="like-info">
+                        <span>👁<span th:text="${dto.postReadcnt}"></span></span>
+                        <span>❤️<span th:text="${likeCount}"></span></span>
+                    </div>
+
+
                 </td>
             </tr>
 
@@ -183,7 +180,7 @@
             <tr>
                 <th>내용</th>
                 <td>
-                    <div style="white-space: pre-line; text-align: center; width: 100%; min-height: 300px; padding: 10px;">
+                    <div class="post-content">
                         <span th:text="${dto.postContent}"></span>
                         <th:block th:if="${dto.postImage != null and !#strings.isEmpty(dto.postImage)}">
                             <br>
@@ -193,11 +190,15 @@
                 </td>
             </tr>
 
+            <input type="hidden" name="dnum" th:value="${dto.postId}" />
             <tr>
                 <td colspan="2" style="border-bottom: none;">
-                    <div class="btn-group" style="margin-bottom: 6px;">
+                    <div class="btn-group">
                         <input type="button" value="목록" th:onclick="location.href='/CommunityOut'">
-                        <th:block th:if="${#strings.trim(dto.postType) != 'notice' and (session.user_id.toString() == dto.user.userId.toString() or session.user_role == 'admin')}">
+
+                        <!-- 수정 및 삭제 버튼 -->
+                        <th:block th:if="${#strings.trim(dto.postType) != 'notice' and session.user_id != null and (session.user_id == dto.user.userId or session.user_role == 'admin')}">
+                            설명:
                             <input type="button" value="수정" th:onclick="|location.href='@{/CommunityUpdate(unum=${dto.postId})}'|" />
                             <input type="submit" value="삭제" th:onclick="return confirm('삭제하시겠습니까?');">
                         </th:block>
@@ -207,7 +208,13 @@
             </tbody>
         </table>
     </form>
-</div>
-</body>
 
+    <!-- 좋아요 버튼 -->
+    <form th:action="@{'/post/' + ${dto.postId} + '/like'}" method="post">
+<!--        <input type="hidden" name="postId" th:value="${dto.postId}" />-->
+        <button type="submit" th:text="${likedByUser ? '좋아요 취소' : '좋아요'}"></button>
+    </form>
+</div>
+
+</body>
 </html>

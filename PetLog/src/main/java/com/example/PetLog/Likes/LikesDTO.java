@@ -8,9 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class LikesDTO {
-    Long like_id;
-    int user_id;
-    int post_id;
-    String user_login_id;
-    int snack_id;
+    Long likeId;
+    Long userId;
+    Long postId;
+    String userLoginId;
+    Long snackId;
+
+
 }

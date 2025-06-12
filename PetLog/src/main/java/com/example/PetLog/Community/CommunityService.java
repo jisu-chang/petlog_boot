@@ -23,4 +23,9 @@ public interface CommunityService {
     List<CommunityEntity> findByUserId(Long userId);
 
     void deleteByUserId(Long userId);
+
+    //좋아요 기능
+    void updateLikeCountForPost(Long postId);
+
+    CommunityEntity getPostById(Long postId);
 }

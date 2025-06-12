@@ -11,30 +11,30 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Data
 public class CommunityDTO {
-    Long post_id;
-    Long user_id;
-    String post_title;
-    String post_content;
-    MultipartFile post_image;
-    int post_readcnt;
-    LocalDate post_date;
-    String post_type;
+    Long postId;
+    Long userId;
+    String postTitle;
+    String postContent;
+    MultipartFile postImage;
+    int postReadcnt;
+    LocalDate postDate;
+    String postType;
 
 
     public CommunityEntity entity() {
-        String imageName = (post_image != null && !post_image.isEmpty())
-                ? post_image.getOriginalFilename()
+        String imageName = (postImage != null && !postImage.isEmpty())
+                ? postImage.getOriginalFilename()
                 : null;
 
         return CommunityEntity.builder()
-                .postId(post_id)
-                .userId(user_id)
-                .postTitle(post_title)
-                .postContent(post_content)
+                .postId(postId)
+                .userId(userId)
+                .postTitle(postTitle)
+                .postContent(postContent)
                 .postImage(imageName) // 이미지 파일명
-                .postReadcnt(post_readcnt)
-                .postDate(post_date)
-                .postType(post_type)
+                .postReadcnt(postReadcnt)
+                .postDate(postDate)
+                .postType(postType)
                 .build();
     }
 }

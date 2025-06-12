@@ -1,5 +1,6 @@
 package com.example.PetLog.Community;
 
+import com.example.PetLog.Likes.LikesEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -21,4 +22,11 @@ public interface CommunityRepository extends JpaRepository<CommunityEntity, Long
     void deleteByUser_UserId(Long userId);
 
     List<CommunityEntity> findAllByUser_UserId(Long userId);
+
+    @Modifying
+    @Transactional
+//    @Query(value = "select le1_0.like_id from likes le1_0 where le1_0.post_id=? and le1_0.user_id=? fetch first 1 row only", nativeQuery = true)
+    @Query("UPDATE CommunityEntity c SET c.postReadcnt = :likeCount WHERE c.postId = :postId")
+    void updateLikeCount(@Param("postId") Long postId, @Param("likeCount") int likeCount);
+
 }
