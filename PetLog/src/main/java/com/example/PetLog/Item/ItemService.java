@@ -1,0 +1,12 @@
+package com.example.PetLog.Item;
+
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public interface ItemService {
+    void save(ItemEntity itemEntity);
+
+    List<ItemDTO> out();
+}
