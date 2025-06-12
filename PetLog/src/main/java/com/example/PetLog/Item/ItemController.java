@@ -31,6 +31,8 @@ public class ItemController {
     @PostMapping(value = "/ItemSave")
     public String save(ItemDTO dto, Principal principal) throws IOException {
 
+        dto.setItemStatus("판매중");
+
         MultipartFile file = dto.getItemImage();
         if (file != null && !file.isEmpty()) {
             String filename = file.getOriginalFilename();
@@ -103,8 +105,19 @@ public class ItemController {
         return "redirect:/Item/ItemOut";
     }
 
-    @GetMapping(value = "/Item/ItemDelete")
-    public String del(Model mo, Principal principal) {
+    @PostMapping(value = "/Item/ItemStopped")
+    public String stop(Model mo) {
+
+        List<ItemDTO> list = itemService.itemStopped(); // service에서 메서드 호출
+        mo.addAttribute("list", list);
+
+        return "Item/ItemStopped";
+    }
+
+    @PostMapping(value = "/Item/ItemDelete")
+    public String del(HttpSession hs,@RequestParam("delete")Long itemId) {//삭제
+
+        itemService.changeStatus(itemId);
 
         return "redirect:/Item/ItemOut";
     }

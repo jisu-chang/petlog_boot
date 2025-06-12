@@ -13,4 +13,8 @@ public interface ItemService {
     ItemEntity up(Long itemId);
 
     void update(ItemEntity entity);
+
+    List<ItemDTO> itemStopped();
+
+    void changeStatus(Long itemId);
 }

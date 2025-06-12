@@ -18,7 +18,8 @@ public class ItemServiceImp implements ItemService {
 
     @Override
     public List<ItemDTO> out() {
-        List<ItemEntity> list = itemRepository.findAll();
+
+        List<ItemEntity> list = itemRepository.findByItemStatus("판매중");
 
         return list.stream().map(entity -> {
             ItemDTO dto = new ItemDTO();
@@ -41,6 +42,30 @@ public class ItemServiceImp implements ItemService {
     @Override
     public void update(ItemEntity entity) {
         itemRepository.save(entity);
+    }
+
+    @Override
+    public List<ItemDTO> itemStopped() {
+        List<ItemEntity> stoppedItems = itemRepository.findByItemStatus("판매종료");
+
+        return stoppedItems.stream().map(entity -> {
+            ItemDTO dto = new ItemDTO();
+            dto.setItemId(entity.getItemId());
+            dto.setItemName(entity.getItemName());
+            dto.setItemCost(entity.getItemCost());
+            dto.setItemCategory(entity.getItemCategory());
+            dto.setItemImageName(entity.getItemImage());
+            dto.setItemStatus(entity.getItemStatus());
+            return dto;
+        }).toList();
+
+    }
+
+    @Override
+    public void changeStatus(Long itemId) {
+        ItemEntity itemEntity = itemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("아이템을 찾을 수 없습니다: " + itemId));
+        itemEntity.setItemStatus("판매종료");
+        itemRepository.save(itemEntity);
     }
 
 }
