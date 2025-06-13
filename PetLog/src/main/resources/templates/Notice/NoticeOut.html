@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <div th:replace="~{top::menu}"></div>
 
 <style>
@@ -155,38 +155,34 @@
 
 <body>
 <div class="table-wrapper">
-  <h2 style="text-align:center; color:#f48aa5; font-weight:normal;">📝 자유게시판</h2>
-    <a th:href="CommunityIn" class="btn-write">게시글 작성</a>
+  <h2 style="text-align:center; color:#f48aa5; font-weight:normal;">공지사항</h2>
+    <a th:href="@{/CommunityIn(type='notice')}" class="btn-write" sec:authorize="hasRole('ADMIN')">게시글 작성</a>
 
     <table>
-      <thead>
-      <tr>
-        <th style="width:5%;">No.</th>
-        <th style="width:45%; text-align: center;">제목</th>
-        <th style="width:15%;">작성자</th>
-        <th style="width:20%;">작성일자</th>
-        <th style="width:10%;">조회수</th>
-      </tr>
-      </thead>
+    <thead>
+    <tr>
+      <th style="width:5%;">No.</th>
+      <th style="width:45%; text-align: center;">제목</th>
+      <th style="width:15%;">작성자</th>
+      <th style="width:20%;">작성일자</th>
+      <th style="width:10%;">조회수</th>
+    </tr>
+    </thead>
 
-      <tbody>
-      <tr th:each="cc:${normalPosts}">
-          <td th:text="${cc.postId}"></td>
-          <td style="text-align: left;">
-              <a th:href="@{/CommunityDetail(num=${cc.postId})}">
-                  <span th:text="${cc.postTitle}"></span>
-  <!--                <span style="margin-left:10px;" th:text="'🗨️ ' + ${cc.comment_count}"></span>-->
-<!--                <span style="margin-left:6px;" th:text="'❤️ ' + ${cc.like_count}"></span>-->
+    <tbody>
+    <tr th:each="cc:${noticePosts}">
+        <td th:text="${cc.postId}"></td>
+        <td style="text-align: left;">
+            <a th:href="@{/CommunityDetail(num=${cc.postId})}">
+                <span th:text="${cc.postTitle}"></span>
             </a>
         </td>
-
-<!--        <td th:text="${cc.user.userLoginId}"></td>-->
         <td th:text="${cc.user.userLoginId}"></td>
         <td th:text="${cc.postDate}"></td>
         <td th:text="${cc.postReadcnt}"></td>
     </tr>
     </tbody>
   </table>
+</div>
 </body>
-
 </html>

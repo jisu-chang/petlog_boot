@@ -168,9 +168,6 @@
 <div th:replace="~{top::menu}"></div>
 <div class="container">
     <form th:action="@{/CommunityDelete}" method="post">
-
-        <input type="hidden" name="postType" th:value="${dto.postType}" />
-
         <div class="post-header">
             <!-- 프로필 이미지가 있는 경우 -->
             <img class="profile-img" th:if="${dto?.user?.profileimg != null}" th:src="@{/images/{img}(img=${dto.user.profileimg})}" alt="Profile Image"/>

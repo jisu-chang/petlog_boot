@@ -29,4 +29,5 @@ public interface CommunityRepository extends JpaRepository<CommunityEntity, Long
     @Query("UPDATE CommunityEntity c SET c.postReadcnt = :likeCount WHERE c.postId = :postId")
     void updateLikeCount(@Param("postId") Long postId, @Param("likeCount") int likeCount);
 
+    List<CommunityEntity> findByPostType(String notice);
 }

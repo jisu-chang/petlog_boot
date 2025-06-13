@@ -22,10 +22,10 @@ public class CommunityDTO {
 
 
     public CommunityEntity entity() {
+        System.out.println("🚀 Entity 변환 전 postType: " + this.postType); // ✅ 추가 로그
         String imageName = (postImage != null && !postImage.isEmpty())
                 ? postImage.getOriginalFilename()
                 : null;
-
         return CommunityEntity.builder()
                 .postId(postId)
                 .userId(userId)
@@ -34,7 +34,7 @@ public class CommunityDTO {
                 .postImage(imageName) // 이미지 파일명
                 .postReadcnt(postReadcnt)
                 .postDate(postDate)
-                .postType(postType)
+                .postType(this.postType)
                 .build();
     }
 

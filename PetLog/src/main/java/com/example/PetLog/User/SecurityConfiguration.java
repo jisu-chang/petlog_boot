@@ -88,9 +88,9 @@ public class SecurityConfiguration {
                             UserEntity loginUser = userDetails.getUser();
 
                             // 세션에 사용자 정보 저장
+                            request.getSession().setAttribute("userRole", loginUser.getUserRole());
                             request.getSession().setAttribute("userId", loginUser.getUserId());  // user_id로 세션에 저장
                             request.getSession().setAttribute("userLoginId", loginUser.getUserLoginId());
-                            request.getSession().setAttribute("userRole", loginUser.getUserRole());
                             request.getSession().setAttribute("name", loginUser.getName());
                             request.getSession().setAttribute("grapeCount", loginUser.getGrapeCount());
                             request.getSession().setAttribute("rank", loginUser.getRank());

@@ -29,5 +29,6 @@ public interface CommunityService {
 
     CommunityEntity getPostById(Long postId);
 
-//    CommunityDTO getPost(Long postId);
+    List<CommunityEntity> getNoticePost();
+
 }

@@ -142,13 +142,23 @@
 </style>
 <body>
 <head>
+    <!-- jQuery (필수) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap (필수) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Summernote -->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
 
 </head>
 
 <div class="container">
     <form th:action="@{/CommunityUpdateSave}" method="post" enctype="multipart/form-data">
         <input type="hidden" name="post_readcnt" th:value="${dto.postReadcnt}" />
-        <input type="hidden" name="post_type" th:value="'normal'" th:if="${session.user_role != 'admin'}" />
+        <input type="hidden" name="postType" th:value="${dto.postType}" />
 
         <div class="post-header">
             <!-- 프로필 이미지가 있는 경우 -->
@@ -160,35 +170,35 @@
 
         <div class="form-group">
             <label for="post_id">NO</label>
-            <input type="text" id="post_id" name="post_id" th:value="${dto.postId}" readonly>
+            <input type="text" id="post_id" name="postId" th:value="${dto.postId}" readonly>
         </div>
 
         <div class="form-group">
             <label for="post_title">제목</label>
-            <input type="text" id="post_title" name="post_title" th:value="${dto.postTitle}">
+            <input type="text" id="post_title" name="postTitle" th:value="${dto.postTitle}">
         </div>
 
         <div class="form-group">
             <label for="userLoginId">작성자</label>
-            <input type="text" id="userLoginId" name="user_login_id" th:value="${dto.user.userLoginId}" readonly>
+            <input type="text" id="userLoginId" name="userLoginId" th:value="${dto.user.userLoginId}" readonly>
         </div>
 
         <div class="form-group">
             <label for="post_date">작성일자</label>
-            <input type="text" id="post_date" name="post_date" th:value="${dto.postDate}" readonly>
+            <input type="text" id="post_date" name="postDate" th:value="${dto.postDate}" readonly>
         </div>
 
-        <div class="form-group">
-            <label for="post_content">내용</label>
-            <div id="post_content" th:utext="${dto.postContent}"></div>
-            <img th:src="@{/image/} + ${dto.postImage}" width="200px" height="200px" alt="첨부 이미지">
-            <input type="hidden" name="post_content" id="hiddenContent">
-        </div>
+<!--        <div class="form-group">-->
+<!--            <label for="post_content">내용</label>-->
+<!--            <div id="post_content" th:utext="${dto.postContent}"></div>-->
+<!--&lt;!&ndash;            <input type="text" id="post_content" name="postContent" th:value="${dto.postContent}" >&ndash;&gt;-->
+<!--            <img th:src="@{/image/} + ${dto.postImage}" width="200px" height="200px" alt="첨부 이미지">-->
+<!--            <input type="hidden" name="postContent" id="hiddenContent">-->
+<!--        </div>-->
 
         <div class="form-group">
-            <label for="post_image">사진 추가</label>
-            <input type="hidden" name="dfname" th:value="${dto.postImage}" />
-            <input type="file" id="post_image" name="post_image" accept="image/*" onchange="insertImage()" multiple>
+            <label for="postContent">내용</label>
+            <textarea id="postContent" name="postContent" th:text="${dto.postContent}"></textarea>
         </div>
 
         <div class="form-actions">
@@ -197,6 +207,22 @@
         </div>
     </form>
 </div>
+
+<script>
+    $(document).ready(function() {
+      $('#postContent').summernote({
+        placeholder: '내용을 입력하세요',
+        height: 300,
+        lang: 'ko-KR', // 한글 설정 (원하면)
+        toolbar: [
+          ['style', ['bold', 'italic', 'underline']],
+          ['insert', ['picture', 'link']],
+          ['para', ['ul', 'ol', 'paragraph']],
+          ['view', ['codeview']]
+        ]
+      });
+    });
+</script>
 </body>
 
 </html>

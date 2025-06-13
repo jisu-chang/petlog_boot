@@ -57,7 +57,7 @@ public class ItemUserController {
             System.out.println("세션에 userId가 없습니다. 로그인 페이지로 리디렉션됩니다.");
             return "redirect:/login";
         }
-        
+
         // 2. 아이템 조회
         ItemEntity item = itemRepository.findById(itemId).orElse(null);
         if (item == null) {
