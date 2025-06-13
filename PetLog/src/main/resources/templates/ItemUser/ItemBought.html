@@ -145,7 +145,7 @@
       <tbody>
       <tr th:each="item : ${list}">
         <td>
-          <img th:src="@{/image/{filename}(filename=${item.itemImage})}" />
+          <img th:src="@{/image/{filename}(filename=${item.itemImageName})}" />
         </td>
         <td><strong th:text="${item.itemName}"></strong></td>
         <td th:text="${item.itemCategory}"></td>
@@ -162,12 +162,11 @@
         <td>
           <form th:action="@{/items/itemDeleteUser}" method="post" style="display:inline;">
             <input type="hidden" name="delete" th:value="${item.itemId}" />
-            <input type="hidden" name="dfimage" th:value="${item.itemImage}" />
+            <input type="hidden" name="dfimage" th:value="${item.itemImageName}" />
             <button type="submit" class="delete-btn">🗑️</button>
           </form>
         </td>
       </tr>
-
       </tbody>
     </table>
   </div>

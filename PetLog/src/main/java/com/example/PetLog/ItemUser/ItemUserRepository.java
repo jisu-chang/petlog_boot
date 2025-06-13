@@ -8,5 +8,5 @@ import java.util.List;
 @Repository
 public interface ItemUserRepository extends JpaRepository<ItemUserEntity,Long> {
 
-    List<ItemUserEntity> findByUser_userId(Long userId);
+    List<ItemUserEntity> findByUserId(Long userId);
 }
