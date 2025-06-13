@@ -49,19 +49,15 @@ public class ItemUserController {
         System.out.println("🧨 구매 요청 들어옴: itemId = " + itemId);
 
         // 1. 세션에서 로그인된 user_id 꺼내기
-        Object sessionValue = session.getAttribute("user_id");
-        Long userId = null;
+        Long userId = (Long) session.getAttribute("userId");
+        System.out.println("세션에서 가져온 userId: " + userId);  // userId가 제대로 나오는지 확인
 
-        if (sessionValue instanceof Integer) {
-            userId = ((Integer) sessionValue).longValue();
-        } else if (sessionValue instanceof Long) {
-            userId = (Long) sessionValue;
-        }
-
+        // 로그인되지 않은 경우 로그인 페이지로 리디렉트
         if (userId == null) {
-            return "redirect:/login?error=login_required";
+            System.out.println("세션에 userId가 없습니다. 로그인 페이지로 리디렉션됩니다.");
+            return "redirect:/login";
         }
-
+        
         // 2. 아이템 조회
         ItemEntity item = itemRepository.findById(itemId).orElse(null);
         if (item == null) {
@@ -98,17 +94,13 @@ public class ItemUserController {
 
     @GetMapping("/ItemUser/ItemBought")
     public String showMyItems(HttpSession session, Model model) {
-        Object sessionValue = session.getAttribute("user_id");
-        Long userId = null;
+        Long userId = (Long) session.getAttribute("userId");
+        System.out.println("세션에서 가져온 userId: " + userId);  // userId가 제대로 나오는지 확인
 
-        if (sessionValue instanceof Integer) {
-            userId = ((Integer) sessionValue).longValue();
-        } else if (sessionValue instanceof Long) {
-            userId = (Long) sessionValue;
-        }
-
+        // 로그인되지 않은 경우 로그인 페이지로 리디렉트
         if (userId == null) {
-            return "redirect:/login?error=login_required";
+            System.out.println("세션에 userId가 없습니다. 로그인 페이지로 리디렉션됩니다.");
+            return "redirect:/login";
         }
 
         List<ItemUserEntity> myItems = itemUserRepository.findByUserId(userId);
@@ -116,8 +108,4 @@ public class ItemUserController {
 
         return "ItemUser/ItemBought";
     }
-
-
-
-
 }
