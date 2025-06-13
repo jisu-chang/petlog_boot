@@ -97,17 +97,16 @@
           </ul>
         </li>
         <li><a th:href="@{/qnalist}">❓ Q&A</a></li>
-
         <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#">🎁 아이템 상점 <span class="caret"></span></a>
-        <ul class="dropdown-menu">
-          <li><a th:href="@{/ItemUser/ItemOutUser}">✨ 아이템 사러가기</a></li>
-          <li><a th:href="@{/ItemUser/ItemBought}">👩 내 아이템</a></li>
-        </ul>
-      </li>
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">🎁 아이템 상점 <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a th:href="@{/ItemUser/ItemOutUser}">✨ 아이템 사러가기</a></li>
+            <li><a th:href="@{/ItemUser/ItemBought}">👩 내 아이템</a></li>
+          </ul>
+        </li>
 
         <!-- 관리자 전용 메뉴 -->
-        <li sec:authorize="hasRole('ADMIN')" class="dropdown">
+        <li class="dropdown" sec:authorize="hasRole('ADMIN')">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">👑 관리자<span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a th:href="@{/BoardInput}">📢 공지사항 작성</a></li>
@@ -117,45 +116,36 @@
             <li><a th:href="@{/point/grapes_admin_form}">🍇 포도알 관리</a></li>
           </ul>
         </li>
+      </ul>
 
-        <ul class="nav navbar-nav navbar-right">
-          <li th:if="${loginstate}">
-            <!-- 관리자 UI (admin만 표시) -->
-            <ul th:if="${session.userRole == 'admin'}">
-              <li><a th:href="@{/mypage}">관리자 정보변경</a></li>
-              <li><a href="#" onclick="fullLogout()">🔓 전체 로그아웃</a></li>
-            </ul>
+      <!-- 오른쪽 로그인/로그아웃/마이페이지/회원가입 -->
+      <ul class="nav navbar-nav navbar-right">
 
-            <!-- 유저 UI (USER만 표시) -->
-            <ul th:if="${session.userRole == 'USER'}">
-              <li><a th:href="@{/mypage}" th:text="${#authentication.name} + '님의 마이페이지'"></a></li>
-              <li class="grape-count">🍇 <span th:text="${session.grapeCount}"></span>개</li>
-              <li><a th:href="@{/pet_input}">펫 등록</a></li>
-              <li><a th:href="@{/items/buy_items}">내 아이템</a></li>
-              <li><a href="#" onclick="fullLogout()">🔓 전체 로그아웃</a></li>
-            </ul>
-          </li>
-        </ul>
+        <!-- 비로그인 사용자 메뉴 -->
+        <li sec:authorize="isAnonymous()">
+          <a href="/signUp"><span class="glyphicon glyphicon-user"></span> 회원가입</a>
+        </li>
+        <li sec:authorize="isAnonymous()">
+          <a href="/login"><span class="glyphicon glyphicon-log-in"></span> 로그인</a>
+        </li>
 
-          <ul class="nav navbar-nav navbar-right" style="display: flex;">
-            <li>
-              <a href="/signUp" sec:authorize="isAnonymous()">
-                <span class="glyphicon glyphicon-user"></span> 회원가입
-              </a>
-              <a href="/MyPage" sec:authorize="isAuthenticated()">
-                <span style="color:#007f7f;" th:text="${#authentication.name}+'님의 마이페이지!'"></span>
-              </a>
-            </li>
-            <li>
-              <a href="/login" sec:authorize="isAnonymous()">
-                <span class="glyphicon glyphicon-log-in"></span> 로그인
-              </a>
-              <a href="#" onclick="fullLogout()" sec:authorize="isAuthenticated()">
-                <span class="glyphicon glyphicon-log-out"></span> 전체 로그아웃
-              </a>
-            </li>
-          </ul>
-        </ul>
+        <!-- 로그인 사용자 메뉴 -->
+        <li sec:authorize="isAuthenticated() and hasRole('USER')">
+          <a th:href="@{/MyPage}" th:text="${#authentication.name} + '님의 마이페이지'"></a>
+        </li>
+        <li sec:authorize="hasRole('USER')" class="grape-count">
+          🍇 <span th:text="${session.grapeCount}"></span>개
+        </li>
+        <li sec:authorize="hasRole('USER')">
+          <a th:href="@{/items/buy_items}">내 아이템</a>
+        </li>
+        <li sec:authorize="hasRole('ADMIN')">
+          <a th:href="@{/MyPage}">관리자 정보변경</a>
+        </li>
+        <li sec:authorize="isAuthenticated()">
+          <a href="#" onclick="fullLogout()">🔓 전체 로그아웃</a>
+        </li>
+      </ul>
     </div>
   </nav>
 </div>
