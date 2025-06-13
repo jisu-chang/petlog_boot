@@ -141,7 +141,18 @@
 <div class="container">
     <form th:action="@{/CommunityInSave}" method="post" enctype="multipart/form-data">
 
-        <input type="hidden" name="post_type" th:value="'normal'" th:if="${session.user_role != 'admin'}" />
+<!--        <input type="hidden" name="post_type" th:value="'normal'" th:if="${session.user_role != 'admin'}" />-->
+
+        <div class="form-group">
+            <label for="postType">게시판 종류</label>
+            <select name="postType" id="postType" required>
+                <!-- 자유게시판은 항상 선택 가능 -->
+                <option value="normal" th:selected="${#authentication.principal.userRole != 'admin' ? 'selected' : ''}">자유게시판</option>
+                <!-- 관리자일 때만 공지사항 선택 가능 -->
+                <option value="notice" th:if="${#authentication.principal.userRole == 'admin'}" th:selected="${#authentication.principal.userRole == 'admin' ? 'selected' : ''}">공지사항</option>
+            </select>
+        </div>
+
 
         <div class="form-group">
             <label for="postTitle">제목</label>

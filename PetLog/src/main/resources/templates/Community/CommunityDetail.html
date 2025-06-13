@@ -202,11 +202,18 @@
         <input type="hidden" name="dnum" th:value="${dto.postId}" />
         <div class="btn-group">
             <input type="button" value="목록" th:onclick="location.href='/CommunityOut'">
-            <th:block th:if="${#strings.trim(dto.postType) != 'notice' and session.user_id != null and (session.user_id == dto.user.userId or session.user_role == 'admin')}">
-                <input type="button" value="수정" th:onclick="|location.href='@{/CommunityUpdate(unum=${dto.postId})}'|" />
+
+            <!-- 게시글 삭제: 관리자(admin) 또는 작성자(user_id)만 가능 -->
+            <th:block th:if="${#authentication.principal.userRole == 'admin' or #authentication.principal.userId == dto.user.userId}">
                 <input type="submit" value="삭제" th:onclick="return confirm('삭제하시겠습니까?');">
             </th:block>
+
+            <!-- 게시글 수정: 작성자(user_id)만 가능 -->
+            <th:block th:if="${#authentication.principal.userId == dto.user.userId}">
+                <input type="button" value="수정" th:onclick="|location.href='@{/CommunityUpdate(unum=${dto.postId})}'|" />
+            </th:block>
         </div>
+
     </form>
 
     <!-- 좋아요 버튼 -->

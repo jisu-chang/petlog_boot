@@ -120,18 +120,22 @@
 
         <ul class="nav navbar-nav navbar-right">
           <li th:if="${loginstate}">
-            <ul th:if="${#authentication.principal.user_role == 'admin'}">
+            <!-- 관리자 UI (admin만 표시) -->
+            <ul th:if="${session.userRole == 'admin'}">
               <li><a th:href="@{/mypage}">관리자 정보변경</a></li>
               <li><a href="#" onclick="fullLogout()">🔓 전체 로그아웃</a></li>
             </ul>
-            <ul th:if="${#authentication.principal.user_role != 'admin'}">
+
+            <!-- 유저 UI (USER만 표시) -->
+            <ul th:if="${session.userRole == 'USER'}">
               <li><a th:href="@{/mypage}" th:text="${#authentication.name} + '님의 마이페이지'"></a></li>
-              <li class="grape-count">🍇 <span th:text="${session.loginUser.grape_count}"></span>개</li>
+              <li class="grape-count">🍇 <span th:text="${session.grapeCount}"></span>개</li>
               <li><a th:href="@{/pet_input}">펫 등록</a></li>
               <li><a th:href="@{/items/buy_items}">내 아이템</a></li>
               <li><a href="#" onclick="fullLogout()">🔓 전체 로그아웃</a></li>
             </ul>
           </li>
+        </ul>
 
           <ul class="nav navbar-nav navbar-right" style="display: flex;">
             <li>

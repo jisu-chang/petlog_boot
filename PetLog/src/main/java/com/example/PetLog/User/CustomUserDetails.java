@@ -1,6 +1,7 @@
 package com.example.PetLog.User;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -20,14 +21,24 @@ public class CustomUserDetails implements UserDetails {
         return user;
     }
 
+    //user_role을 가져오는 메소드
+    public String getUserRole() {
+        return user.getUserRole();
+    }
+
+    //유저 아이디 가져오는 메소드
+    public Long getUserId() {
+        return user.getUserId();
+    }
+
 //    @Override
 //    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return Collections.singleton(() -> user.getUserRole());
+//        return Collections.singleton((GrantedAuthority) () -> "ROLE_" + user.getUserRole().toUpperCase());
 //    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton((GrantedAuthority) () -> "ROLE_" + user.getUserRole().toUpperCase());
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + user.getUserRole().toUpperCase()));
     }
 
     @Override

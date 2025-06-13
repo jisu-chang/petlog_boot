@@ -98,6 +98,10 @@ public class SecurityConfiguration {
                             request.getSession().setAttribute("profileimg", loginUser.getProfileimg());
                             request.getSession().setAttribute("loginUser", loginUser);
 
+                            // 세션 정보 출력 (디버깅용)
+                            log.info("세션에 저장된 userRole: {}", request.getSession().getAttribute("userRole"));
+                            log.info("세션에 저장된 userId: {}", request.getSession().getAttribute("userId"));
+
                             // 소셜 로그인 처리 (카카오 등)
                             Boolean socialSignup = (Boolean) request.getSession().getAttribute("social_signup");
                             if (socialSignup != null && socialSignup) {

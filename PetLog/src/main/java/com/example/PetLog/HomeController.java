@@ -18,8 +18,21 @@ public class HomeController {
     @GetMapping(value = "/main")
     public String home1(Model mo, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         if (customUserDetails != null) {
-            mo.addAttribute("user_role", customUserDetails.getAuthorities().toString().contains("ROLE_ADMIN") ? "admin" : "USER");
+            boolean isAdmin = customUserDetails.getAuthorities().stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+            mo.addAttribute("user_role", isAdmin ? "admin" : "USER");
         }
         return "main";
     }
+
+    @GetMapping("/test")
+    public String testSecurity(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        if (userDetails != null) {
+            System.out.println("현재 로그인한 사용자 역할: " + userDetails.getUserRole());
+        } else {
+            System.out.println("사용자가 로그인되지 않음.");
+        }
+        return "test";
+    }
+
 }

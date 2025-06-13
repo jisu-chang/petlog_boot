@@ -150,10 +150,13 @@
         <input type="hidden" name="post_readcnt" th:value="${dto.postReadcnt}" />
         <input type="hidden" name="post_type" th:value="'normal'" th:if="${session.user_role != 'admin'}" />
 
-        <h2 style="color: #f48aa5; text-align: center;">
-            <img th:src="@{'/image/' + ${dto.user.profileimg}}" class="profile-img"/>
-            <span th:text="${dto.user.userLoginId} + '님의 수정 게시물'"></span>
-        </h2>
+        <div class="post-header">
+            <!-- 프로필 이미지가 있는 경우 -->
+            <img class="profile-img" th:if="${dto?.user?.profileimg != null}" th:src="@{/images/{img}(img=${dto.user.profileimg})}" alt="Profile Image"/>
+            <!-- 프로필 이미지가 없는 경우 기본 이미지로 -->
+            <img class="profile-img" th:if="${dto?.user?.profileimg == null}" th:src="@{/images/default.png}" alt="Default Image"/>
+            <h2><span th:text="${dto.user.userLoginId} + '님의 수정 게시물'"></span></h2>
+        </div>
 
         <div class="form-group">
             <label for="post_id">NO</label>
@@ -177,13 +180,13 @@
 
         <div class="form-group">
             <label for="post_content">내용</label>
-            <textarea name="post_content" id="post_content" rows="80" cols="50" th:text="${dto.postContent}"></textarea>
+            <div id="post_content" th:utext="${dto.postContent}"></div>
+            <img th:src="@{/image/} + ${dto.postImage}" width="200px" height="200px" alt="첨부 이미지">
             <input type="hidden" name="post_content" id="hiddenContent">
         </div>
 
         <div class="form-group">
             <label for="post_image">사진 추가</label>
-            <img th:src="@{/image/} + ${dto.postImage}" width="200px" height="200px" alt="첨부 이미지">
             <input type="hidden" name="dfname" th:value="${dto.postImage}" />
             <input type="file" id="post_image" name="post_image" accept="image/*" onchange="insertImage()" multiple>
         </div>
