@@ -73,9 +73,6 @@ public class UserController {
             session.setAttribute("userId", user.getUserId());
             session.setAttribute("userLoginId", user.getUserLoginId());
             session.setAttribute("userRole", user.getUserRole());
-            session.setAttribute("userId", user.getUserId());
-            session.setAttribute("userLoginId", user.getUserLoginId());
-            session.setAttribute("userRole", user.getUserRole());
             session.setAttribute("name", user.getName());
             session.setAttribute("grapeCount", user.getGrapeCount());
             session.setAttribute("rank", user.getRank());

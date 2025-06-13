@@ -195,14 +195,6 @@ public class CommunityController {
         return "redirect:/community/" + postId;  // 좋아요 후 상세 페이지로 리다이렉트
     }
 
-//    //댓글, 대댓글 상세페이지
-//    @GetMapping("community/detail")
-//    public String detail(@RequestParam Long postId, Model mo){
-//        List<CommentsDTO> comments = commentsService.getCommentsByPostId(postId);
-//        mo.addAttribute("comments", comments);
-//        return "Community/CommunityDetail";
-//    }
-
     //댓글, 대댓글 저장
     @PostMapping("/community/comment")
     public String savecomment(@ModelAttribute("commentsDTO")CommentsDTO commentsDTO, RedirectAttributes redirectAttributes){
