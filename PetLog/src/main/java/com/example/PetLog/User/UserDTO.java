@@ -59,6 +59,9 @@ public class UserDTO {
     String userRole;
     int grapeCount;
 
+    public UserDTO(UserEntity userEntity) {
+    }
+
     public String getProfileimgName() {
         return (profileimgName != null && !profileimgName.isEmpty()) ? profileimgName : "default.png";
     }
