@@ -24,28 +24,28 @@ public class DiaryEntity {
             initialValue = 1
     )
     @Column(name = "diary_id")
-    private Long diaryId;
+    Long diaryId;
 
     @Column(name = "diary_title")
-    private String diaryTitle;
+    String diaryTitle;
 
     @Column(name = "diary_date")
-    private LocalDate diaryDate;
+    LocalDate diaryDate;
 
     @Column(name = "diary_image")
-    private String diaryImage;
+    String diaryImage;
 
     @Column(name = "diary_content")
-    private String diaryContent;
+    String diaryContent;
 
     @Column(name = "get_grape")
-    private int getGrape;
+    int getGrape;
 
     @Column(name = "user_id")
-    private Long userId;    // 직접 숫자 ID 필드로 변경
+    Long userId;    // 직접 숫자 ID 필드로 변경
 
     @Column(name = "pet_id")
-    private Long petId;     // 직접 숫자 ID 필드로 변경
+    Long petId;     // 직접 숫자 ID 필드로 변경
 
     //지수 추가
     @ManyToOne(fetch = FetchType.EAGER)
