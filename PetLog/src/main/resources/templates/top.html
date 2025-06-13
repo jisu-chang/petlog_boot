@@ -98,18 +98,13 @@
         </li>
         <li><a th:href="@{/qnalist}">❓ Q&A</a></li>
 
-<!--        &lt;!&ndash;관리자용 안되서 추가...&ndash;&gt;-->
-<!--        <li class="dropdown">-->
-<!--          <a class="dropdown-toggle" data-toggle="dropdown" href="#">👑 관리자<span class="caret"></span></a>-->
-<!--          <ul class="dropdown-menu">-->
-<!--            <li><a th:href="@{/BoardInput}">📢 공지사항 작성</a></li>-->
-<!--            <li><a th:href="@{/Item/ItemInput}">🎁 아이템 등록</a></li>-->
-<!--            <li><a th:href="@{/Item/ItemOut}">🎁 아이템 목록</a></li>-->
-<!--            <li><a th:href="@{/Quiz_admin}">📄 퀴즈 관리</a></li>-->
-<!--            <li><a th:href="@{/point/grapes_admin_form}">🍇 포도알 관리</a></li>-->
-<!--          </ul>-->
-<!--        </li>-->
-<!--      &lt;!&ndash;나중에 삭제해야함..&ndash;&gt;-->
+        <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">🎁 아이템 상점 <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a th:href="@{/ItemUser/ItemOutUser}">✨ 아이템 사러가기</a></li>
+          <li><a th:href="@{/ItemUser/ItemBought}">👩 내 아이템</a></li>
+        </ul>
+      </li>
 
         <!-- 관리자 전용 메뉴 -->
         <li sec:authorize="hasRole('ADMIN')" class="dropdown">

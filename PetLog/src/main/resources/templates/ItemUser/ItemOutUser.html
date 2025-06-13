@@ -116,11 +116,11 @@
         </thead>
         <tbody>
         <tr th:each="it : ${list}">
-            <td th:text="${it.itemId}">1</td>
-            <td th:text="${it.itemName}">아이템명</td>
-            <td th:text="${it.itemCost}">100</td>
-            <td th:text="${it.itemCategory}">카테고리</td>
-            <td><img th:src="@{'/image/' + ${it.itemImage}}" alt="아이템 이미지"/></td>
+            <td th:text="${it.itemId}"></td>
+            <td th:text="${it.itemName}"></td>
+            <td th:text="${it.itemCost}"></td>
+            <td th:text="${it.itemCategory}"></td>
+            <td><img th:src="@{'/image/' + ${it.itemImage}}"/></td>
             <td>
                 <form th:action="@{/ItemUser/ItemDetail}" method="get">
                     <input type="hidden" name="itemId" th:value="${it.itemId}" />

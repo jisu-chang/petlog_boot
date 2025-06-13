@@ -10,8 +10,7 @@
             margin: 0;
             padding: 0;
             color: #333;
-            font-family: 'Pretendard', sans-serif;
-        }
+             }
 
         .table-wrapper {
             background-color: white;
@@ -89,15 +88,15 @@
             <th>아이템</th>
         </tr>
         <tr>
-            <td th:text="${dto.itemId}">1</td>
-            <td th:text="${dto.itemName}">아이템명</td>
-            <td th:text="${dto.itemCost}">100</td>
-            <td th:text="${dto.itemCategory}">카테고리</td>
-            <td><img th:src="@{'/image/' + ${dto.itemImage}}" alt="아이템 이미지"/></td>
+            <td th:text="${dto.itemId}"></td>
+            <td th:text="${dto.itemName}"></td>
+            <td th:text="${dto.itemCost}"></td>
+            <td th:text="${dto.itemCategory}"></td>
+            <td><img th:src="@{'/image/' + ${dto.itemImage}}"/></td>
         </tr>
         <tr>
             <td colspan="5" style="text-align: center; border-bottom: none;">
-                <form th:action="@{/ItemUser/ItemBuy}" method="post" style="display:inline;">
+                <form th:action="@{/ItemUser/ItemBought}" method="post" style="display:inline;">
                     <input type="hidden" name="itemId" th:value="${dto.itemId}" />
                     <button type="submit" class="btn">💰 구매하기</button>
                 </form>

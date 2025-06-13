@@ -96,4 +96,5 @@ public class UserDTO {
                 .grapeCount(0)
                 .build();
     }
+
 }
