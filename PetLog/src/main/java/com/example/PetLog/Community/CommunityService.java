@@ -28,4 +28,6 @@ public interface CommunityService {
     void updateLikeCountForPost(Long postId);
 
     CommunityEntity getPostById(Long postId);
+
+//    CommunityDTO getPost(Long postId);
 }

@@ -1,5 +1,7 @@
 package com.example.PetLog.Community;
 
+import com.example.PetLog.Comments.CommentsDTO;
+import com.example.PetLog.Comments.CommentsService;
 import com.example.PetLog.Likes.LikesService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -22,6 +26,8 @@ public class CommunityController {
     CommunityService communityService;
     @Autowired
     LikesService likesService;
+    @Autowired
+    CommentsService commentsService;
 
     String path = new File("src/main/resources/static/image").getAbsolutePath();
 
@@ -74,18 +80,23 @@ public class CommunityController {
         String userLoginId = (String) session.getAttribute("user_login_id");
         String userRole = (String) session.getAttribute("user_role");
 
+        //좋아요 처리
         CommunityEntity dto = communityService.findById(num); //게시글 정보 가져오기
         int likeCount = likesService.getLikeCount(num); // 게시글의 좋아요 수 가져오기
         boolean likedByUser = likesService.islikedByUser(num,userId,userLoginId); //사용자가 해당 게시글에 좋아요 눌렀는지 확인
 
+        // 댓글 목록 가져오기
+        List<CommentsDTO> comments = commentsService.getCommentsByPostId(num);
+
         communityService.readup(num);
 
-    // 필요시 model에 같이 넘기기 (thymeleaf에서는 session에도 접근 가능하지만 안전하게 모델로도 넘길 수 있음)
+        // 필요시 model에 같이 넘기기 (thymeleaf에서는 session에도 접근 가능하지만 안전하게 모델로도 넘길 수 있음)
         mo.addAttribute("sessionUserId", userId);
         mo.addAttribute("sessionUserRole", userLoginId);
         mo.addAttribute("dto", dto);
         mo.addAttribute("likeCount", likeCount);  // 좋아요 수
         mo.addAttribute("likedByUser", likedByUser);  // 사용자가 좋아요를 눌렀는지 여부
+        mo.addAttribute("comments", comments); // 댓글 추가
         return "Community/CommunityDetail";
     }
 
@@ -167,5 +178,36 @@ public class CommunityController {
         mo.addAttribute("likeCount", likeCount);
 
         return "community/CommunityDetail";
+    }
+
+
+    //좋아요 기능
+    @PostMapping("/post/{postId}/like")
+    public String likeOnPost(@PathVariable Long postId, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        String userLoginId = (String) session.getAttribute("userLoginId");
+
+        if (userId == null || userLoginId == null) {
+            return "redirect:/login";
+        }
+        likesService.likeOnUser(postId, userId, userLoginId);
+
+        return "redirect:/community/" + postId;  // 좋아요 후 상세 페이지로 리다이렉트
+    }
+
+//    //댓글, 대댓글 상세페이지
+//    @GetMapping("community/detail")
+//    public String detail(@RequestParam Long postId, Model mo){
+//        List<CommentsDTO> comments = commentsService.getCommentsByPostId(postId);
+//        mo.addAttribute("comments", comments);
+//        return "Community/CommunityDetail";
+//    }
+
+    //댓글, 대댓글 저장
+    @PostMapping("/community/comment")
+    public String savecomment(@ModelAttribute("commentsDTO")CommentsDTO commentsDTO, RedirectAttributes redirectAttributes){
+        commentsService.saveComment(commentsDTO);
+        redirectAttributes.addAttribute("postId", commentsDTO.getPost_id());
+        return "redirect:/CommunityDetail?num=" + commentsDTO.getPost_id();
     }
 }

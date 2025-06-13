@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<div th:replace="~{top::menu}"></div>
 <head>
+    <meta charset="UTF-8">
+    <title>게시글 상세보기</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -11,7 +12,6 @@
             padding: 0;
         }
 
-        /* 컨테이너 스타일 */
         .container {
             width: 80%;
             margin: 20px auto;
@@ -21,7 +21,6 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        /* 제목 스타일 */
         h2 {
             color: #f48aa5;
             text-align: center;
@@ -29,7 +28,13 @@
             margin-bottom: 20px;
         }
 
-        /* 프로필 이미지 */
+        .post-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
         .profile-img {
             width: 50px;
             height: 50px;
@@ -38,7 +43,6 @@
             margin-right: 10px;
         }
 
-        /* 게시글 정보 테이블 */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -61,8 +65,7 @@
             word-wrap: break-word;
         }
 
-        /* 버튼 스타일 */
-        input[type="button"], input[type="submit"] {
+        input[type="button"], input[type="submit"], button {
             background-color: #f48aa5;
             color: #fff;
             border: none;
@@ -73,14 +76,22 @@
             transition: background-color 0.3s;
         }
 
-        input[type="button"]:hover, input[type="submit"]:hover {
+        input[type="submit"] {
+            background-color: #e74c3c;
+        }
+
+        input[type="button"]:hover, button:hover {
             background-color: #db7093;
         }
 
-        /* 좋아요 및 조회수 */
+        input[type="submit"]:hover {
+            background-color: #c0392b;
+        }
+
         .like-info {
             font-size: 15px;
             color: #8b8386;
+            text-align: right;
         }
 
         .like-info span {
@@ -93,7 +104,6 @@
             gap: 10px;
         }
 
-        /* 내용 스타일 */
         .post-content {
             white-space: pre-line;
             width: 100%;
@@ -111,27 +121,35 @@
             border-radius: 8px;
         }
 
-        /* 삭제 확인 */
-        input[type="submit"] {
-            background-color: #e74c3c;
+        .comment-container, .reply-comment {
+            background: #f1f1f1;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
         }
 
-        input[type="submit"]:hover {
-            background-color: #c0392b;
+        .reply-comment {
+            margin-left: 30px;
+            background: #e9e9e9;
+            border-left: 3px solid #f48aa5;
         }
 
-        /* 반응형 디자인 */
+        .reply-form {
+            margin-top: 10px;
+            margin-left: 30px;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
         @media (max-width: 768px) {
             .container {
                 width: 90%;
-            }
-
-            table {
-                font-size: 1em;
-            }
-
-            h2 {
-                font-size: 1.5em;
             }
 
             .btn-group {
@@ -147,36 +165,26 @@
     </style>
 </head>
 <body>
+<div th:replace="~{top::menu}"></div>
 <div class="container">
     <form th:action="@{/CommunityDelete}" method="post">
+        <div class="post-header">
+            <!-- 프로필 이미지가 있는 경우 -->
+            <img class="profile-img" th:if="${dto?.user?.profileimg != null}" th:src="@{/images/{img}(img=${dto.user.profileimg})}" alt="Profile Image"/>
+            <!-- 프로필 이미지가 없는 경우 기본 이미지로 -->
+            <img class="profile-img" th:if="${dto?.user?.profileimg == null}" th:src="@{/images/default.png}" alt="Default Image"/>
+            <h2><span th:text="${dto.user.userLoginId} + '님의 게시물'"></span></h2>
+        </div>
+
+        <div class="like-info">
+            <span>👁<span th:text="${dto.postReadcnt}"></span></span>
+            <span>❤️<span th:text="${likeCount}"></span></span>
+        </div>
+
         <table>
-            <tbody>
-            <h2>
-<!--            <img th:src="@{/images/{fileName}(fileName=${dto.user.profileimg != null ? dto.user.profileimg : 'default.png'})}" alt="Profile Image" class="profile-img" />-->
-                <!-- 프로필 이미지가 있는 경우 -->
-                <img th:if="${dto != null and dto.user != null and dto.user.profileimg != null}"  th:src="@{/images/{img}(img=${dto.user.profileimg})}" />
-                <!-- 프로필 이미지가 없는 경우 기본 이미지로 -->
-                <img th:if="${dto == null or dto.user == null or dto.user.profileimg == null}" th:src="@{/images/default.png}" />
-                <span th:text="${dto.user.userLoginId} + '님의 게시물'"></span>
-            </h2>
-
-            <tr>
-                <td colspan="2" style="text-align: right; padding: 5px 10px; border-bottom: none;">
-                    <div class="like-info">
-                        <span>👁<span th:text="${dto.postReadcnt}"></span></span>
-                        <span>❤️<span th:text="${likeCount}"></span></span>
-                    </div>
-
-
-                </td>
-            </tr>
-
-            <tr><td colspan="2" style="height: 1px; border-bottom: 1px solid #eee;"></td></tr>
-
             <tr><th>제목</th><td th:text="${dto.postTitle}"></td></tr>
             <tr><th>작성자</th><td th:text="${dto.user.userLoginId}"></td></tr>
             <tr><th>게시일</th><td th:text="${dto.postDate}"></td></tr>
-
             <tr>
                 <th>내용</th>
                 <td>
@@ -189,32 +197,70 @@
                     </div>
                 </td>
             </tr>
-
-            <input type="hidden" name="dnum" th:value="${dto.postId}" />
-            <tr>
-                <td colspan="2" style="border-bottom: none;">
-                    <div class="btn-group">
-                        <input type="button" value="목록" th:onclick="location.href='/CommunityOut'">
-
-                        <!-- 수정 및 삭제 버튼 -->
-                        <th:block th:if="${#strings.trim(dto.postType) != 'notice' and session.user_id != null and (session.user_id == dto.user.userId or session.user_role == 'admin')}">
-                            설명:
-                            <input type="button" value="수정" th:onclick="|location.href='@{/CommunityUpdate(unum=${dto.postId})}'|" />
-                            <input type="submit" value="삭제" th:onclick="return confirm('삭제하시겠습니까?');">
-                        </th:block>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
         </table>
+
+        <input type="hidden" name="dnum" th:value="${dto.postId}" />
+        <div class="btn-group">
+            <input type="button" value="목록" th:onclick="location.href='/CommunityOut'">
+            <th:block th:if="${#strings.trim(dto.postType) != 'notice' and session.user_id != null and (session.user_id == dto.user.userId or session.user_role == 'admin')}">
+                <input type="button" value="수정" th:onclick="|location.href='@{/CommunityUpdate(unum=${dto.postId})}'|" />
+                <input type="submit" value="삭제" th:onclick="return confirm('삭제하시겠습니까?');">
+            </th:block>
+        </div>
     </form>
 
     <!-- 좋아요 버튼 -->
     <form th:action="@{'/post/' + ${dto.postId} + '/like'}" method="post">
-<!--        <input type="hidden" name="postId" th:value="${dto.postId}" />-->
         <button type="submit" th:text="${likedByUser ? '좋아요 취소' : '좋아요'}"></button>
     </form>
+
+
+    <!-- 원댓글 작성 폼 -->
+    <form th:action="@{/community/comment}" method="post">
+        <input type="hidden" name="post_id" th:value="${dto.postId}" />
+        <input type="hidden" name="parent_id" value="0" />
+        <input type="hidden" name="depth" value="0" />
+        <input type="hidden" name="user_id" th:value="${session.userId}" />
+        <input type="text" name="com_com" placeholder="댓글 작성" />
+        <button type="submit">등록</button>
+    </form>
+
+    <!-- 댓글 출력 -->
+    <div th:each="comment : ${comments}">
+               <div th:if="${comment.depth == 0}" class="comment-container">
+            <p><strong th:text="${comment.user_id}">작성자</strong>: <span th:text="${comment.com_com}">내용</span></p>
+            <button type="button" th:onclick="'toggleReplyForm(' + ${comment.com_id} + ')'">대댓글</button>
+
+            <!-- 대댓글 출력 -->
+            <div th:each="reply : ${comments}" th:if="${reply.parent_id == comment.com_id}" class="reply-comment">
+                ↳ <strong th:text="${reply.user_id}">작성자</strong>: <span th:text="${reply.com_com}">대댓글내용</span>
+            </div>
+
+            <!-- 대댓글 입력폼 -->
+            <form th:id="'reply-form-' + ${comment.com_id}"
+                  class="reply-form"
+                  th:action="@{/community/comment}"
+                  method="post"
+                  style="display: none;">
+                <input type="hidden" name="post_id" th:value="${comment.post_id}" />
+                <input type="hidden" name="parent_id" th:value="${comment.com_id}" />
+                <input type="hidden" name="depth" value="1" />
+                <input type="hidden" name="user_id" th:value="${session.userId}" />
+                <input type="text" name="com_com" placeholder="대댓글 작성" />
+                <button type="submit">등록</button>
+            </form>
+        </div>
+    </div>
+
 </div>
 
+<script>
+    function toggleReplyForm(id) {
+        const replyForm = document.getElementById('reply-form-' + id);
+        if (replyForm) {
+        replyForm.style.display = replyForm.style.display === 'block' ? 'none' : 'block';
+        }
+    }
+</script>
 </body>
 </html>

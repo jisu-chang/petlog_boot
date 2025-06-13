@@ -24,18 +24,12 @@ public class CommentsEntity {
     @Column (name = "com_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "comments")
     Long comId;
-//    @Column (name = "user_id")
-//    int userId;
-//    @Column (name = "post_id")
-//    int postId;
     @Column (name = "com_com")
     String comCom;
     @Column (name = "parent_id")
     int parentId;
     @Column
     int depth;
-//    @Column (name = "snack_id")
-//    int snackId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "snack_id")

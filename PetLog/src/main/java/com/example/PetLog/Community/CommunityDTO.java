@@ -37,4 +37,5 @@ public class CommunityDTO {
                 .postType(postType)
                 .build();
     }
+
 }
