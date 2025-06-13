@@ -36,6 +36,6 @@ public class PointEntity {
     Long pointEarnedGrapes;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     UserEntity user;
 }

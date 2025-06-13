@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -23,4 +24,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByNameAndEmailAndPhone(String name, String email, String phone);
 
     boolean existsByUserLoginId(String userLoginId);
+
+    //관리자 포도알 관리 다솜
+    List<UserEntity> findAllByOrderByGrapeCountDesc();
 }
