@@ -98,32 +98,21 @@
         </li>
         <li><a th:href="@{/qnalist}">❓ Q&A</a></li>
 
-        <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">🎁 아이템 상점 <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a th:href="@{/ItemUser/ItemBuy}">✨ 아이템 사러가기</a></li>
-            <li><a th:href="@{/ItemUser/ItemOutUser}">👩 내 아이템</a></li>
-            <li><a th:href="@{/Item/ItemOut}">🎁 아이템 목록</a></li>
-            <li><a th:href="@{/Quiz_admin}">📄 퀴즈 관리</a></li>
-            <li><a th:href="@{/point/grapes_admin_form}">🍇 포도알 관리</a></li>
-          </ul>
-        </li>
-
-        <!--관리자용 안되서 추가...-->
-        <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">👑 관리자<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a th:href="@{/BoardInput}">📢 공지사항 작성</a></li>
-            <li><a th:href="@{/Item/ItemInput}">🎁 아이템 등록</a></li>
-            <li><a th:href="@{/Item/ItemOut}">🎁 아이템 목록</a></li>
-            <li><a th:href="@{/Quiz_admin}">📄 퀴즈 관리</a></li>
-            <li><a th:href="@{/point/grapes_admin_form}">🍇 포도알 관리</a></li>
-          </ul>
-        </li>
-      <!--나중에 삭제해야함..-->
+<!--        &lt;!&ndash;관리자용 안되서 추가...&ndash;&gt;-->
+<!--        <li class="dropdown">-->
+<!--          <a class="dropdown-toggle" data-toggle="dropdown" href="#">👑 관리자<span class="caret"></span></a>-->
+<!--          <ul class="dropdown-menu">-->
+<!--            <li><a th:href="@{/BoardInput}">📢 공지사항 작성</a></li>-->
+<!--            <li><a th:href="@{/Item/ItemInput}">🎁 아이템 등록</a></li>-->
+<!--            <li><a th:href="@{/Item/ItemOut}">🎁 아이템 목록</a></li>-->
+<!--            <li><a th:href="@{/Quiz_admin}">📄 퀴즈 관리</a></li>-->
+<!--            <li><a th:href="@{/point/grapes_admin_form}">🍇 포도알 관리</a></li>-->
+<!--          </ul>-->
+<!--        </li>-->
+<!--      &lt;!&ndash;나중에 삭제해야함..&ndash;&gt;-->
 
         <!-- 관리자 전용 메뉴 -->
-        <li th:if="${session.user_role != null and session.user_role.equals('admin')}" class="dropdown">
+        <li sec:authorize="hasRole('ADMIN')" class="dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">👑 관리자<span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a th:href="@{/BoardInput}">📢 공지사항 작성</a></li>
@@ -133,34 +122,41 @@
             <li><a th:href="@{/point/grapes_admin_form}">🍇 포도알 관리</a></li>
           </ul>
         </li>
-      </ul>
 
-      <ul class="nav navbar-nav navbar-right">
-        <li th:if="${loginstate}">
-          <ul th:if="${session.user_role != null and session.user_role.equals('admin')}">
-            <li><a th:href="@{/mypage}">관리자 정보변경</a></li>
-            <li><a href="#" onclick="fullLogout()">🔓 전체 로그아웃</a></li>
-          </ul>
-          <ul th:if="${session.user_role == null or session.user_role != 'admin'}">
-            <li><a th:href="@{/mypage}" th:text="${name} + '님의 마이페이지'"></a></li>
-            <li class="grape-count">🍇 <span th:text="${session.loginUser.grape_count}"></span>개</li>
-            <li><a th:href="@{/pet_input}">펫 등록</a></li>
-            <li><a th:href="@{/items/buy_items}">내 아이템</a></li>
-            <li><a href="#" onclick="fullLogout()">🔓 전체 로그아웃</a></li>
-          </ul>
-        </li>
+        <ul class="nav navbar-nav navbar-right">
+          <li th:if="${loginstate}">
+            <ul th:if="${#authentication.principal.user_role == 'admin'}">
+              <li><a th:href="@{/mypage}">관리자 정보변경</a></li>
+              <li><a href="#" onclick="fullLogout()">🔓 전체 로그아웃</a></li>
+            </ul>
+            <ul th:if="${#authentication.principal.user_role != 'admin'}">
+              <li><a th:href="@{/mypage}" th:text="${#authentication.name} + '님의 마이페이지'"></a></li>
+              <li class="grape-count">🍇 <span th:text="${session.loginUser.grape_count}"></span>개</li>
+              <li><a th:href="@{/pet_input}">펫 등록</a></li>
+              <li><a th:href="@{/items/buy_items}">내 아이템</a></li>
+              <li><a href="#" onclick="fullLogout()">🔓 전체 로그아웃</a></li>
+            </ul>
+          </li>
 
-        <ul class="nav navbar-nav navbar-right" style="display: flex;">
-          <li><a href="/signUp" sec:authorize="isAnonymous()"><span class="glyphicon glyphicon-user"></span> 회원가입</a>
-            <a href="/MyPage" sec:authorize="isAuthenticated()">
-              <span style="color:#007f7f;" th:text="${#authentication.name}+'님의 마이페이지!'"></span></a>
-          </li>
-          <li>
-            <a href="/login" sec:authorize="isAnonymous()"><span class="glyphicon glyphicon-log-in"></span> 로그인</a>
-            <a href="#" onclick="fullLogout()" sec:authorize="isAuthenticated()"><span class="glyphicon glyphicon-log-out"></span> 전체 로그아웃</a>
-          </li>
+          <ul class="nav navbar-nav navbar-right" style="display: flex;">
+            <li>
+              <a href="/signUp" sec:authorize="isAnonymous()">
+                <span class="glyphicon glyphicon-user"></span> 회원가입
+              </a>
+              <a href="/MyPage" sec:authorize="isAuthenticated()">
+                <span style="color:#007f7f;" th:text="${#authentication.name}+'님의 마이페이지!'"></span>
+              </a>
+            </li>
+            <li>
+              <a href="/login" sec:authorize="isAnonymous()">
+                <span class="glyphicon glyphicon-log-in"></span> 로그인
+              </a>
+              <a href="#" onclick="fullLogout()" sec:authorize="isAuthenticated()">
+                <span class="glyphicon glyphicon-log-out"></span> 전체 로그아웃
+              </a>
+            </li>
+          </ul>
         </ul>
-      </ul>
     </div>
   </nav>
 </div>

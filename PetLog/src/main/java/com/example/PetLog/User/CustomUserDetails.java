@@ -20,9 +20,14 @@ public class CustomUserDetails implements UserDetails {
         return user;
     }
 
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        return Collections.singleton(() -> user.getUserRole());
+//    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(() -> user.getUserRole());
+        return Collections.singleton((GrantedAuthority) () -> "ROLE_" + user.getUserRole().toUpperCase());
     }
 
     @Override
