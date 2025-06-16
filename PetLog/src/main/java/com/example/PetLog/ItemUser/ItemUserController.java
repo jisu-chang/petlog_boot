@@ -1,5 +1,6 @@
 package com.example.PetLog.ItemUser;
 
+import com.example.PetLog.Item.ItemDTO;
 import com.example.PetLog.Item.ItemEntity;
 import com.example.PetLog.Item.ItemRepository;
 import com.example.PetLog.User.UserEntity;
@@ -26,8 +27,9 @@ public class ItemUserController {
 
     @GetMapping("/ItemUser/ItemOutUser")
     public String showItemShop(Model model) {
-        List<ItemEntity> items = itemRepository.findAll(); // 전체 아이템 조회
-        model.addAttribute("list", items); // HTML로 전달
+        // "판매중"인 아이템만 조회
+        List<ItemEntity> items = itemRepository.findByItemStatus("판매중");
+        model.addAttribute("list", items);
         return "ItemUser/ItemOutUser";
     }
 
@@ -83,7 +85,7 @@ public class ItemUserController {
 
         // 6. 아이템 구매 기록 저장
         ItemUserEntity itemUser = ItemUserEntity.builder()
-                .itemId(itemId)
+                .item(item)
                 .userId(userId)
                 .usertemEquip("N")
                 .build();
@@ -95,17 +97,37 @@ public class ItemUserController {
     @GetMapping("/ItemUser/ItemBought")
     public String showMyItems(HttpSession session, Model model) {
         Long userId = (Long) session.getAttribute("userId");
-        System.out.println("세션에서 가져온 userId: " + userId);  // userId가 제대로 나오는지 확인
+        System.out.println("세션에서 가져온 userId: " + userId);
 
-        // 로그인되지 않은 경우 로그인 페이지로 리디렉트
         if (userId == null) {
             System.out.println("세션에 userId가 없습니다. 로그인 페이지로 리디렉션됩니다.");
             return "redirect:/login";
         }
 
         List<ItemUserEntity> myItems = itemUserRepository.findByUserId(userId);
-        model.addAttribute("list", myItems);
 
+        // ✅ 로그 출력 (forEach는 여기까지만!)
+        System.out.println("조회된 내 아이템 개수: " + myItems.size());
+        myItems.forEach(iue -> {
+            System.out.println("🎯 usertemId = " + iue.getUsertemId());
+            System.out.println("➡ itemId = " + iue.getItemId());
+            System.out.println("➡ 연관된 item = " + iue.getItem());
+        });
+
+        // ✅ DTO 변환은 forEach 바깥에서
+        List<ItemUserDTO> dtoList = myItems.stream().map(iue -> {
+            ItemEntity item = iue.getItem(); // 연관된 item 객체
+
+            return ItemUserDTO.builder()
+                    .itemId(item != null ? item.getItemId() : null)
+                    .itemName(item != null ? item.getItemName() : "이름 없음")
+                    .itemCategory(item != null ? item.getItemCategory() : "카테고리 없음")
+                    .itemImageName(item != null ? item.getItemImage() : "default.png")
+                    .usertemEquip(iue.getUsertemEquip())
+                    .build();
+        }).toList();
+
+        model.addAttribute("list", dtoList);
         return "ItemUser/ItemBought";
     }
 }
