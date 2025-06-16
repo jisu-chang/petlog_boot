@@ -25,7 +25,7 @@ public class ItemUserController {
     @Autowired
     UserRepository userRepository;
 
-    @GetMapping("/ItemUser/ItemOutUser")
+    @GetMapping(value = "/ItemUser/ItemOutUser")
     public String showItemShop(Model model) {
         // "판매중"인 아이템만 조회
         List<ItemEntity> items = itemRepository.findByItemStatus("판매중");
@@ -33,7 +33,7 @@ public class ItemUserController {
         return "ItemUser/ItemOutUser";
     }
 
-    @GetMapping("/ItemUser/ItemDetail")
+    @GetMapping(value = "/ItemUser/ItemDetail")
     public String showItemDetail(@RequestParam("itemId") Long itemId, Model model) {
         ItemEntity item = itemRepository.findById(itemId).orElse(null);
 
@@ -46,7 +46,7 @@ public class ItemUserController {
         return "ItemUser/ItemDetail";
     }
 
-    @PostMapping("/ItemUser/ItemBought")
+    @PostMapping(value = "/ItemUser/ItemBought")
     public String buyItem(@RequestParam("itemId") Long itemId, HttpSession session) {
         System.out.println("🧨 구매 요청 들어옴: itemId = " + itemId);
 
@@ -94,7 +94,7 @@ public class ItemUserController {
         return "ItemUser/ItemBought"; // 내 아이템 페이지로 이동
     }
 
-    @GetMapping("/ItemUser/ItemBought")
+    @GetMapping(value = "/ItemUser/ItemBought")
     public String showMyItems(HttpSession session, Model model) {
         Long userId = (Long) session.getAttribute("userId");
         System.out.println("세션에서 가져온 userId: " + userId);
@@ -129,5 +129,42 @@ public class ItemUserController {
 
         model.addAttribute("list", dtoList);
         return "ItemUser/ItemBought";
+    }
+
+    @GetMapping(value = "/ItemUser/ItemPuton")
+    public String showPutOnItemPage(Model model, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        String userLoginId = (String) session.getAttribute("userLoginId");
+
+        if (userId == null || userLoginId == null) {
+            return "redirect:/login?error=login_required";
+        }
+
+        List<ItemDTO> list = itemUserService.findFrameItemsByUserId(userId); // 프레임 아이템만 조회
+        model.addAttribute("list", list);
+
+        return "ItemUser/ItemPuton"; // templates/ItemUser/ItemPuton.html
+    }
+
+
+    @PostMapping(value = "/ItemUser/ItemPuton")
+    public String putOnItem(@RequestParam("itemId") Long itemId, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+
+        if (userId == null) {
+            return "redirect:/login?error=login_required";
+        }
+
+        // 기존 착용 아이템이 있다면 모두 해제
+        itemUserRepository.clearEquippedItems(userId, "프레임");
+
+        // 착용할 아이템을 찾아서 상태 변경
+        ItemUserEntity itemUser = itemUserRepository.findByUserIdAndItem_ItemId(userId, itemId);
+        if (itemUser != null) {
+            itemUser.setUsertemEquip("Y"); // 착용 상태로 변경
+            itemUserRepository.save(itemUser);
+        }
+
+        return "redirect:/ItemUser/ItemPuton"; // 위에서 만든 HTML 파일로 이동
     }
 }
