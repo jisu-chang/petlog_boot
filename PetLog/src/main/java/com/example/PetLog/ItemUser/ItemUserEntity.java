@@ -29,15 +29,15 @@ public class ItemUserEntity {
     @Column(name = "usertem_equip")
     String usertemEquip;
 
-    @ManyToOne
-    @JoinColumn(name = "item_id", referencedColumnName = "item_id", insertable = false, updatable = false)
-    ItemEntity item;  // ItemEntity와 연결 (item_id와 매핑)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    ItemEntity item;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     UserEntity user;  // UserEntity와 연결 (user_id와 매핑)
 
-    @Column(name = "item_id")
+    @Column(name = "item_id", insertable = false, updatable = false)
     Long itemId;
 
     @Column(name = "user_id")
