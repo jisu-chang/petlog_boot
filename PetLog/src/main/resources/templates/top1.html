@@ -9,6 +9,43 @@
 </head>
 
 <style>
+  /* ✅ 모바일 전용 스타일 */
+  @media screen and (max-width: 425px) {
+    .navbar-header {
+      position: relative;
+      height: 50px;
+    }
+
+    .navbar-toggle {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+    }
+
+    .center-logo {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 20px;
+      font-weight: bold;
+      color: #ff8787;
+      text-decoration: none;
+      z-index: 1;
+    }
+
+    .navbar-brand img {
+      height: 40px;
+    }
+
+    .top-wrapper {
+      padding: 5px 0 !important;
+    }
+  }
+
+  /* ✅ 공통 스타일 */
   body {
     background-color: #f0fdfa;
     font-family: 'Pretendard', sans-serif;
@@ -17,20 +54,26 @@
   }
 
   .top-wrapper {
+    position: relative;
+    z-index: 10;
     background-color: #b2f2e9;
     padding: 15px 0;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   }
 
   .logo-img {
-    height: 65px;
-    margin-left: 20px;
+    height: 40px;
+    padding: 0 5px;
   }
 
   .navbar {
     background-color: transparent;
     border: none;
     margin: 0;
+  }
+
+  .navbar-nav > li {
+    white-space: nowrap;
   }
 
   .navbar .nav > li > a,
@@ -51,6 +94,7 @@
     background-color: #e6fcf5;
     border: none;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10000; /* Summernote 팝업과 충돌 방지 */
   }
 
   .navbar .dropdown-menu > li > a {
@@ -67,13 +111,25 @@
 <body>
 
 <!-- ✅ Fragment 선언 여기 -->
+
 <div class="top-wrapper">
   <nav class="navbar">
     <div class="container-fluid">
 
       <div class="navbar-header">
-        <a class="navbar-brand" th:href="@{/main}"></a>
+        <!-- ☰ 햄버거 메뉴 -->
+        <button type="button" class="navbar-toggle collapsed"
+                data-toggle="collapse" data-target="#mainNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" th:href="@{/main}">
+          <img src="./image/logo11.png" alt="Petlog" class="logo-img">
+        </a>
       </div>
+
+
 
       <ul class="nav navbar-nav">
         <li class="active"><a th:href="@{/main}">🏠 Home</a></li>

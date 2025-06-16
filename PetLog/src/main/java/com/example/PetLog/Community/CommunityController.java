@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -30,7 +29,6 @@ public class CommunityController {
     CommentsService commentsService;
 
     String path = new File("src/main/resources/static/image").getAbsolutePath();
-
 
     // 커뮤니티/공지사항 폼을 type에 따라 다르게 로딩
     @GetMapping("/CommunityIn")

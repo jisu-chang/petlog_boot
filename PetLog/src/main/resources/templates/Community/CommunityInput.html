@@ -141,21 +141,7 @@
 <div class="container">
     <form th:action="@{/CommunityInSave}" method="post" enctype="multipart/form-data">
         <input type="hidden" name="postType" value="normal">
-
         <h2 style="text-align:center; color:#f48aa5; font-weight:normal;">자유게시판</h2>
-
-<!--        <label for="postType">게시판 종류</label>-->
-<!--        <select name="postType" id="postType" required>-->
-<!--            <option value="normal"-->
-<!--                    th:selected="${#authentication.principal.userRole != 'admin' ? 'selected' : ''}">-->
-<!--                자유게시판-->
-<!--            </option>-->
-<!--            <option value="notice"-->
-<!--                    th:if="${#authentication.principal.userRole == 'admin'}"-->
-<!--                    th:selected="${#authentication.principal.userRole == 'admin' ? 'selected' : ''}">-->
-<!--                공지사항-->
-<!--            </option>-->
-<!--        </select>-->
 
     <div class="form-group">
             <label for="postTitle">제목</label>

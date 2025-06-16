@@ -9,51 +9,78 @@
 </head>
 
 <style>
-  body {
-    background-color: #f0fdfa;
-    font-family: 'Pretendard', sans-serif;
-    margin: 0;
-    padding: 0;
-  }
-  .top-wrapper {
-    background-color: #b2f2e9;
-    padding: 15px 0;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  }
-  .logo-img {
-    height: 65px;
-    margin-left: 20px;
-  }
-  .navbar {
-    background-color: transparent;
-    border: none;
-    margin: 0;
-  }
-  .navbar .nav > li > a,
-  .navbar-right li a {
-    color: #007f7f !important;
-    font-weight: 600;
-    font-size: 15px;
-  }
-  .navbar .nav > li > a:hover,
-  .navbar .dropdown-menu > li > a:hover,
-  .navbar-right li a:hover {
-    background-color: #d3f9f4;
-    color: #004c4c !important;
-  }
-  .navbar .dropdown-menu {
-    background-color: #e6fcf5;
-    border: none;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  .navbar .dropdown-menu > li > a {
-    color: #007f7f;
-  }
-  .grape-count {
-    padding-top: 15px;
-    color: #007f7f;
-    font-weight: bold;
-  }
+  .navbar .nav {
+   display: flex !important;
+   flex-wrap: nowrap !important;
+   align-items: center;
+ }
+
+ .navbar-nav > li {
+   white-space: nowrap;
+ }
+
+ .navbar-right {
+   display: flex !important;
+   flex-wrap: nowrap;
+   align-items: center;
+   gap: 10px;
+ }
+
+ .navbar .dropdown-menu {
+   z-index: 10000; /* Summernote 팝업과 충돌 방지 */
+ }
+
+ /* 혹시 Summernote가 탑을 밀어내는 경우 */
+ .top-wrapper {
+   position: relative;
+   z-index: 10;
+ }
+ body {
+   background-color: #f0fdfa;
+   font-family: 'Pretendard', sans-serif;
+   margin: 0;
+   padding: 0;
+ }
+ .top-wrapper {
+   background-color: #b2f2e9;
+   padding: 15px 0;
+   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+ }
+ .logo-img {
+   height: 65px;
+   margin-left: 20px;
+ }
+ .navbar {
+   background-color: transparent;
+   border: none;
+   margin: 0;
+ }
+ .navbar .nav > li > a,
+ .navbar-right li a {
+   color: #007f7f !important;
+   font-weight: 600;
+   font-size: 15px;
+ }
+ .navbar .nav > li > a:hover,
+ .navbar .dropdown-menu > li > a:hover,
+ .navbar-right li a:hover {
+   background-color: #d3f9f4;
+   color: #004c4c !important;
+ }
+ .navbar .dropdown-menu {
+   background-color: #e6fcf5;
+   border: none;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+ }
+ .navbar .dropdown-menu > li > a {
+   color: #007f7f;
+ }
+ .grape-count {
+   padding-top: 15px;
+   color: #007f7f;
+   font-weight: bold;
+ }
+
 </style>
 
 <body>
