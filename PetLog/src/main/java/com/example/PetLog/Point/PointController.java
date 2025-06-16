@@ -94,7 +94,7 @@ public class PointController {
     public String showGrapeRanking(HttpSession session, Model model) {
 
         List<UserEntity> ranked = userRepository.findAllByOrderByGrapeCountDesc();
-        model.addAttribute("rankList", ranked);
+        model.addAttribute("list", ranked);
         return "Point/GrapeRank";
     }
 }
