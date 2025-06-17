@@ -11,17 +11,14 @@ import java.util.List;
 public interface CalendarRepository extends JpaRepository<CalendarEntity, Long> {
 
     @Query("SELECT c FROM CalendarEntity c " +
-            "WHERE FUNCTION('YEAR', c.calDate) = :year " +
-            "AND FUNCTION('MONTH', c.calDate) = :month " +
+            "WHERE TO_CHAR(c.calDate, 'YYYY') = :year " +
+            "AND TO_CHAR(c.calDate, 'MM') = LPAD(:month, 2, '0') " +
             "AND c.userId = :userId " +
             "AND c.petId = :petId")
     List<CalendarEntity> findCalendarListByMonth(
             @Param("userId") Long userId,
-            @Param("year") int year,
-            @Param("month") int month,
+            @Param("year") String year,
+            @Param("month") String month,
             @Param("petId") Long petId
     );
 }
-
-
-

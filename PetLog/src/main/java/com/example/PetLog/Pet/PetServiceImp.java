@@ -41,6 +41,21 @@ public class PetServiceImp implements PetService {
     }
 
     @Override
+    public List<PetDTO> findPetsByUserId(Long userId) {
+        List<PetEntity> petEntities = petRepository.findByUserUserId(userId.longValue());
+
+        List<PetDTO> petDTOList = new ArrayList<>();
+        for (PetEntity pet : petEntities) {
+            PetDTO dto = new PetDTO();
+            dto.setPetId(pet.getPetId());
+            dto.setPetName(pet.getPetName());
+            // 필요 시 추가 필드 설정
+            petDTOList.add(dto);
+        }
+        return petDTOList;
+    }
+
+    @Override
     public PetEntity detail(long petId) {
         return petRepository.findById(petId).orElse(null);
     }

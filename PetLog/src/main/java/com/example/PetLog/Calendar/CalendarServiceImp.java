@@ -24,19 +24,18 @@ public class CalendarServiceImp implements CalendarService {
     @Autowired
     DiaryRepository diaryRepository;
 
-    // ✅ 유저 ID로 펫 리스트 조회 (Entity → DTO 수동 변환)
     @Override
     public List<PetDTO> getPets(Long userId) {
         List<PetEntity> entityList = petRepository.findByUser_UserId(userId);
-
         List<PetDTO> dtoList = new ArrayList<>();
+
         for (PetEntity entity : entityList) {
             PetDTO dto = new PetDTO();
             dto.setPetId(entity.getPetId());
             dto.setPetName(entity.getPetName());
             dto.setPetBog(entity.getPetBog());
             dto.setPetHbd(entity.getPetHbd());
-            dto.setUserId(entity.getUser().getUserId());  // 연관된 UserEntity에서 userId 꺼내기
+            dto.setUserId(entity.getUser().getUserId());
             dto.setPetImgName(entity.getPetImg());
             dto.setPetNeuter(entity.getPetNeuter());
             dtoList.add(dto);
@@ -46,8 +45,24 @@ public class CalendarServiceImp implements CalendarService {
     }
 
     @Override
+    public void insertSchedule(CalendarDTO dto, Long userId) {
+        CalendarEntity entity = CalendarEntity.builder()
+                .calTitle(dto.getCalTitle())
+                .calContent(dto.getCalContent())
+                .calDate(dto.getCalDate())
+                .userId(userId)
+                .petId(dto.getPetId())
+                .build();
+
+        calendarRepository.save(entity);
+    }
+
+    @Override
     public List<CalendarDTO> getCalList(Long userId, int year, int month, Long petId) {
-        List<CalendarEntity> entityList = calendarRepository.findCalendarListByMonth(userId, year, month, petId);
+        String yearStr = String.valueOf(year);
+        String monthStr = String.format("%02d", month);
+
+        List<CalendarEntity> entityList = calendarRepository.findCalendarListByMonth(userId, yearStr, monthStr, petId);
         List<CalendarDTO> dtoList = new ArrayList<>();
 
         for (CalendarEntity entity : entityList) {
@@ -64,12 +79,14 @@ public class CalendarServiceImp implements CalendarService {
         return dtoList;
     }
 
-    // ✅ 특정 달의 다이어리 리스트 조회
     @Override
-    public List<DiaryDTO> getDiaryList(Long userId, int currentYear, int currentMonth, Long petId) {
+    public List<DiaryDTO> getDiaryList(Long userId, int year, int month, Long petId) {
         List<DiaryDTO> dtoList = new ArrayList<>();
 
-        List<DiaryEntity> entityList = diaryRepository.findDiaryByMonth(userId, currentYear, currentMonth, petId);
+        String yearStr = String.valueOf(year);
+        String monthStr = String.format("%02d", month); // 예: 01, 02, ..., 12
+
+        List<DiaryEntity> entityList = diaryRepository.findDiaryByMonth(userId, yearStr, monthStr, petId);
 
         for (DiaryEntity entity : entityList) {
             DiaryDTO dto = new DiaryDTO();

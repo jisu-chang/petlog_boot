@@ -14,4 +14,6 @@ public interface CalendarService {
     List<DiaryDTO> getDiaryList(Long userId, int currentYear, int currentMonth, Long petId);
 
     List<PetDTO> getPets(Long userId);
+
+    void insertSchedule(CalendarDTO calendarDTO, Long userId);
 }
