@@ -152,7 +152,7 @@
           <span th:if="${item.usertemEquip != 'Y'}">❌ 미착용</span>
         </td>
         <td>
-          <form th:action="@{/ItemPuton}" method="post" style="display:inline;">
+          <form th:action="@{/ItemUser/ItemPuton}" method="post" style="display:inline;">
             <input type="hidden" name="itemId" th:value="${item.itemId}" />
             <input type="submit" value="사용하기 🎀" class="use-btn" />
           </form>

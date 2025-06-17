@@ -1,0 +1,56 @@
+<!-- calendar_input.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>일정 등록하기</title>
+</head>
+<body>
+
+<!--&lt;!&ndash; 반려동물이 없으면 경고 &ndash;&gt;-->
+<!--<div th:if="${#lists.isEmpty(petlist)}">-->
+<!--    <script>-->
+<!--        alert("🐶 먼저 반려동물을 등록해주세요!");-->
+<!--        history.back();-->
+<!--    </script>-->
+<!--</div>-->
+
+<div class="container">
+    <h2>📅 일정 등록하기</h2>
+
+    <form th:action="@{/Calendar/CalendarSave}" method="post">
+
+        <div class="form-group">
+            <label for="pet_id">반려동물 선택</label>
+            <select name="pet_id" id="pet_id" required>
+                <option th:each="pet : ${petlist}"
+                        th:value="${pet.petId}"
+                        th:text="${pet.petName}">반려동물 이름</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="cal_title">제목</label>
+            <input type="text" id="cal_title" name="cal_title" required>
+        </div>
+
+        <div class="form-group">
+            <label for="cal_date">날짜</label>
+            <input type="date" id="cal_date" name="cal_date" required>
+        </div>
+
+        <div class="form-group">
+            <label for="cal_content">내용</label>
+            <textarea id="cal_content" name="cal_content" required></textarea>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit">💾 저장하기</button>
+            <button type="button" onclick="history.back()">❌ 취소하기</button>
+        </div>
+
+    </form>
+</div>
+
+</body>
+</html>

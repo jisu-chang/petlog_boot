@@ -1,0 +1,17 @@
+package com.example.PetLog.Calendar;
+
+import com.example.PetLog.Diary.DiaryDTO;
+import com.example.PetLog.Pet.PetDTO;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public interface CalendarService {
+
+    List<CalendarDTO> getCalList(Long userId, int year, int month, Long petId);
+
+    List<DiaryDTO> getDiaryList(Long userId, int currentYear, int currentMonth, Long petId);
+
+    List<PetDTO> getPets(Long userId);
+}
