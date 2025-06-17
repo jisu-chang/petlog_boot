@@ -3,6 +3,8 @@ package com.example.PetLog.Quiz;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class QuizServiceImp implements QuizService{
 
@@ -10,4 +12,13 @@ public class QuizServiceImp implements QuizService{
     QuizRepository quizRepository;
 
 
+    @Override
+    public void insertQuiz(QuizEntity quizEntity) {
+        quizRepository.save(quizEntity);
+    }
+
+    @Override
+    public List<QuizEntity> allout() {
+        return quizRepository.findAll();
+    }
 }
