@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.print.attribute.standard.MediaSize;
 import java.time.LocalDate;
 
 @AllArgsConstructor
@@ -26,25 +25,24 @@ public class CalendarEntity {
             allocationSize = 1,
             initialValue = 1)
     @Column(name = "cal_id")
-    Long calId;
+    private Long calId;
 
     @Column(name = "cal_title")
-    String calTitle;
+    private String calTitle;
 
     @Column(name = "cal_content")
-    String calContent;
+    private String calContent;
 
     @Column(name = "cal_date")
-    LocalDate calDate;
+    private LocalDate calDate;
 
     @Column(name = "user_id")
-    Long userId;
+    private Long userId;
 
     @Column(name = "pet_id")
-    Long petId;
+    private Long petId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
-    UserEntity user;
-
+    private UserEntity user;
 }

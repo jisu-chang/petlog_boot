@@ -2,16 +2,17 @@ package com.example.PetLog.Calendar;
 
 import com.example.PetLog.Diary.DiaryDTO;
 import com.example.PetLog.Pet.PetDTO;
+import com.example.PetLog.Pet.PetService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -20,59 +21,50 @@ public class CalendarController {
     @Autowired
     CalendarService calendarService;
 
+    @Autowired
+    PetService petService;
+
     @GetMapping("/Calendar/CalendarView")
     public String cal(@RequestParam(value = "pet_id", required = false) Long petId,
                       @RequestParam(value = "year", required = false) Integer year,
                       @RequestParam(value = "month", required = false) Integer month,
                       HttpSession session, Model mo) {
 
-        Integer userId = (Integer) session.getAttribute("user_id");
+        // 🔒 로그인 확인 코드 (나중에 사용 예정)
+//        Object sessionUserId = session.getAttribute("user_id");
+//        if (sessionUserId == null) return "redirect:/login";
+//        Long userId = Long.valueOf(sessionUserId.toString());
 
-        List<PetDTO> petList = (userId != null) ? calendarService.getPets(userId.longValue()) : Collections.emptyList();
+        // 🔓 로그인 없이도 접근 가능하게 임시 userId 사용
+        Long userId = 1L; // ← 실제로는 로그인된 유저의 ID 사용 예정
+
+        List<PetDTO> petList = calendarService.getPets(userId);
         mo.addAttribute("petlist", petList);
 
-        if (petId == null) {
-            if (!petList.isEmpty()) {
-                petId = petList.get(0).getPetId();
-            } else {
-                return "redirect:/Calendar/CalendarInput?error=no_pet";
-            }
-        }
+        if (petList.isEmpty()) return "redirect:/Calendar/CalendarInput?error=no_pet";
 
-        // 날짜 설정
+        if (petId == null) petId = petList.get(0).getPetId();
+
         Calendar cal = Calendar.getInstance();
         if (year != null && month != null) {
             cal.set(Calendar.YEAR, year);
             cal.set(Calendar.MONTH, month - 1);
         }
+
         int currentYear = cal.get(Calendar.YEAR);
         int currentMonth = cal.get(Calendar.MONTH) + 1;
 
         mo.addAttribute("current_year", currentYear);
         mo.addAttribute("current_month", currentMonth);
         mo.addAttribute("pet_id", petId);
+        mo.addAttribute("prevYear", (currentMonth == 1) ? currentYear - 1 : currentYear);
+        mo.addAttribute("prevMonth", (currentMonth == 1) ? 12 : currentMonth - 1);
+        mo.addAttribute("nextYear", (currentMonth == 12) ? currentYear + 1 : currentYear);
+        mo.addAttribute("nextMonth", (currentMonth == 12) ? 1 : currentMonth + 1);
 
-        // 이전/다음 달 계산
-        int prevYear = (currentMonth == 1) ? currentYear - 1 : currentYear;
-        int prevMonth = (currentMonth == 1) ? 12 : currentMonth - 1;
-        int nextYear = (currentMonth == 12) ? currentYear + 1 : currentYear;
-        int nextMonth = (currentMonth == 12) ? 1 : currentMonth + 1;
+        List<CalendarDTO> calList = calendarService.getCalList(userId, currentYear, currentMonth, petId);
+        List<DiaryDTO> diaryList = calendarService.getDiaryList(userId, currentYear, currentMonth, petId);
 
-        mo.addAttribute("prevYear", prevYear);
-        mo.addAttribute("prevMonth", prevMonth);
-        mo.addAttribute("nextYear", nextYear);
-        mo.addAttribute("nextMonth", nextMonth);
-
-        // 데이터 가져오기 (userId 없으면 빈 리스트)
-        List<CalendarDTO> calList = (userId != null)
-                ? calendarService.getCalList(userId.longValue(), currentYear, currentMonth, petId)
-                : Collections.emptyList();
-
-        List<DiaryDTO> diaryList = (userId != null)
-                ? calendarService.getDiaryList(userId.longValue(), currentYear, currentMonth, petId)
-                : Collections.emptyList();
-
-        // 달력 HTML 생성
         StringBuilder html = new StringBuilder();
         cal.set(Calendar.DAY_OF_MONTH, 1);
         int startDay = cal.get(Calendar.DAY_OF_WEEK);
@@ -125,12 +117,29 @@ public class CalendarController {
     }
 
     @GetMapping("/Calendar/CalendarInput")
-    public String cal2() {
+    public String cal2(HttpSession session, Model model) {
+        // 🔒 로그인 확인 코드 (나중에 사용 예정)
+//        Object sessionUserId = session.getAttribute("user_id");
+//        if (sessionUserId == null) return "redirect:/User/Login";
+//        Long userId = Long.valueOf(sessionUserId.toString());
+
+        Long userId = 1L; // ← 임시 계정 ID
+
+        List<PetDTO> petlist = petService.findPetsByUserId(userId);
+        model.addAttribute("petlist", petlist);
         return "Calendar/CalendarInput";
     }
 
     @PostMapping("/Calendar/CalendarInput")
-    public String cal3() {
-        return "Calendar/CalendarInput";
+    public String cal3(@ModelAttribute CalendarDTO calendarDTO, HttpSession session) {
+        // 🔒 로그인 확인 코드 (나중에 사용 예정)
+//        Object sessionUserId = session.getAttribute("user_id");
+//        if (sessionUserId == null) return "redirect:/User/Login";
+//        Long userId = Long.valueOf(sessionUserId.toString());
+
+        Long userId = 1L;
+
+        calendarService.insertSchedule(calendarDTO, userId);
+        return "redirect:/Calendar/CalendarView";
     }
 }

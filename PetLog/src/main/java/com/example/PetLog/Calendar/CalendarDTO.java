@@ -13,13 +13,12 @@ import java.time.LocalDate;
 @Builder
 public class CalendarDTO {
 
-    Long calId;
-    String calTitle;
-    String calContent;
-    LocalDate calDate;
+    private Long calId;
+    private String calTitle;
+    private String calContent;
+    private LocalDate calDate;
 
-    Long userId;
-    Long petId;
-    String petName;
-
+    private Long userId;
+    private Long petId;
+    private String petName; // 필요 없으면 생략 가능
 }

@@ -10,6 +10,8 @@ public interface PetService {
 
     void save(PetEntity petEntity);
 
+    List<PetDTO> findPetsByUserId(Long userId); //from calendar
+
     PetEntity detail(long petId);
 
     void update(PetEntity petEntity);
@@ -19,4 +21,6 @@ public interface PetService {
     List<PetEntity> petOut(UserEntity loginUser);
 
     List<PetDTO> findPetById(Long userId);
+
+    //List<PetDTO> findPetsByUserId(Long userId);
 }

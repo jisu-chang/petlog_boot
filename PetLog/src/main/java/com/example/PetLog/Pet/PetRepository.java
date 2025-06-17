@@ -14,5 +14,4 @@ public interface PetRepository extends JpaRepository<PetEntity,Long> {
     List<PetEntity> findByUserUserId(Long userId);
 
     List<PetEntity> findByUser_UserId(Long userId);
-    //from diary
 }

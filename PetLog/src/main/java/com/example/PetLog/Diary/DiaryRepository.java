@@ -19,14 +19,15 @@ public interface DiaryRepository extends JpaRepository<DiaryEntity,Long> {
     void deleteByUser_UserId(Long userId);
 
     @Query("SELECT d FROM DiaryEntity d " +
-            "WHERE FUNCTION('YEAR', d.diaryDate) = :year " +
-            "AND FUNCTION('MONTH', d.diaryDate) = :month " +
+            "WHERE TO_CHAR(d.diaryDate, 'YYYY') = :year " +
+            "AND TO_CHAR(d.diaryDate, 'MM') = LPAD(:month, 2, '0') " +
             "AND d.userId = :userId " +
             "AND d.petId = :petId")
     List<DiaryEntity> findDiaryByMonth(
             @Param("userId") Long userId,
-            @Param("year") int year,
-            @Param("month") int month,
+            @Param("year") String year,
+            @Param("month") String month,
             @Param("petId") Long petId
     );
+
 }
