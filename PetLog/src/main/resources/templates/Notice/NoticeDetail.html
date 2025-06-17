@@ -178,7 +178,6 @@
 
         <div class="like-info">
             <span>👁<span th:text="${dto.postReadcnt}"></span></span>
-            <span>❤️<span th:text="${likeCount}"></span></span>
         </div>
 
         <table>
@@ -213,61 +212,8 @@
                 <input type="button" value="수정" th:onclick="|location.href='@{/CommunityUpdate(unum=${dto.postId})}'|" />
             </th:block>
         </div>
-
     </form>
-
-    <!-- 좋아요 버튼 -->
-    <form th:action="@{'/post/' + ${dto.postId} + '/like'}" method="post">
-        <button type="submit" th:text="${likedByUser ? '좋아요 취소' : '좋아요'}"></button>
-    </form>
-
-
-    <!-- 원댓글 작성 폼 -->
-    <form th:action="@{/community/comment}" method="post">
-        <input type="hidden" name="post_id" th:value="${dto.postId}" />
-        <input type="hidden" name="parent_id" value="0" />
-        <input type="hidden" name="depth" value="0" />
-        <input type="hidden" name="user_id" th:value="${session.userId}" />
-        <input type="text" name="com_com" placeholder="댓글 작성" />
-        <button type="submit">등록</button>
-    </form>
-
-    <!-- 댓글 출력 -->
-    <div th:each="comment : ${comments}">
-               <div th:if="${comment.depth == 0}" class="comment-container">
-            <p><strong th:text="${comment.user_id}">작성자</strong>: <span th:text="${comment.com_com}">내용</span></p>
-            <button type="button" th:onclick="'toggleReplyForm(' + ${comment.com_id} + ')'">대댓글</button>
-
-            <!-- 대댓글 출력 -->
-            <div th:each="reply : ${comments}" th:if="${reply.parent_id == comment.com_id}" class="reply-comment">
-                ↳ <strong th:text="${reply.user_id}">작성자</strong>: <span th:text="${reply.com_com}">대댓글내용</span>
-            </div>
-
-            <!-- 대댓글 입력폼 -->
-            <form th:id="'reply-form-' + ${comment.com_id}"
-                  class="reply-form"
-                  th:action="@{/community/comment}"
-                  method="post"
-                  style="display: none;">
-                <input type="hidden" name="post_id" th:value="${comment.post_id}" />
-                <input type="hidden" name="parent_id" th:value="${comment.com_id}" />
-                <input type="hidden" name="depth" value="1" />
-                <input type="hidden" name="user_id" th:value="${session.userId}" />
-                <input type="text" name="com_com" placeholder="대댓글 작성" />
-                <button type="submit">등록</button>
-            </form>
-        </div>
-    </div>
-
 </div>
 
-<script>
-    function toggleReplyForm(id) {
-        const replyForm = document.getElementById('reply-form-' + id);
-        if (replyForm) {
-        replyForm.style.display = replyForm.style.display === 'block' ? 'none' : 'block';
-        }
-    }
-</script>
 </body>
 </html>

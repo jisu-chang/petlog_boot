@@ -132,7 +132,8 @@ public class CommunityController {
         communityService.readup(num);
 
         mo.addAttribute("sessionUserId", userId);
-        mo.addAttribute("sessionUserRole", userLoginId);
+        mo.addAttribute("sessionUserLoginId", userLoginId);
+        mo.addAttribute("sessionUserRole", userRole);
         mo.addAttribute("dto", dto);
         mo.addAttribute("likeCount", likeCount); // 좋아요 수
         mo.addAttribute("likedByUser", likedByUser); // 사용자가 좋아요를 눌렀는지 여부
@@ -229,10 +230,28 @@ public class CommunityController {
         return "redirect:/community/" + postId;
     }
 
+//    @PostMapping("/community/comment")
+//    public String savecomment(@ModelAttribute("commentsDTO") CommentsDTO commentsDTO, RedirectAttributes redirectAttributes) {
+//        commentsService.saveComment(commentsDTO);
+//        redirectAttributes.addAttribute("postId", commentsDTO.getPost_id());
+//        return "redirect:/CommunityDetail?num=" + commentsDTO.getPost_id();
+//    }
+
     @PostMapping("/community/comment")
-    public String savecomment(@ModelAttribute("commentsDTO") CommentsDTO commentsDTO, RedirectAttributes redirectAttributes) {
+    public String saveComment(@ModelAttribute("commentsDTO") CommentsDTO commentsDTO,
+                              RedirectAttributes redirectAttributes) {
+
         commentsService.saveComment(commentsDTO);
-        redirectAttributes.addAttribute("postId", commentsDTO.getPost_id());
-        return "redirect:/CommunityDetail?num=" + commentsDTO.getPost_id();
+
+        // 값이 null이 아닌 경우에만 파라미터 추가
+        if (commentsDTO.getPost_id() != null) {
+            redirectAttributes.addAttribute("num", commentsDTO.getPost_id());
+        } else {
+            // 예외 처리 또는 기본 페이지로 리다이렉트
+            return "redirect:/Community"; // 또는 에러 페이지
+        }
+
+        return "redirect:/CommunityDetail";
     }
+
 }

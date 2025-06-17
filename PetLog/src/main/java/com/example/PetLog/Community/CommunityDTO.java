@@ -22,7 +22,6 @@ public class CommunityDTO {
 
 
     public CommunityEntity entity() {
-        System.out.println("🚀 Entity 변환 전 postType: " + this.postType); // ✅ 추가 로그
         String imageName = (postImage != null && !postImage.isEmpty())
                 ? postImage.getOriginalFilename()
                 : null;

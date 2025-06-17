@@ -15,4 +15,6 @@ public class CommentsDTO {
     int parent_id;
     int depth;
     Long snack_id;
+
+    String userLoginId;
 }
