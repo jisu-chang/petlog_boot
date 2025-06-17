@@ -82,11 +82,18 @@ public class CommentsServiceImp implements CommentsService{
         CommentsDTO dto = new CommentsDTO();
         dto.setCom_id(comment.getComId());
         dto.setCom_com(comment.getComCom());
+        dto.setParent_id(comment.getParentId());
+        dto.setDepth(comment.getDepth());
+        dto.setUserLoginId(comment.getUser().getUserLoginId());
         // Snack이 null인 경우를 처리
         if (comment.getSnack() != null) {
             dto.setSnack_id(comment.getSnack().getSnackId()); // getSnackId 호출 전에 null 체크
         } else {
             dto.setSnack_id(null); // Snack이 없을 경우 null 처리
+        }
+        //작성자 로그인 아이디 담기
+        if (comment.getUser() != null) {
+            dto.setUserLoginId(comment.getUser().getUserLoginId());
         }
         return dto;
     }
