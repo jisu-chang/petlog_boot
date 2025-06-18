@@ -263,16 +263,13 @@
     </table>
 </div>
 
-<!-- 일정 추가 모달 -->
 <div id="addScheduleModal" class="modal">
     <div class="modal-box-summary">
         <button class="close-btn" onclick="closeAddScheduleModal()">×</button>
         <h3>일정 추가</h3>
         <form th:action="@{/Calendar/CalendarInput}" method="post">
             <label>반려동물
-                <select name="pet_id" required>
-                    <option value="">선택하세요</option>
-                    <option th:each="pet : ${petlist}" th:value="${pet.petId}" th:text="${pet.petName}"></option>
+                <select name="pet_id" required> <option th:each="pet : ${petlist}" th:value="${pet.petId}" th:text="${pet.petName}"></option>
                 </select>
             </label><br>
 

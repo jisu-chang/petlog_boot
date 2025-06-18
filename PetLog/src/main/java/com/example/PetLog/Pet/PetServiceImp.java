@@ -29,6 +29,11 @@ public class PetServiceImp implements PetService {
     }
 
     @Override
+    public PetEntity findByPetId(Long petId) {
+        return petRepository.findById(petId).orElse(null);
+    }
+
+    @Override
     public List<PetDTO> findPetsByUserId(Long userId) {
         List<PetEntity> petEntities = petRepository.findByUserUserId(userId.longValue());
 

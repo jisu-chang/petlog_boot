@@ -22,5 +22,7 @@ public interface PetService {
 
     List<PetEntity> findByUserId(Long userId);
 
+    PetEntity findByPetId(Long petId);
+
     //List<PetDTO> findPetsByUserId(Long userId);
 }

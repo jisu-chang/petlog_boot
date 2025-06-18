@@ -125,13 +125,13 @@ public class CalendarController {
     }
 
     @GetMapping(value = "/Calendar/CalendarInput")
-    public String cal2(HttpSession session, Model model) {
-        // 🔒 로그인 확인 코드 (나중에 사용 예정)
-//        Object sessionUserId = session.getAttribute("user_id");
-//        if (sessionUserId == null) return "redirect:/User/Login";
-//        Long userId = Long.valueOf(sessionUserId.toString());
+    public String cal2(Principal principal, Model model) {
 
-        Long userId = 1L; // ← 임시 계정 ID
+        if (principal == null) {
+            return "redirect:/login"; // 로그인되지 않은 경우 로그인 페이지로 리다이렉트
+        }
+        String loginId = principal.getName();
+        Long userId = userService.findUserIdByLoginId(loginId);
 
         List<PetEntity> petlist = petService.findByUserId(userId); // 반드시 로그인한 사용자의 펫 리스트
         model.addAttribute("petlist", petlist);
@@ -139,16 +139,23 @@ public class CalendarController {
     }
 
     @PostMapping(value = "/Calendar/CalendarInput")
-    public String cal3(@ModelAttribute CalendarDTO calendarDTO, HttpSession session) {
-        // 🔒 로그인 확인 코드 (나중에 사용 예정)
-//        Object sessionUserId = session.getAttribute("user_id");
-//        if (sessionUserId == null) return "redirect:/User/Login";
-//        Long userId = Long.valueOf(sessionUserId.toString());
+    public String cal3(@ModelAttribute CalendarDTO calendarDTO, Principal principal) {
 
-        Long userId = 1L;
+        if (principal == null) {
+            return "redirect:/login"; // 로그인되지 않은 경우 로그인 페이지로 리다이렉트
+        }
+        String loginId = principal.getName();
+        Long userId = userService.findUserIdByLoginId(loginId); // 실제 로그인된 유저 ID
 
+        calendarDTO.setUserId(userId);
         calendarService.insertSchedule(calendarDTO, userId);
-        return "redirect:/Calendar/CalendarView";
+
+        Long petId = calendarDTO.getPetId();
+        LocalDate calDate = calendarDTO.getCalDate();
+        String year = String.valueOf(calDate.getYear());
+        String month = String.format("%02d", calDate.getMonthValue());
+
+        return "redirect:/Calendar/CalendarView?pet_id=" + petId + "&year=" + year + "&month=" + month;
     }
 
     @PostMapping(value = "/Calendar/CalendarSave")
@@ -182,29 +189,41 @@ public class CalendarController {
 
     @GetMapping(value = "/Calendar/CalendarDetail")
     public String detail(@RequestParam("calId") Long calId,
-                         HttpSession session,
+                         Principal principal,
                          Model model) {
-        // 로그인 체크
-        Long userId = (Long) session.getAttribute("userId");
-        String userLoginId = (String) session.getAttribute("userLoginId");
 
-        if (userId == null || userLoginId == null) {
-            return "redirect:/login?error=login_required";
+        if (principal == null) {
+            return "redirect:/login?error=login_required"; // 로그인되지 않은 경우 로그인 페이지로 리다이렉트
         }
+        String loginId = principal.getName(); // 현재 로그인된 사용자의 ID(Principal name) 가져오기
+        Long userId = userService.findUserIdByLoginId(loginId); // loginId로 userId 조회 (UserService 필요)
 
         CalendarDTO cdto = calendarService.calendar_detail(calId);
-        if (cdto == null) {
-            return "redirect:/calendar/list?error=not_found";
+
+        if (cdto == null || !cdto.getUserId().equals(userId)) { // ✅ userId 일치 여부도 확인하여 다른 유저의 일정 접근 방지
+            return "redirect:/Calendar/CalendarView?error=not_found_or_unauthorized";
+        }
+
+        if (cdto.getPetId() != null) {
+            PetEntity pet = petService.findByPetId(cdto.getPetId()); // petId로 PetEntity 조회
+            if (pet != null) {
+                cdto.setPetName(pet.getPetName()); // CalendarDTO에 반려동물 이름 설정
+            }
         }
 
         model.addAttribute("cdto", cdto);
         model.addAttribute("current_year", cdto.getCalDate().getYear());
         model.addAttribute("current_month", cdto.getCalDate().getMonthValue());
-        model.addAttribute("pet_id", cdto.getPetId());
+        model.addAttribute("pet_id", cdto.getPetId()); // 현재 펫 선택 유지 (캘린더 뷰로 돌아갈 때 필요)
 
         return "Calendar/CalendarDetail";
     }
 
+    @GetMapping(value = "/Calendar/CalendarUpdate")
+    public String uuu() {
+
+        return "Calendar/CalendarUpdate";
+    }
 
 
 }

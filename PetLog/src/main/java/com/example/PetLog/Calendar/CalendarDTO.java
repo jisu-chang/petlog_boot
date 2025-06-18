@@ -20,7 +20,7 @@ public class CalendarDTO {
 
     private Long userId;
     private Long petId;
-    private String petName; // 필요 없으면 생략 가능
+    private String petName;
 
     public CalendarEntity toEntity() {
         return CalendarEntity.builder()
