@@ -49,6 +49,11 @@
       font-weight: 600;
     }
 
+    td img {
+      max-width: 70px;
+      height: auto;
+    }
+
     td a {
       color: #333;
       text-decoration: none;
@@ -77,20 +82,47 @@
       background-color: #ffd2d2;
     }
 
+    .pagination {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .pagination a {
+      display: inline-block;
+      margin: 0 5px;
+      padding: 8px 14px;
+      background-color: #f2e9ff;
+      color: #5e478e;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.2s;
+    }
+
+    .pagination a:hover {
+      background-color: #e0d2f7;
+    }
+
+    .pagination a.current {
+      background-color: #d7c9f3;
+      color: white;
+    }
+
     .no-diary {
       color: #c0392b;
       font-weight: bold;
       padding: 20px 0;
     }
+
   </style>
 </head>
 <body>
 
 <div class="table-wrapper">
-  <header><h2>🗓 내 일정</h2></header>
+  <header><h2>📆 내 일정</h2></header>
 
   <div style="margin-bottom: 20px;">
-    <input type="button" value="⬅ 뒤로가기" onclick="history.back()"
+    <input type="reset" value="⬅ 뒤로가기" onclick="history.back()"
            style="background-color: #f8d7da; color: #a94442; border: 1px solid #f5c6cb;
                   padding: 6px 14px; font-size: 13px; border-radius: 16px;
                   font-weight: bold; cursor: pointer;">
@@ -98,23 +130,18 @@
 
   <table class="dotted-rounded-table">
     <tr>
-      <th>반려동물 이름</th>
-      <th>제목</th>
-      <th>날짜</th>
-      <th>내용</th>
-      <th>수정</th>
-      <th>삭제</th>
+      <th>반려동물 이름</th> <th>제목</th> <th>날짜</th> <th>내용</th> <th>수정</th> <th>삭제</th>
     </tr>
     <tr>
-      <td th:text="${cdto.petName}">펫이름</td>
-      <td th:text="${cdto.calTitle}">제목</td>
-      <td th:text="${#strings.substring(cdto.calDate, 0, 10)}">날짜</td>
-      <td th:text="${cdto.calContent}">내용</td>
+      <td th:text="${cdto.petName}"></td>
+      <td th:text="${cdto.calTitle}"></td>
+      <td th:text="${cdto.calDate}"></td>
+      <td th:text="${cdto.calContent}"></td>
       <td>
-        <a th:href="@{/calendar_update(cal_id=${cdto.calId}, year=${currentYear}, month=${currentMonth}, pet_id=${cdto.petId})}">✏️</a>
+        <a th:href="@{'/Calendar/CalendarUpdate'(cal_id=${cdto.calId}, year=${current_year}, month=${current_month}, pet_id=${cdto.petId})}">✏️</a>
       </td>
       <td>
-        <a th:href="@{/calendar_delete(cal_id=${cdto.calId}, year=${currentYear}, month=${currentMonth}, pet_id=${cdto.petId})}"
+        <a th:href="@{'/Calendar/CalendarDelete'(cal_id=${cdto.calId}, year=${current_year}, month=${current_month}, pet_id=${cdto.petId})}"
            onclick="return confirm('일정을 삭제합니다 😥');">🗑️</a>
       </td>
     </tr>

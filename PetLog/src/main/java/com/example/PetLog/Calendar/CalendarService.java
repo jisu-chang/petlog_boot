@@ -18,4 +18,6 @@ public interface CalendarService {
     void insertSchedule(CalendarDTO calendarDTO, Long userId);
 
     void save(CalendarDTO dto);
+
+    CalendarDTO calendar_detail(Long calId);
 }

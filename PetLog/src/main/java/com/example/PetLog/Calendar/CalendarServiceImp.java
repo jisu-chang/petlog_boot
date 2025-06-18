@@ -64,6 +64,13 @@ public class CalendarServiceImp implements CalendarService {
     }
 
     @Override
+    public CalendarDTO calendar_detail(Long calId) {
+        CalendarEntity entity = calendarRepository.findById(calId)
+                .orElseThrow(() -> new RuntimeException("Not found calId: " + calId));
+        return entity.toDTO(); // 엔티티에 toDTO() 메서드를 만들어 변환
+    }
+
+    @Override
     public List<CalendarDTO> getCalList(Long userId, int year, int month, Long petId) {
         String yearStr = String.valueOf(year);
         String monthStr = String.format("%02d", month);

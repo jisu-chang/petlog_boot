@@ -45,4 +45,16 @@ public class CalendarEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     private UserEntity user;
+
+
+    public CalendarDTO toDTO() {
+        return CalendarDTO.builder()
+                .calId(calId)
+                .calTitle(calTitle)
+                .calContent(calContent)
+                .calDate(calDate)
+                .userId(userId)
+                .petId(petId)
+                .build();
+    }
 }

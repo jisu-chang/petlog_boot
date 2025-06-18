@@ -97,7 +97,7 @@ public class CalendarController {
 
                 for (CalendarDTO e : calList) {
                     if (e.getCalDate().getDayOfMonth() == count) {
-                        html.append("<div class='schedule-item'>📌 <a href='calendar_detail?cal_id=")
+                        html.append("<div class='schedule-item'>📌 <a href='/Calendar/CalendarDetail?calId=")
                                 .append(e.getCalId()).append("'>")
                                 .append(e.getCalTitle()).append("</a></div>");
                     }
@@ -105,7 +105,7 @@ public class CalendarController {
 
                 for (DiaryDTO d : diaryList) {
                     if (d.getDiaryDate().getDayOfMonth() == count) {
-                        html.append("<div class='schedule-item' style='background-color:#e0f7fa;'>📓 <a href='diary_detail?diary_id=")
+                        html.append("<div class='schedule-item' style='background-color:#e0f7fa;'>📓 <a href='/Diary/DiaryDetail?diaryId=")
                                 .append(d.getDiaryId()).append("'>")
                                 .append(d.getDiaryTitle()).append("</a></div>");
                     }
@@ -178,6 +178,31 @@ public class CalendarController {
         String month = String.format("%02d", calDate.getMonthValue());
 
         return "redirect:/Calendar/CalendarView?pet_id=" + petId + "&year=" + year + "&month=" + month;
+    }
+
+    @GetMapping(value = "/Calendar/CalendarDetail")
+    public String detail(@RequestParam("calId") Long calId,
+                         HttpSession session,
+                         Model model) {
+        // 로그인 체크
+        Long userId = (Long) session.getAttribute("userId");
+        String userLoginId = (String) session.getAttribute("userLoginId");
+
+        if (userId == null || userLoginId == null) {
+            return "redirect:/login?error=login_required";
+        }
+
+        CalendarDTO cdto = calendarService.calendar_detail(calId);
+        if (cdto == null) {
+            return "redirect:/calendar/list?error=not_found";
+        }
+
+        model.addAttribute("cdto", cdto);
+        model.addAttribute("current_year", cdto.getCalDate().getYear());
+        model.addAttribute("current_month", cdto.getCalDate().getMonthValue());
+        model.addAttribute("pet_id", cdto.getPetId());
+
+        return "Calendar/CalendarDetail";
     }
 
 
