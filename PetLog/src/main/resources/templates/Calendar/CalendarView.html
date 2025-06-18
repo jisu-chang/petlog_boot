@@ -269,20 +269,20 @@
         <h3>일정 추가</h3>
         <form th:action="@{/Calendar/CalendarInput}" method="post">
             <label>반려동물
-                <select name="pet_id" required> <option th:each="pet : ${petlist}" th:value="${pet.petId}" th:text="${pet.petName}"></option>
+                <select name="petId" required> <option th:each="pet : ${petlist}" th:value="${pet.petId}" th:text="${pet.petName}"></option>
                 </select>
             </label><br>
 
             <label>제목
-                <input type="text" name="cal_title" placeholder="제목 입력" required />
+                <input type="text" name="calTitle" placeholder="제목 입력" required />
             </label><br>
 
             <label>내용
-                <textarea name="cal_content" rows="3" placeholder="내용 입력" required></textarea>
+                <textarea name="calContent" rows="3" placeholder="내용 입력" required></textarea>
             </label><br>
 
             <label>날짜
-                <input type="date" name="cal_date" required />
+                <input type="date" name="calDate" required />
             </label><br>
 
             <button type="submit" class="submit-btn">저장</button>
