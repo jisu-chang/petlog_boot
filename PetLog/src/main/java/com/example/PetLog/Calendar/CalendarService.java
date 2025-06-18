@@ -22,4 +22,6 @@ public interface CalendarService {
     CalendarDTO calendar_detail(Long calId);
 
     void updateSchedule(CalendarDTO calendarDTO);
+
+    void deleteSchedule(Long calId);
 }

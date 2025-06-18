@@ -141,8 +141,7 @@
         <a th:href="@{'/Calendar/CalendarUpdate'(cal_id=${cdto.calId}, year=${current_year}, month=${current_month}, pet_id=${cdto.petId})}">✏️</a>
       </td>
       <td>
-        <a th:href="@{'/Calendar/CalendarDelete'(cal_id=${cdto.calId}, year=${current_year}, month=${current_month}, pet_id=${cdto.petId})}"
-           onclick="return confirm('일정을 삭제합니다 😥');">🗑️</a>
+        <a th:href="@{'/Calendar/CalendarDelete'(calId=${cdto.calId}, year=${current_year}, month=${current_month}, petId=${cdto.petId})}">🗑️</a>
       </td>
     </tr>
   </table>

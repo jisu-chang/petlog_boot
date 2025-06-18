@@ -77,6 +77,11 @@ public class CalendarServiceImp implements CalendarService {
     }
 
     @Override
+    public void deleteSchedule(Long calId) {
+        calendarRepository.deleteById(calId);
+    }
+
+    @Override
     public List<CalendarDTO> getCalList(Long userId, int year, int month, Long petId) {
         String yearStr = String.valueOf(year);
         String monthStr = String.format("%02d", month);
