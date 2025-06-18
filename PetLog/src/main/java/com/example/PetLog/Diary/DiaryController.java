@@ -44,7 +44,7 @@ public class DiaryController {
         String loginId = principal.getName();
         Long userId = userService.findUserIdByLoginId(loginId);
 
-        List<PetDTO> list = petService.findPetById(userId);
+        List<PetDTO> list = petService.findPetsByUserId(userId);
         mo.addAttribute("list",list);
         mo.addAttribute("petCount", list.size());
 

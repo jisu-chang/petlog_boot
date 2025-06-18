@@ -20,7 +20,7 @@ public interface PetService {
 
     List<PetEntity> petOut(UserEntity loginUser);
 
-    List<PetDTO> findPetById(Long userId);
+    List<PetEntity> findByUserId(Long userId);
 
     //List<PetDTO> findPetsByUserId(Long userId);
 }

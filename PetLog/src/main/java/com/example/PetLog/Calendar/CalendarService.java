@@ -16,4 +16,6 @@ public interface CalendarService {
     List<PetDTO> getPets(Long userId);
 
     void insertSchedule(CalendarDTO calendarDTO, Long userId);
+
+    void save(CalendarDTO dto);
 }

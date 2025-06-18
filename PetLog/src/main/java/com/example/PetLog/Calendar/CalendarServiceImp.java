@@ -58,6 +58,12 @@ public class CalendarServiceImp implements CalendarService {
     }
 
     @Override
+    public void save(CalendarDTO dto) {
+        CalendarEntity entity = dto.toEntity();
+        calendarRepository.save(entity);
+    }
+
+    @Override
     public List<CalendarDTO> getCalList(Long userId, int year, int month, Long petId) {
         String yearStr = String.valueOf(year);
         String monthStr = String.format("%02d", month);

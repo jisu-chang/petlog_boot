@@ -21,4 +21,15 @@ public class CalendarDTO {
     private Long userId;
     private Long petId;
     private String petName; // 필요 없으면 생략 가능
+
+    public CalendarEntity toEntity() {
+        return CalendarEntity.builder()
+                .calId(calId)
+                .userId(userId)
+                .petId(petId)
+                .calTitle(calTitle)
+                .calContent(calContent)
+                .calDate(calDate)
+                .build();
+    }
 }

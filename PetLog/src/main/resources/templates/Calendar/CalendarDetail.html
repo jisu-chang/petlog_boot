@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{top::menu}"></div>
+<head>
+  <meta charset="UTF-8">
+  <title>내 일정</title>
+  <style>
+    body {
+      background-color: #fefefe;
+      margin: 0;
+      padding: 0;
+      color: #333;
+      text-align: center;
+    }
+
+    .table-wrapper {
+      width: 90%;
+      max-width: 1000px;
+      margin: 40px auto;
+      background-color: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      padding: 30px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    caption {
+      font-size: 1.8em;
+      font-weight: bold;
+      color: #db7093;
+      margin-bottom: 20px;
+    }
+
+    th, td {
+      padding: 14px 12px;
+      font-size: 1em;
+      border-bottom: 1px solid #eee;
+      text-align: center;
+    }
+
+    th {
+      background-color: #fff0f4;
+      color: #555;
+      font-weight: 600;
+    }
+
+    td a {
+      color: #333;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    td a:hover {
+      color: #db7093;
+      text-decoration: underline;
+    }
+
+    .btn {
+      margin-top: 30px;
+      background-color: #ffe1e1;
+      color: #444;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 24px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      background-color: #ffd2d2;
+    }
+
+    .no-diary {
+      color: #c0392b;
+      font-weight: bold;
+      padding: 20px 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="table-wrapper">
+  <header><h2>🗓 내 일정</h2></header>
+
+  <div style="margin-bottom: 20px;">
+    <input type="button" value="⬅ 뒤로가기" onclick="history.back()"
+           style="background-color: #f8d7da; color: #a94442; border: 1px solid #f5c6cb;
+                  padding: 6px 14px; font-size: 13px; border-radius: 16px;
+                  font-weight: bold; cursor: pointer;">
+  </div>
+
+  <table class="dotted-rounded-table">
+    <tr>
+      <th>반려동물 이름</th>
+      <th>제목</th>
+      <th>날짜</th>
+      <th>내용</th>
+      <th>수정</th>
+      <th>삭제</th>
+    </tr>
+    <tr>
+      <td th:text="${cdto.petName}">펫이름</td>
+      <td th:text="${cdto.calTitle}">제목</td>
+      <td th:text="${#strings.substring(cdto.calDate, 0, 10)}">날짜</td>
+      <td th:text="${cdto.calContent}">내용</td>
+      <td>
+        <a th:href="@{/calendar_update(cal_id=${cdto.calId}, year=${currentYear}, month=${currentMonth}, pet_id=${cdto.petId})}">✏️</a>
+      </td>
+      <td>
+        <a th:href="@{/calendar_delete(cal_id=${cdto.calId}, year=${currentYear}, month=${currentMonth}, pet_id=${cdto.petId})}"
+           onclick="return confirm('일정을 삭제합니다 😥');">🗑️</a>
+      </td>
+    </tr>
+  </table>
+</div>
+
+</body>
+</html>
