@@ -220,9 +220,76 @@ public class CalendarController {
     }
 
     @GetMapping(value = "/Calendar/CalendarUpdate")
-    public String uuu() {
+    public String showUpdateForm(@RequestParam("cal_id") Long calId,
+                                 @RequestParam(value = "year", required = false) Integer year,
+                                 @RequestParam(value = "month", required = false) Integer month,
+                                 @RequestParam(value = "pet_id", required = false) Long petIdFromRequest,
+                                 Principal principal,
+                                 Model model) {
+
+        if (principal == null) {
+            return "redirect:/login?error=login_required";
+        }
+        String loginId = principal.getName();
+        Long userId = userService.findUserIdByLoginId(loginId);
+
+        CalendarDTO cdto = calendarService.calendar_detail(calId);
+
+        if (cdto == null || !cdto.getUserId().equals(userId)) {
+            return "redirect:/Calendar/CalendarView?error=calendar_not_found_or_unauthorized";
+        }
+
+        if (cdto.getPetId() != null) {
+            PetEntity pet = petService.findByPetId(cdto.getPetId());
+            if (pet != null) {
+                cdto.setPetName(pet.getPetName());
+            }
+        }
+
+        List<PetDTO> petList = calendarService.getPets(userId);
+        model.addAttribute("petlist", petList);
+        model.addAttribute("cdto", cdto);
+
+        if (year != null && month != null) {
+            model.addAttribute("current_year", year);
+            model.addAttribute("current_month", month);
+        } else {
+            model.addAttribute("current_year", cdto.getCalDate().getYear());
+            model.addAttribute("current_month", cdto.getCalDate().getMonthValue());
+        }
+
+        model.addAttribute("pet_id", cdto.getPetId());
 
         return "Calendar/CalendarUpdate";
+    }
+
+    @PostMapping(value = "/CalendarUpdateSave")
+    public String updateScheduleSave(@ModelAttribute CalendarDTO calendarDTO,
+                                     @RequestParam("year") Integer year,
+                                     @RequestParam("month") Integer month,
+                                     Principal principal) {
+        if (principal == null) {
+            return "redirect:/login?error=login_required";
+        }
+        String loginId = principal.getName();
+        Long userId = userService.findUserIdByLoginId(loginId);
+
+        calendarDTO.setUserId(userId);
+
+        // --- ⭐⭐ 이 부분을 추가하고 서버 콘솔을 확인하세요! ⭐⭐ ---
+        System.out.println("--- Debugging updateScheduleSave ---");
+        System.out.println("calendarDTO.getCalId(): " + calendarDTO.getCalId());
+        System.out.println("calendarDTO.getPetId(): " + calendarDTO.getPetId());
+        System.out.println("calendarDTO.getCalTitle(): " + calendarDTO.getCalTitle());
+        System.out.println("calendarDTO.getCalDate(): " + calendarDTO.getCalDate());
+        System.out.println("calendarDTO.getCalContent(): " + calendarDTO.getCalContent());
+        System.out.println("calendarDTO.getUserId(): " + calendarDTO.getUserId());
+        System.out.println("------------------------------------");
+        // --- ⭐⭐ 디버깅 코드 끝 ⭐⭐ ---
+
+        calendarService.updateSchedule(calendarDTO);
+
+        return "redirect:/Calendar/CalendarView?year=" + year + "&month=" + month + "&pet_id=" + calendarDTO.getPetId();
     }
 
 

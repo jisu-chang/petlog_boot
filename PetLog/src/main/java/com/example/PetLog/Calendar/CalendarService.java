@@ -20,4 +20,6 @@ public interface CalendarService {
     void save(CalendarDTO dto);
 
     CalendarDTO calendar_detail(Long calId);
+
+    void updateSchedule(CalendarDTO calendarDTO);
 }
