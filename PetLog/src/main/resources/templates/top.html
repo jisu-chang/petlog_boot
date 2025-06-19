@@ -1,308 +1,336 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:fragment="menu"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
-  <style>
-    @media screen and (max-width: 425px) {
-      .navbar-header {
+<!-- fragments/menu.html -->
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="menu"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+      .top-wrapper {
         position: relative;
-        height: 50px;
+        background-color: #b2f2e9;
+        min-height: 60px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
       }
 
-      .navbar-toggle {
-        position: absolute;
-        left: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 2;
-      }
-
-      .center-logo {
+      .logo-text {
+        font-size: 20px;
+        color: #ff8787;
+        font-family: 'Arial', sans-serif;
+        font-weight: bold;
         position: absolute;
         left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
+        transform: translateX(-50%);
+      }
+
+      .menu-toggle {
+        font-size: 26px;
+        cursor: pointer;
+        color: #007f7f;
+        border: none;
+        background: none;
+      }
+
+      .back-btn {
         font-size: 20px;
-        font-weight: bold;
-        color: #ff8787;
+        color: #007f7f;
+        cursor: pointer;
+        background: none;
+        border: none;
+      }
+
+      .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 998;
+      }
+
+      .side-menu {
+        position: fixed;
+        top: 0;
+        right: -280px;
+        width: 280px;
+        height: 100%;
+        background-color: #e6fcf5;
+        color: #333;
+        z-index: 999;
+        transition: right 0.3s ease;
+        padding: 20px;
+        overflow-y: auto;
+        box-shadow: -2px 0 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .side-menu.open {
+        right: 0;
+      }
+
+      .side-menu .close-btn {
+        font-size: 25px;
+        color: #555;
+        position: absolute;
+        top: 15px;
+        left: 20px;
+        cursor: pointer;
+      }
+
+      .side-menu h2 {
+        color: #007f7f;
+        margin-top: 30px;
+        margin-bottom: 20px;
+      }
+
+      .side-menu ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .side-menu li {
+        padding: 10px 0;
+      }
+
+      .side-menu a {
+        color: #007f7f;
         text-decoration: none;
-        z-index: 1;
+        display: block;
+        font-weight: 600;
       }
 
-      .navbar-brand img {
-        height: 40px;
+      /* ✅ hover는 a 태그에만 적용, span에는 적용 안됨 */
+      .side-menu a:hover {
+        background-color: #e6fcf5;
       }
 
-      .top-wrapper {
-        padding: 5px 0 !important;
+      /* ✅ 상위 토글 span 배경색 */
+      .side-menu li > span {
+        background-color: #e6fcf5;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-weight: bold;
+        display: inline-block;
+        margin-bottom: 5px;
+        color: #007f7f;
       }
-    }
 
-    body {
-      background-color: #f0fdfa;
-      font-family: 'Pretendard', sans-serif;
-      margin: 0;
-      padding: 0;
-    }
+      /* ✅ 하위 메뉴 배경 흰색 */
+      .side-menu li > ul {
+        padding-left: 15px;
+        background-color: #e6fcf5;
+        border-radius: 5px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+      }
 
-    .top-wrapper {
-      position: relative;
-      z-index: 10;
-      background-color: #b2f2e9;
-      padding: 15px 0;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    }
+      .side-menu li > ul > li {
+        font-size: 14px;
+        padding: 4px 0;
+      }
 
-    .logo-img {
-      height: 40px;
-      padding: 0 5px;
-    }
+     /* 🔹 구분선 있는 큰 그룹 */
+      .side-menu .section-group {
+        border-bottom: 2px solid #e0e0e0;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+      }
 
-    .navbar {
-      background-color: transparent;
-      border: none;
-      margin: 0;
-    }
+      /* 🔹 토글 제목 */
+      .menu-toggle-group > .toggle-header {
+        font-size: 16px;
+        font-weight: 700;
+        background-color: #e6fcf5;
+        padding: 8px 10px;
+        border-radius: 6px;
+        color: #007f7f;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
 
-    .navbar-nav > li {
-      white-space: nowrap;
-    }
+      /* 🔹 화살표 아이콘 (오른쪽 정렬) */
+      .menu-toggle-group .arrow {
+        font-size: 16px;
+      }
 
-    .navbar .nav > li > a,
-    .navbar-right li a {
-      color: #007f7f !important;
-      font-weight: 600;
-      font-size: 15px;
-    }
+      /* 🔹 하위 메뉴 (기본 숨김) */
+      .menu-toggle-group ul {
+        display: none;
+        background-color: #ffffff;
+        border-radius: 5px;
+        margin-top: 6px;
+        padding: 8px 20px; /* ← 들여쓰기 더 깊게 */
+      }
 
-    .navbar .nav > li > a:hover,
-    .navbar .dropdown-menu > li > a:hover,
-    .navbar-right li a:hover {
-      background-color: #d3f9f4;
-      color: #004c4c !important;
-    }
+      /* 🔹 하위 메뉴 항목 */
+      .menu-toggle-group ul li {
+        font-size: 14px;
+        padding: 6px 0;
+        border-bottom: 1px solid #f0f0f0;
+      }
 
-    .navbar .dropdown-menu {
-      background-color: #e6fcf5;
-      border: none;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      z-index: 10000;
-    }
+      .menu-toggle-group ul li:last-child {
+        border-bottom: none;
+      }
 
-    .navbar .dropdown-menu > li > a {
-      color: #007f7f;
-    }
+      .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: #b2f2e9;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        height: 60px;
+        z-index: 1001;
+      }
 
-    .grape-count {
-      padding-top: 15px;
-      color: #007f7f;
-      font-weight: bold;
-    }
-  </style>
-</head>
+      .bottom-nav a {
+        text-align: center;
+        color: #007f7f;
+        font-weight: bold;
+        text-decoration: none;
+        font-size: 14px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    </style>
 
-<<<<<<< HEAD
-=======
-<style>
-  .navbar .nav {
-   display: flex !important;
-   flex-wrap: nowrap !important;
-   align-items: center;
- }
+  </head>
 
- .navbar-nav > li {
-   white-space: nowrap;
- }
+  <div class="top-wrapper">
+    <button class="back-btn" onclick="history.back()"> ⬅ </button>
+    <a class="navbar-brand" th:href="@{/main}" style="position: absolute; left: 40%; transform: translateX(-50%);">
+      <img src="./image/logo11.png" alt="Petlog" style="height: 90px; object-fit: contain; position: absolute; top: -15px;">
+    </a>
+    <button class="menu-toggle" onclick="toggleMenu()">&#9776;</button>
+  </div>
 
- .navbar-right {
-   display: flex !important;
-   flex-wrap: nowrap;
-   align-items: center;
-   gap: 10px;
- }
+  <div class="overlay" onclick="toggleMenu()"></div>
 
- .navbar .dropdown-menu {
-   z-index: 10000;
- }
- .top-wrapper {
-   position: relative;
-   z-index: 10;
- }
- body {
-   background-color: #f0fdfa;
-   margin: 0;
-   padding: 0;
- }
- .top-wrapper {
-   background-color: #b2f2e9;
-   padding: 15px 0;
-   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
- }
- .logo-img {
-   height: 65px;
-   margin-left: 20px;
- }
- .navbar {
-   background-color: transparent;
-   border: none;
-   margin: 0;
- }
- .navbar .nav > li > a,
- .navbar-right li a {
-   color: #007f7f !important;
-   font-weight: 600;
-   font-size: 15px;
- }
- .navbar .nav > li > a:hover,
- .navbar .dropdown-menu > li > a:hover,
- .navbar-right li a:hover {
-   background-color: #d3f9f4;
-   color: #004c4c !important;
- }
- .navbar .dropdown-menu {
-   background-color: #e6fcf5;
-   border: none;
-   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
- }
- .navbar .dropdown-menu > li > a {
-   color: #007f7f;
- }
- .grape-count {
-   padding-top: 15px;
-   color: #007f7f;
-   font-weight: bold;
- }
 
-</style>
+  <div class="side-menu" id="sideMenu" style="padding-top: 60px;">
+    <div class="close-btn" onclick="toggleMenu()">×</div>
+    <img src="./image/logo11.png" alt="Petlog" style="width: 100px; margin: 0 auto 10px auto; display: block;">
+    <ul>
+      <li><a th:href="@{/main}">🏠 홈</a></li>
 
->>>>>>> 38e61dbdbcac228ec4acd9c213bbffb576fb9212
-<body>
-<div class="top-wrapper">
-  <nav class="navbar">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#mainNavbar">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" th:href="@{/main}">
-          <img src="./image/logo11.png" alt="Petlog" class="logo-img">
-        </a>
+      <li class="menu-toggle-group section-group">
+        <div class="toggle-header" onclick="toggleMenuGroup(this)">
+          📖 오늘의 일기 <span class="arrow">▼</span>
+        </div>
+        <ul>
+          <li><a th:href="@{/Diary/DiaryInput}">✏️ 일기 쓰기</a></li>
+          <li><a th:href="@{/Diary/DiaryOut}">📖 일기 보기</a></li>
+        </ul>
+      </li>
+
+      <li class="menu-toggle-group section-group">
+      <div class="toggle-header" onclick="toggleMenuGroup(this)">
+        🐶 마이펫 <span class="arrow">▼</span>
       </div>
+        <ul>
+          <li><a th:href="@{/Pet/PetInput}">🐾 펫 등록</a></li>
+          <li><a th:href="@{/Pet/PetOut}">😻 펫 보기</a></li>
+        </ul>
+      </li>
 
-      <<<<<<< HEAD
-      <div class="collapse navbar-collapse" id="mainNavbar">
-        <ul class="nav navbar-nav">
-          <li class="active"><a th:href="@{/main}">🏠 Home</a></li>
-          =======
-          <ul class="nav navbar-nav">
-            <li class="active"><a th:href="@{/main}">🏠 Home</a></li>
-            <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">📖 오늘의 일기<span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a th:href="@{/Diary/DiaryInput}">✏️ 일기 쓰기</a></li>
-                <li><a th:href="@{/Diary/DiaryOut}">📖 일기 보기</a></li>
-              </ul>
-            </li>
-            <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">🐶마이 펫😺<span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a th:href="@{/Pet/PetInput}">🐾 펫 등록</a></li>
-                <li><a th:href="@{/Pet/PetOut}">😻 펫 보기</a></li>
-              </ul>
-            </li>
-            <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">🗨️ 커뮤니티<span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a th:href="@{/CommunityNotice}">📢 공지사항</a></li>
-                <li><a th:href="@{/CommunityOut}">📝 게시판</a></li>
-                <li><a th:href="@{/Snack/SnackInput}">🦴 레시피 공유</a></li>
-                <li><a th:href="@{/Snack/SnackOut}">🦴 레시피 보기</a></li>
-              </ul>
-            </li>
-            <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">🧠 멍냥 퀴즈방<span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a th:href="@{/UserQuizPlay}">🐾 오늘의 멍냥 퀴즈</a></li>
-              </ul>
-            </li>
-            <li><a th:href="@{/qnalist}">❓ Q&A</a></li>
-            <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">🎁 아이템 상점 <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a th:href="@{/ItemUser/ItemOutUser}">✨ 아이템 사러가기</a></li>
-                <li><a th:href="@{/ItemUser/ItemBought}">👩 내 아이템</a></li>
-                <li><a th:href="@{/Point/GrapeBar}">🍇 내 포도</a></li>
-              </ul>
-            </li>
-            >>>>>>> 38e61dbdbcac228ec4acd9c213bbffb576fb9212
+      <li class="menu-toggle-group section-group">
+        <div class="toggle-header" onclick="toggleMenuGroup(this)">
+          🗨️ 커뮤니티 <span class="arrow">▼</span>
+        </div>
+        <ul>
+          <li><a th:href="@{/CommunityNotice}">📢 공지사항</a></li>
+          <li><a th:href="@{/CommunityOut}">📝 게시판</a></li>
+          <li><a th:href="@{/Snack/SnackInput}">🦴 레시피 공유</a></li>
+          <li><a th:href="@{/Snack/SnackOut}">🦴 레시피 보기</a></li>
+        </ul>
+      </li>
 
-            <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">📖 오늘의 일기<span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a th:href="@{Diary/DiaryInput}">✏️ 일기 쓰기</a></li>
-                <li><a th:href="@{Diary/DiaryOut}">📖 일기 보기</a></li>
-              </ul>
-            </li>
+      <li class="menu-toggle-group section-group">
+          <div class="toggle-header" onclick="toggleMenuGroup(this)">
+            🧠 멍냥 퀴즈방 <span class="arrow">▼</span>
+          </div>
+        <ul>
+          <li><a th:href="@{/UserQuizPlay}">🐾 오늘의 퀴즈</a></li>
+        </ul>
+      </li>
 
-            <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">🐶마이 펫😺<span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a th:href="@{Pet/PetInput}">🐾 펫 등록</a></li>
-                <li><a th:href="@{Pet/PetOut}">😻 펫 보기</a></li>
-              </ul>
-            </li>
+      <li class="menu-toggle-group section-group">
+        <div class="toggle-header" onclick="toggleMenuGroup(this)">
+          🎁 아이템 상점 <span class="arrow">▼</span>
+        </div>
+        <ul>
+          <li><a th:href="@{/ItemUser/ItemOutUser}">✨ 아이템 사러가기</a></li>
+          <li><a th:href="@{/ItemUser/ItemBought}">👩 내 아이템</a></li>
+          <li><a th:href="@{/Point/GrapeBar}">🍇 내 포도</a></li>
+        </ul>
+      </li>
 
-            <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">🗨️ 커뮤니티<span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a th:href="@{/CommunityNotice}">📢 PetLog 공지사항</a></li>
-                <li><a th:href="@{/CommunityOut}">📝 게시판</a></li>
-                <li><a th:href="@{Snack/SnackInput}">🦴 레시피 공유</a></li>
-                <li><a th:href="@{Snack/SnackOut}">🦴 레시피 보기</a></li>
-              </ul>
-            </li>
+      <li class="menu-toggle-group section-group">
+            <a th:href="@{/qnalist}">❓ Q&A </a>
+      </li>
 
-            <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">🧠 멍냥 퀴즈방<span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a th:href="@{/UserQuiz}">🐾 오늘의 멍냥 퀴즈</a></li>
-              </ul>
-            </li>
+      <li th:if="${session.user_role == 'admin'}" class="menu-toggle-group section-group">
+        <div class="toggle-header" onclick="toggleMenuGroup(this)">
+          👑 관리자 <span class="arrow">▼</span>
+        </div>
+        <ul>
+          <li><a th:href="@{/NoticeInput}">📢 공지사항 작성하기</a></li>
+          <li><a th:href="@{/items_input}">🎁 아이템 등록</a></li>
+          <li><a th:href="@{/items_out_admin}">🎁 아이템 목록</a></li>
+          <li><a th:href="@{/Quiz_admin}">📄 퀴즈 관리</a></li>
+          <li><a th:href="@{/point/grapes_admin_form}">🍇 포도알 관리</a></li>
+        </ul>
+      </li>
 
-            <li><a th:href="@{/qnalist}">❓ Q&A</a></li>
+      <li sec:authorize="isAuthenticated()">
+        <a href="/MyPage" th:text="${#authentication.name + '님의 마이페이지!'}"></a>
+      </li>
+      <li sec:authorize="isAuthenticated()"><a href="/logout">🚪 로그아웃</a></li>
+      <li sec:authorize="isAnonymous()"><a href="/login">🔐 로그인</a></li>
+      <li sec:authorize="isAnonymous()"><a href="/signUp">👤 회원가입</a></li>
+    </ul>
+  </div>
+  <div class="bottom-nav">
+    <a th:href="@{/mypage}">👤<span>마이페이지</span></a>
+    <a th:href="@{/Pet/PetOut}">🐾<span>마이 펫</span></a>
+    <a th:href="@{/Point/GrapeBar}">🍇<span> <span th:text="${session.grapeCount}"></span>개</span></a>
+    <a th:href="@{/ItemUser/ItemBought}">💼<span>내 아이템</span></a>
+  </div>
 
-            <li th:if="${session.user_role == 'admin'}" class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">👑 관리자<span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a th:href="@{/NoticeInput}">📢 공지사항 작성하기</a></li>
-                <li><a th:href="@{/items_input}">🎁 아이템 등록</a></li>
-                <li><a th:href="@{/items_out_admin}">🎁 아이템 목록</a></li>
-                <li><a th:href="@{/Quiz_admin}">📄 퀴즈 관리</a></li>
-                <li><a th:href="@{/point/grapes_admin_form}">🍇 포도알 관리</a></li>
-              </ul>
-            </li>
-          </ul>
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById("sideMenu");
+      const overlay = document.querySelector(".overlay");
+      menu.classList.toggle("open");
+      overlay.style.display = menu.classList.contains("open") ? "block" : "none";
+    }
+  </script>
 
-          <ul class="nav navbar-nav navbar-right">
-            <li sec:authorize="isAuthenticated()">
-              <a href="/MyPage">
-                <span style="color:yellow;" th:text="${#authentication.name + '님의 마이페이지!'}"></span>
-              </a>
-            </li>
-            <li sec:authorize="isAuthenticated()"><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> 로그아웃</a></li>
-            <li sec:authorize="isAnonymous()"><a href="/signUp"><span class="glyphicon glyphicon-user"></span> 회원가입</a></li>
-            <li sec:authorize="isAnonymous()"><a href="/login"><span class="glyphicon glyphicon-log-in"></span> 로그인</a></li>
-          </ul>
-      </div>
-    </div>
-  </nav>
+  <script>
+    function toggleMenuGroup(header) {
+      const group = header.nextElementSibling;
+      const arrow = header.querySelector(".arrow");
+
+      if (group.style.display === "block") {
+        group.style.display = "none";
+        arrow.textContent = "▼";
+      } else {
+        group.style.display = "block";
+        arrow.textContent = "▲";
+      }
+    }
+  </script>
 </div>
-</body>
-</html>
