@@ -8,30 +8,46 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <style>
       .content-wrapper {
-      box-sizing: border-box;
+         box-sizing: border-box;
       }
        .top-wrapper {
-         position: relative;
-         background-color: #b2f2e9;
-         min-height: 60px;
-         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-         z-index: 1000;
-         display: flex;
-         justify-content: space-between;
-         align-items: center;
-         padding: 0 20px;
+          height: 60px; /* 또는 원하는 높이 */
+          position: fixed;               /* 고정 위치 */
+          top: 0;                        /* 화면 상단에 붙이기 */
+          left: 0;
+          width: 100%;
+          background-color: #b2f2e9;
+          min-height: 60px;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+          z-index: 1000;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0 20px;
        }
 
-       .logo-text {
-         font-size: 20px;
-         color: #ff8787;
-         font-family: 'Arial', sans-serif;
-         font-weight: bold;
-         position: absolute;
-         left: 50%;
-         transform: translateX(-50%);
-       }
+       .logo-center {
+          display: flex;
+          justify-content: center;
+          flex: 1; /* 공간 분배 */
+        }
 
+        .logo-center img {
+          height: 100px;
+          max-width: 100%;
+          object-fit: contain;
+        }
+
+        .logo-wrapper {
+          display: flex;
+          justify-content: center; /* 수평 가운데 */
+          margin-bottom: 5px;      /* 아래 여백 */
+        }
+
+        .logo-wrapper img {
+          width: 100px;             /* 원하는 너비 */
+          height: auto;             /* 비율 유지 */
+        }
        .menu-toggle {
          font-size: 26px;
          cursor: pointer;
@@ -67,7 +83,7 @@
          height: 100%;
          background-color: #e6fcf5;
          color: #333;
-         z-index: 999;
+         z-index: 1003;
          transition: right 0.3s ease;
          padding: 20px;
          overflow-y: auto;
@@ -215,9 +231,11 @@
 <div class="content-wrapper">
   <div class="top-wrapper">
     <button class="back-btn" onclick="history.back()"> ⬅ </button>
-    <a class="navbar-brand" th:href="@{/main}" style="position: absolute; left: 40%; transform: translateX(-50%);">
-      <img src="./image/logo11.png" alt="Petlog" style="height: 90px; object-fit: contain; position: absolute; top: -15px;">
-    </a>
+
+    <div class="logo-center">
+      <a href="/main"> <img src="./image/logo11.png" alt="Petlog" /> </a>
+    </div>
+
     <button class="menu-toggle" onclick="toggleMenu()">&#9776;</button>
   </div>
 
@@ -226,9 +244,24 @@
 
   <div class="side-menu" id="sideMenu" style="padding-top: 60px;">
     <div class="close-btn" onclick="toggleMenu()">×</div>
-    <img src="./image/logo11.png" alt="Petlog" style="width: 100px; margin: 0 auto 10px auto; display: block;">
+      <div class="logo-wrapper">
+        <img src="./image/logo11.png" alt="Petlog">
+      </div>
     <ul>
       <li><a th:href="@{/main}">🏠 홈</a></li>
+
+      <li th:if="${session.user_role == 'admin'}" class="menu-toggle-group section-group">
+        <div class="toggle-header" onclick="toggleMenuGroup(this)">
+          👑 관리자 <span class="arrow">▼</span>
+        </div>
+        <ul>
+          <li><a th:href="@{/NoticeInput}">📢 공지사항 작성하기</a></li>
+          <li><a th:href="@{/items_input}">🎁 아이템 등록</a></li>
+          <li><a th:href="@{/items_out_admin}">🎁 아이템 목록</a></li>
+          <li><a th:href="@{/Quiz_admin}">🧠 퀴즈 관리</a></li>
+          <li><a th:href="@{/point/grapes_admin_form}">🍇 포도알 관리</a></li>
+        </ul>
+      </li>
 
       <li class="menu-toggle-group section-group">
         <div class="toggle-header" onclick="toggleMenuGroup(this)">
@@ -252,11 +285,11 @@
 
       <li class="menu-toggle-group section-group">
         <div class="toggle-header" onclick="toggleMenuGroup(this)">
-          🗨️ 커뮤니티 <span class="arrow">▼</span>
+          📚 커뮤니티 <span class="arrow">▼</span>
         </div>
         <ul>
           <li><a th:href="@{/CommunityNotice}">📢 공지사항</a></li>
-          <li><a th:href="@{/CommunityOut}">📝 게시판</a></li>
+          <li><a th:href="@{/CommunityOut}">💬 게시판</a></li>
           <li><a th:href="@{/Snack/SnackInput}">🦴 레시피 공유</a></li>
           <li><a th:href="@{/Snack/SnackOut}">🦴 레시피 보기</a></li>
         </ul>
@@ -283,37 +316,43 @@
       </li>
 
       <li class="menu-toggle-group section-group">
-            <a th:href="@{/qnalist}">❓ Q&A </a>
-      </li>
-
-      <li th:if="${session.user_role == 'admin'}" class="menu-toggle-group section-group">
         <div class="toggle-header" onclick="toggleMenuGroup(this)">
-          👑 관리자 <span class="arrow">▼</span>
+          📤 Q&A <span class="arrow">▼</span>
         </div>
         <ul>
-          <li><a th:href="@{/NoticeInput}">📢 공지사항 작성하기</a></li>
-          <li><a th:href="@{/items_input}">🎁 아이템 등록</a></li>
-          <li><a th:href="@{/items_out_admin}">🎁 아이템 목록</a></li>
-          <li><a th:href="@{/Quiz_admin}">📄 퀴즈 관리</a></li>
-          <li><a th:href="@{/point/grapes_admin_form}">🍇 포도알 관리</a></li>
+          <li><a th:href="@{/qnalist}">📤 Q&A</a></li>
         </ul>
       </li>
 
-      <li sec:authorize="isAuthenticated()">
-        <a href="/MyPage" th:text="${#authentication.name + '님의 마이페이지!'}"></a>
+
+      <li class="menu-toggle-group section-group">
+        <div class="toggle-header" onclick="toggleMenuGroup(this)">
+          👤 마이페이지 <span class="arrow">▼</span>
+        </div>
+        <ul>
+          <li sec:authorize="isAuthenticated()">
+            <a href="/MyPage">
+              ℹ️&nbsp;<span th:text="${#authentication.name + '님의 마이페이지'}"></span></a>
+          </li>
+          <li sec:authorize="isAuthenticated()"><a href="/logout">🔐&nbsp;로그아웃</a></li>
+          <li sec:authorize="isAnonymous()"><a href="/login">🔓&nbsp;로그인</a></li>
+          <li sec:authorize="isAnonymous()"><a href="/signUp">👤&nbsp;회원가입</a></li>
+        </ul>
       </li>
-      <li sec:authorize="isAuthenticated()"><a href="/logout">🚪 로그아웃</a></li>
-      <li sec:authorize="isAnonymous()"><a href="/login">🔐 로그인</a></li>
-      <li sec:authorize="isAnonymous()"><a href="/signUp">👤 회원가입</a></li>
     </ul>
   </div>
 </div>
 
   <div class="bottom-nav">
-    <a th:href="@{/mypage}">👤<span>마이페이지</span></a>
-    <a th:href="@{/Pet/PetOut}">🐾<span>마이 펫</span></a>
-    <a th:href="@{/Point/GrapeBar}">🍇<span> <span th:text="${session.grapeCount}"></span>개</span></a>
-    <a th:href="@{/ItemUser/ItemBought}">💼<span>내 아이템</span></a>
+    <!-- 로그인 상태일 때 -->
+    <a sec:authorize="isAuthenticated()" th:href="@{/MyPage}">👤<span>마이페이지</span></a>
+    <a sec:authorize="isAuthenticated()" th:href="@{/Pet/PetOut}">🐾<span>마이 펫</span></a>
+    <a sec:authorize="isAuthenticated()" th:href="@{/Point/GrapeBar}">🍇<span> <span th:text="${session.grapeCount}"></span>개</span></a>
+    <a sec:authorize="isAuthenticated()" th:href="@{/ItemUser/ItemBought}">💼<span>내 아이템</span></a>
+
+    <!-- 로그아웃 상태일 때 -->
+    <a sec:authorize="isAnonymous()" th:href="@{/login}">🔓<span>로그인</span></a>
+    <a sec:authorize="isAnonymous()" th:href="@{/signUp}">👤<span>회원가입</span></a>
   </div>
 
   <script>
