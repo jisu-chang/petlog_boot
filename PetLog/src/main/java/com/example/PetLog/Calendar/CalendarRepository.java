@@ -21,4 +21,8 @@ public interface CalendarRepository extends JpaRepository<CalendarEntity, Long> 
             @Param("month") String month,
             @Param("petId") Long petId
     );
+
+    @Query("SELECT new com.example.PetLog.Calendar.CalendarDTO(c.calId, c.calTitle, c.calContent, c.calDate, c.userId, c.petId, null) " +
+            "FROM CalendarEntity c WHERE c.calId = :calId")
+    CalendarDTO selectCalendarById(@Param("calId") Long calId);
 }

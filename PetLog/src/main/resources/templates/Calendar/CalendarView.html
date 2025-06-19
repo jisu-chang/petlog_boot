@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{top::menu}"></div>
 <head>
     <meta charset="UTF-8">
     <title th:text="${current_year} + '년 ' + ${current_month} + '월'">달력</title>
     <style>
         body {
           margin: 0; padding: 0;
-          font-family: 'Pretendard', sans-serif;
         }
         .calendar-wrapper {
           max-width: 1400px;
           margin: 0 auto;
           padding: 0 20px;
         }
-        table {
-          width: 100%;
-          border-collapse: separate;
-          border-spacing: 4px;
-          font-size: 1.7rem;
-        }
+       table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 4px;
+        font-size: 1.7rem;
+        table-layout: fixed;
+    }
         th {
           background-color: #f3e5f5;
           color: #444;
@@ -32,9 +33,11 @@
         th.sat { color: #8bb3f4; }
 
         td {
-          padding: 0;
-          height: 120px;
-        }
+        padding: 0;
+        height: 120px;
+        width: calc(100% / 7 - (4px * 6 / 7));
+
+    }
 
         .calendar-cell {
           background-color: rgba(255, 255, 255, 0.6);
@@ -44,6 +47,7 @@
           padding: 0;
           margin: 4px;
           height: 120px;
+          width: 100%;
           position: relative;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
           border: 1px solid rgba(255, 255, 255, 0.3);
@@ -232,7 +236,7 @@
 <div style="text-align: center; margin-bottom: 20px;">
     <h2 th:text="${current_year} + '년 ' + ${current_month} + '월'"></h2>
 
-    <form method="get" th:action="@{/Calendar/CalendarView}" style="display: inline-block;">
+    <form method="get" th:action="@{/Calendar/CalendarDetail}" style="display: inline-block;">
         <label>🐶 반려동물 선택: </label>
         <select name="pet_id" class="pet-select" onchange="this.form.submit()">
             <option th:each="pet : ${petlist}"
@@ -259,33 +263,30 @@
         <tr>
             <th class="sun">Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th class="sat">Sat</th>
         </tr>
-        <tbody th:utext="${calendarHtml}"></tbody> <!-- ✅ 핵심: tbody로 출력 -->
+        <tbody th:utext="${calendarHtml}"></tbody>
     </table>
 </div>
 
-<!-- 일정 추가 모달 -->
 <div id="addScheduleModal" class="modal">
     <div class="modal-box-summary">
         <button class="close-btn" onclick="closeAddScheduleModal()">×</button>
         <h3>일정 추가</h3>
         <form th:action="@{/Calendar/CalendarInput}" method="post">
             <label>반려동물
-                <select name="pet_id" required>
-                    <option value="">선택하세요</option>
-                    <option th:each="pet : ${petlist}" th:value="${pet.petId}" th:text="${pet.petName}"></option>
+                <select name="petId" required> <option th:each="pet : ${petlist}" th:value="${pet.petId}" th:text="${pet.petName}"></option>
                 </select>
             </label><br>
 
             <label>제목
-                <input type="text" name="cal_title" placeholder="제목 입력" required />
+                <input type="text" name="calTitle" placeholder="제목 입력" required />
             </label><br>
 
             <label>내용
-                <textarea name="cal_content" rows="3" placeholder="내용 입력" required></textarea>
+                <textarea name="calContent" rows="3" placeholder="내용 입력" required></textarea>
             </label><br>
 
             <label>날짜
-                <input type="date" name="cal_date" required />
+                <input type="date" name="calDate" required />
             </label><br>
 
             <button type="submit" class="submit-btn">저장</button>

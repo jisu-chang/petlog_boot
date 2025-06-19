@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{top::menu}"></div>
+<head>
+  <meta charset="UTF-8">
+  <title>일정 수정</title>
+  <style>
+    body {
+      background-color: #fefefe;
+      margin: 0;
+      padding: 0;
+      color: #333;
+      text-align: center;
+    }
+
+    .table-wrapper {
+      width: 90%;
+      max-width: 1000px;
+      margin: 40px auto;
+      background-color: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      padding: 30px;
+    }
+
+    caption {
+      font-size: 1.8em;
+      font-weight: bold;
+      color: #db7093;
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 14px 12px;
+      font-size: 14px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+    }
+
+    th {
+      background-color: #fff0f4;
+      color: #555;
+      font-weight: 600;
+      text-align: right;
+      width: 20%;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    textarea {
+      width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      resize: vertical;
+      height: 160px;
+    }
+
+    .form-actions {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    input[type="submit"],
+    input[type="reset"] {
+      background-color: #ffe1e1;
+      color: #444;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 24px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      margin: 0 10px;
+      font-size: 15px;
+    }
+
+    input[type="submit"]:hover,
+    input[type="reset"]:hover {
+      background-color: #ffd2d2;
+    }
+  </style>
+</head>
+
+<body>
+<script type="text/javascript">
+  function confirm_update() {
+    return confirm("일정을 수정합니다 😊");
+  }
+</script>
+
+<div class="table-wrapper">
+  <caption>📆 일정 수정하기</caption>
+
+  <form th:action="@{/CalendarUpdateSave}" method="post" onsubmit="return confirm_update()">
+    <input type="hidden" name="calId" th:value="${cdto.calId}" />       <input type="hidden" name="petId" th:value="${cdto.petId}" />       <input type="hidden" name="year" th:value="${current_year}" />
+    <input type="hidden" name="month" th:value="${current_month}" />
+
+    <table>
+      <tr>
+        <th><label for="calTitle">제목</label></th> <td><input type="text" id="calTitle" name="calTitle" th:value="${cdto.calTitle}" required /></td> </tr>
+
+      <tr>
+        <th><label for="calDate">날짜</label></th> <td><input type="date" id="calDate" name="calDate" th:value="${cdto.calDate}" required /></td>     </tr>
+
+      <tr>
+        <th><label for="calContent">내용</label></th> <td><textarea id="calContent" name="calContent" required th:text="${cdto.calContent}"></textarea></td> </tr>
+    </table>
+
+    <div class="form-actions">
+      <input type="submit" value="💾 수정하기" />
+      <input type="reset" value="❌ 취소하기" onclick="history.back()" />
+    </div>
+  </form>
+</div>
+
+</body>
+</html>
