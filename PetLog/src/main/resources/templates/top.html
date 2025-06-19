@@ -27,17 +27,14 @@
  }
 
  .navbar .dropdown-menu {
-   z-index: 10000; /* Summernote 팝업과 충돌 방지 */
+   z-index: 10000;
  }
-
- /* 혹시 Summernote가 탑을 밀어내는 경우 */
  .top-wrapper {
    position: relative;
    z-index: 10;
  }
  body {
    background-color: #f0fdfa;
-   font-family: 'Pretendard', sans-serif;
    margin: 0;
    padding: 0;
  }
@@ -97,15 +94,15 @@
         <li class="dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">📖 오늘의 일기<span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a th:href="@{Diary/DiaryInput}">✏️ 일기 쓰기</a></li>
-            <li><a th:href="@{Diary/DiaryOut}">📖 일기 보기</a></li>
+            <li><a th:href="@{/Diary/DiaryInput}">✏️ 일기 쓰기</a></li>
+            <li><a th:href="@{/Diary/DiaryOut}">📖 일기 보기</a></li>
           </ul>
         </li>
         <li class="dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">🐶마이 펫😺<span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a th:href="@{Pet/PetInput}">🐾 펫 등록</a></li>
-            <li><a th:href="@{Pet/PetOut}">😻 펫 보기</a></li>
+            <li><a th:href="@{/Pet/PetInput}">🐾 펫 등록</a></li>
+            <li><a th:href="@{/Pet/PetOut}">😻 펫 보기</a></li>
           </ul>
         </li>
         <li class="dropdown">
@@ -113,8 +110,8 @@
           <ul class="dropdown-menu">
             <li><a th:href="@{/CommunityNotice}">📢 공지사항</a></li>
             <li><a th:href="@{/CommunityOut}">📝 게시판</a></li>
-            <li><a th:href="@{Snack/SnackInput}">🦴 레시피 공유</a></li>
-            <li><a th:href="@{Snack/SnackOut}">🦴 레시피 보기</a></li>
+            <li><a th:href="@{/Snack/SnackInput}">🦴 레시피 공유</a></li>
+            <li><a th:href="@{/Snack/SnackOut}">🦴 레시피 보기</a></li>
           </ul>
         </li>
         <li class="dropdown">
