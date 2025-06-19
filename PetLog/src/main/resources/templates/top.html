@@ -6,195 +6,185 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+  <style>
+    @media screen and (max-width: 425px) {
+      .navbar-header {
+        position: relative;
+        height: 50px;
+      }
+
+      .navbar-toggle {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 2;
+      }
+
+      .center-logo {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 20px;
+        font-weight: bold;
+        color: #ff8787;
+        text-decoration: none;
+        z-index: 1;
+      }
+
+      .navbar-brand img {
+        height: 40px;
+      }
+
+      .top-wrapper {
+        padding: 5px 0 !important;
+      }
+    }
+
+    body {
+      background-color: #f0fdfa;
+      font-family: 'Pretendard', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .top-wrapper {
+      position: relative;
+      z-index: 10;
+      background-color: #b2f2e9;
+      padding: 15px 0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .logo-img {
+      height: 40px;
+      padding: 0 5px;
+    }
+
+    .navbar {
+      background-color: transparent;
+      border: none;
+      margin: 0;
+    }
+
+    .navbar-nav > li {
+      white-space: nowrap;
+    }
+
+    .navbar .nav > li > a,
+    .navbar-right li a {
+      color: #007f7f !important;
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .navbar .nav > li > a:hover,
+    .navbar .dropdown-menu > li > a:hover,
+    .navbar-right li a:hover {
+      background-color: #d3f9f4;
+      color: #004c4c !important;
+    }
+
+    .navbar .dropdown-menu {
+      background-color: #e6fcf5;
+      border: none;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      z-index: 10000;
+    }
+
+    .navbar .dropdown-menu > li > a {
+      color: #007f7f;
+    }
+
+    .grape-count {
+      padding-top: 15px;
+      color: #007f7f;
+      font-weight: bold;
+    }
+  </style>
 </head>
-
-<style>
-  .navbar .nav {
-   display: flex !important;
-   flex-wrap: nowrap !important;
-   align-items: center;
- }
-
- .navbar-nav > li {
-   white-space: nowrap;
- }
-
- .navbar-right {
-   display: flex !important;
-   flex-wrap: nowrap;
-   align-items: center;
-   gap: 10px;
- }
-
- .navbar .dropdown-menu {
-   z-index: 10000; /* Summernote 팝업과 충돌 방지 */
- }
-
- /* 혹시 Summernote가 탑을 밀어내는 경우 */
- .top-wrapper {
-   position: relative;
-   z-index: 10;
- }
- body {
-   background-color: #f0fdfa;
-   font-family: 'Pretendard', sans-serif;
-   margin: 0;
-   padding: 0;
- }
- .top-wrapper {
-   background-color: #b2f2e9;
-   padding: 15px 0;
-   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
- }
- .logo-img {
-   height: 65px;
-   margin-left: 20px;
- }
- .navbar {
-   background-color: transparent;
-   border: none;
-   margin: 0;
- }
- .navbar .nav > li > a,
- .navbar-right li a {
-   color: #007f7f !important;
-   font-weight: 600;
-   font-size: 15px;
- }
- .navbar .nav > li > a:hover,
- .navbar .dropdown-menu > li > a:hover,
- .navbar-right li a:hover {
-   background-color: #d3f9f4;
-   color: #004c4c !important;
- }
- .navbar .dropdown-menu {
-   background-color: #e6fcf5;
-   border: none;
-   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
- }
- .navbar .dropdown-menu > li > a {
-   color: #007f7f;
- }
- .grape-count {
-   padding-top: 15px;
-   color: #007f7f;
-   font-weight: bold;
- }
-
-</style>
 
 <body>
 <div class="top-wrapper">
   <nav class="navbar">
     <div class="container-fluid">
-
       <div class="navbar-header">
-        <a class="navbar-brand" th:href="@{/main}"></a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#mainNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" th:href="@{/main}">
+          <img src="./image/logo11.png" alt="Petlog" class="logo-img">
+        </a>
       </div>
 
-      <ul class="nav navbar-nav">
-        <li class="active"><a th:href="@{/main}">🏠 Home</a></li>
-        <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">📖 오늘의 일기<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a th:href="@{Diary/DiaryInput}">✏️ 일기 쓰기</a></li>
-            <li><a th:href="@{Diary/DiaryOut}">📖 일기 보기</a></li>
-          </ul>
-        </li>
-        <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">🐶마이 펫😺<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a th:href="@{Pet/PetInput}">🐾 펫 등록</a></li>
-            <li><a th:href="@{Pet/PetOut}">😻 펫 보기</a></li>
-          </ul>
-        </li>
-        <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">🗨️ 커뮤니티<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a th:href="@{/CommunityNotice}">📢 공지사항</a></li>
-            <li><a th:href="@{/CommunityOut}">📝 게시판</a></li>
-            <li><a th:href="@{Snack/SnackInput}">🦴 레시피 공유</a></li>
-            <li><a th:href="@{Snack/SnackOut}">🦴 레시피 보기</a></li>
-          </ul>
-        </li>
-        <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">🧠 멍냥 퀴즈방<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a th:href="@{/UserQuizPlay}">🐾 오늘의 멍냥 퀴즈</a></li>
-          </ul>
-        </li>
-        <li><a th:href="@{/qnalist}">❓ Q&A</a></li>
-        <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">🎁 아이템 상점 <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a th:href="@{/ItemUser/ItemOutUser}">✨ 아이템 사러가기</a></li>
-            <li><a th:href="@{/ItemUser/ItemBought}">👩 내 아이템</a></li>
-            <li><a th:href="@{/Point/GrapeBar}">🍇 내 포도</a></li>
-          </ul>
-        </li>
+      <div class="collapse navbar-collapse" id="mainNavbar">
+        <ul class="nav navbar-nav">
+          <li class="active"><a th:href="@{/main}">🏠 Home</a></li>
 
-        <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">📆 캘린더<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a th:href="@{/Calendar/CalendarView}">📆 캘린더 보기</a></li>
-            <li><a th:href="@{/Calendar/CalendarInput}">📆 일정 등록</a></li>
-          </ul>
-        </li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">📖 오늘의 일기<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a th:href="@{Diary/DiaryInput}">✏️ 일기 쓰기</a></li>
+              <li><a th:href="@{Diary/DiaryOut}">📖 일기 보기</a></li>
+            </ul>
+          </li>
 
-        <!-- 관리자 전용 메뉴 -->
-        <li class="dropdown" sec:authorize="hasRole('ADMIN')">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">👑 관리자<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a th:href="@{/NoticeInput}">📢 공지사항 작성</a></li>
-            <li><a th:href="@{/Item/ItemInput}">🎁 아이템 등록</a></li>
-            <li><a th:href="@{/Item/ItemOut}">🎁 아이템 목록</a></li>
-            <li><a th:href="@{/QuizOut}">📄 퀴즈 관리</a></li>
-            <li><a th:href="@{/Point/GrapeAdmin}">🍇 포도알 관리</a></li>
-          </ul>
-        </li>
-      </ul>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">🐶마이 펫😺<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a th:href="@{Pet/PetInput}">🐾 펫 등록</a></li>
+              <li><a th:href="@{Pet/PetOut}">😻 펫 보기</a></li>
+            </ul>
+          </li>
 
-      <!-- 오른쪽 로그인/로그아웃/마이페이지/회원가입 -->
-      <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">🗨️ 커뮤니티<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a th:href="@{/CommunityNotice}">📢 PetLog 공지사항</a></li>
+              <li><a th:href="@{/CommunityOut}">📝 게시판</a></li>
+              <li><a th:href="@{Snack/SnackInput}">🦴 레시피 공유</a></li>
+              <li><a th:href="@{Snack/SnackOut}">🦴 레시피 보기</a></li>
+            </ul>
+          </li>
 
-        <!-- 비로그인 사용자 메뉴 -->
-        <li sec:authorize="isAnonymous()">
-          <a href="/signUp"><span class="glyphicon glyphicon-user"></span> 회원가입</a>
-        </li>
-        <li sec:authorize="isAnonymous()">
-          <a href="/login"><span class="glyphicon glyphicon-log-in"></span> 로그인</a>
-        </li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">🧠 멍냥 퀴즈방<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a th:href="@{/UserQuiz}">🐾 오늘의 멍냥 퀴즈</a></li>
+            </ul>
+          </li>
 
-        <!-- 로그인 사용자 메뉴 -->
-        <li sec:authorize="isAuthenticated() and hasRole('USER')">
-          <a th:href="@{/MyPage}" th:text="${#authentication.name} + '님의 마이페이지'"></a>
-        </li>
-        <li sec:authorize="hasRole('USER')" class="grape-count">
-          🍇 <span th:text="${session.grapeCount}"></span>개
-        </li>
-        <li sec:authorize="hasRole('USER')">
-          <a th:href="@{/items/buy_items}">내 아이템</a>
-        </li>
-        <li sec:authorize="hasRole('ADMIN')">
-          <a th:href="@{/MyPage}">관리자 정보변경</a>
-        </li>
-        <li sec:authorize="isAuthenticated()">
-          <a href="#" onclick="fullLogout()">🔓 전체 로그아웃</a>
-        </li>
-      </ul>
+          <li><a th:href="@{/qnalist}">❓ Q&A</a></li>
+
+          <li th:if="${session.user_role == 'admin'}" class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">👑 관리자<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a th:href="@{/NoticeInput}">📢 공지사항 작성하기</a></li>
+              <li><a th:href="@{/items_input}">🎁 아이템 등록</a></li>
+              <li><a th:href="@{/items_out_admin}">🎁 아이템 목록</a></li>
+              <li><a th:href="@{/Quiz_admin}">📄 퀴즈 관리</a></li>
+              <li><a th:href="@{/point/grapes_admin_form}">🍇 포도알 관리</a></li>
+            </ul>
+          </li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li sec:authorize="isAuthenticated()">
+            <a href="/MyPage">
+              <span style="color:yellow;" th:text="${#authentication.name + '님의 마이페이지!'}"></span>
+            </a>
+          </li>
+          <li sec:authorize="isAuthenticated()"><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> 로그아웃</a></li>
+          <li sec:authorize="isAnonymous()"><a href="/signUp"><span class="glyphicon glyphicon-user"></span> 회원가입</a></li>
+          <li sec:authorize="isAnonymous()"><a href="/login"><span class="glyphicon glyphicon-log-in"></span> 로그인</a></li>
+        </ul>
+      </div>
     </div>
   </nav>
 </div>
-
-<!-- ✅ 전체 로그아웃 스크립트 -->
-<script>
-  function fullLogout() {
-    fetch('/logout', { method: 'POST' })
-      .then(() => {
-        window.location.href = 'https://kauth.kakao.com/oauth/logout?client_id=ffa09356c72a916dfd7f84ed6bd12c8d&logout_redirect_uri=http://localhost:3333';
-      });
-  }
-</script>
-
 </body>
 </html>

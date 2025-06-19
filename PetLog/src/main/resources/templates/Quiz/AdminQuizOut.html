@@ -119,7 +119,6 @@
   <button type="button" onclick="location.href='/QuizInput'">➕퀴즈 등록</button>
 </div>
 
-
 <div class="quiz-list">
   <div class="quiz-card" th:each="dto : ${dto}">
     <div class="quiz-header">
@@ -138,8 +137,8 @@
     </ul>
 
     <div class="quiz-actions">
-      <a th:href="@{/quiz_admin/edit/{id}(id=${dto.quizId})}">✏ 수정</a>
-      <a th:href="@{/quiz_admin/delete/{id}(id=${dto.quizId})}" onclick="return confirm('삭제할까요?')">🗑 삭제</a>
+      <a th:href="@{/QuizUpdate(quizId=${dto.quizId})}">✏ 수정</a>
+      <a th:href="@{/QuizDelete(quizId=${dto.quizId})}" onclick="return confirm('삭제할까요?')">🗑 삭제</a>
     </div>
   </div>
 </div>

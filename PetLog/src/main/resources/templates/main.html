@@ -15,7 +15,9 @@
     }
   </style>
 <body>
-
+<script th:if="${alertMessage != null}">
+  alert([[${alertMessage}]]);
+</script>
 
 <!-- ✅ 로그인되지 않은 사용자 -->
 <th:block th:if="${#authentication.name} == 'anonymousUser'">

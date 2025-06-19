@@ -1,10 +1,158 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{top::menu}"></div>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+<meta charset="UTF-8">
+<title>퀴즈 수정</title>
+<style>
+body {
+background-color: #fff6f6;
+font-family: 'Pretendard', sans-serif;
+margin: 0;
+padding: 0;
+color: #333;
+}
+
+.container {
+max-width: 700px;
+background-color: #fff;
+margin: 60px auto;
+padding: 40px;
+border-radius: 16px;
+box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+text-align: center;
+color: #f48aa5;
+margin-bottom: 30px;
+}
+
+label {
+display: block;
+margin-bottom: 10px;
+font-weight: bold;
+color: #555;
+}
+
+input[type="text"],
+select {
+width: 100%;
+padding: 12px;
+margin-bottom: 20px;
+border: 1px solid #ddd;
+border-radius: 8px;
+font-size: 1em;
+box-sizing: border-box;
+background-color: #fff;
+transition: border-color 0.2s;
+}
+
+input[type="text"]:focus,
+select:focus {
+border-color: #f48aa5;
+outline: none;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.button-group button {
+  flex: 1;
+  padding: 12px;
+  font-size: 1em;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  border: none;
+}
+
+/* 삭제 버튼 - 진한 핑크 */
+.btn-delete {
+  background-color: #f48aa5;
+  color: white;
+}
+
+.btn-delete:hover {
+  background-color: #e35b8f;
+}
+
+/* 취소 버튼 - 연한 핑크 */
+.btn-cancel {
+  background-color: #ffe3ec;
+  color: #d26a89;
+}
+
+.btn-cancel:hover {
+  background-color: #ffd4e5;
+  color: #c55575;
+}
+
+.delete-title {
+color: #f48aa5;
+font-size: 1.8em;
+margin-bottom: 10px;
+text-align: center;
+}
+
+.delete-message {
+font-size: 1.1em;
+color: #444;
+text-align: center;
+line-height: 1.6;
+}
+
+</style>
 </head>
 <body>
+
+<div class="container">
+
+    <div class="header">
+        <h2 class="delete-title">퀴즈 수정</h2>
+        <p class="delete-message">
+            <strong th:text="${qdto.quizQuestion}"></strong> 퀴즈를 수정하시겠습니까?
+        </p>
+    </div>
+
+    <form th:action="@{/QuizUpdateSave}" method="post">
+
+        <input type="hidden" name="quizId" th:value="${qdto.quizId}" />
+
+        <label>문제</label>
+        <input type="text" name="quizQuestion" th:value="${qdto.quizQuestion}" />
+
+        <label>보기 1</label>
+        <input type="text" name="quizOption1" th:value="${qdto.quizOption1}" />
+
+        <label>보기 2</label>
+        <input type="text" name="quizOption2" th:value="${qdto.quizOption2}" />
+
+        <label>보기 3</label>
+        <input type="text" name="quizOption3" th:value="${qdto.quizOption3}" />
+
+        <label>보기 4</label>
+        <input type="text" name="quizOption4" th:value="${qdto.quizOption4}" />
+
+        <label>정답 번호</label>
+        <select name="quizAnswer">
+            <option th:value="1" ${qdto.quizAnswer == '1' ? 'selected' : ''}>1</option>
+            <option th:value="2" ${qdto.quizAnswer == '2' ? 'selected' : ''}>2</option>
+            <option th:value="3" ${qdto.quizAnswer == '3' ? 'selected' : ''}>3</option>
+            <option th:value="4" ${qdto.quizAnswer == '4' ? 'selected' : ''}>4</option>
+        </select>
+
+        <div class="button-group">
+            <button type="submit" class="btn-delete">수정</button>
+            <button type="button" class="btn-cancel" onclick="location.href='/QuizOut'">취소</button>
+        </div>
+
+    </form>
+</div>
 
 </body>
 </html>

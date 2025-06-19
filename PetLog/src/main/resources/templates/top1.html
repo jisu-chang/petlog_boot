@@ -133,7 +133,6 @@
 
       <ul class="nav navbar-nav">
         <li class="active"><a th:href="@{/main}">🏠 Home</a></li>
-
         <li class="dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">📖 오늘의 일기<span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -141,7 +140,6 @@
             <li><a th:href="@{Diary/DiaryOut}">📖 일기 보기</a></li>
           </ul>
         </li>
-
         <li class="dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">🐶마이 펫😺<span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -149,68 +147,93 @@
             <li><a th:href="@{Pet/PetOut}">😻 펫 보기</a></li>
           </ul>
         </li>
-
         <li class="dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">🗨️ 커뮤니티<span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a th:href="@{/NoticeBoard}">📢 PetLog 공지사항</a></li>
+            <li><a th:href="@{/CommunityNotice}">📢 공지사항</a></li>
             <li><a th:href="@{/CommunityOut}">📝 게시판</a></li>
             <li><a th:href="@{Snack/SnackInput}">🦴 레시피 공유</a></li>
             <li><a th:href="@{Snack/SnackOut}">🦴 레시피 보기</a></li>
           </ul>
         </li>
-
         <li class="dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">🧠 멍냥 퀴즈방<span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a th:href="@{/QuizInput}">🐾 오늘의 멍냥 퀴즈</a></li>
+            <li><a th:href="@{/UserQuiz}">🐾 오늘의 멍냥 퀴즈</a></li>
+          </ul>
+        </li>
+        <li><a th:href="@{/qnalist}">❓ Q&A</a></li>
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">🎁 아이템 상점 <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a th:href="@{/ItemUser/ItemOutUser}">✨ 아이템 사러가기</a></li>
+            <li><a th:href="@{/ItemUser/ItemBought}">👩 내 아이템</a></li>
+            <li><a th:href="@{/Point/GrapeBar}">🍇 내 포도</a></li>
           </ul>
         </li>
 
-        <li><a th:href="@{/qnalist}">❓ Q&A</a></li>
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">📆 캘린더<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a th:href="@{/Calendar/CalendarView}">📆 캘린더 보기</a></li>
+            <li><a th:href="@{/Calendar/CalendarInput}">📆 일정 등록</a></li>
+          </ul>
+        </li>
 
-        <li th:if="${session.user_role == 'admin'}" class="dropdown">
+        <!-- 관리자 전용 메뉴 -->
+        <li class="dropdown" sec:authorize="hasRole('ADMIN')">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">👑 관리자<span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a th:href="@{/BoardInput}">📢 공지사항 작성하기</a></li>
-            <li><a th:href="@{/items_input}">🎁 아이템 등록</a></li>
-            <li><a th:href="@{/items_out_admin}">🎁 아이템 목록</a></li>
-            <li><a th:href="@{/Quiz_admin}">📄 퀴즈 관리</a></li>
-            <li><a th:href="@{/point/grapes_admin_form}">🍇 포도알 관리</a></li>
+            <li><a th:href="@{/NoticeInput}">📢 공지사항 작성</a></li>
+            <li><a th:href="@{/Item/ItemInput}">🎁 아이템 등록</a></li>
+            <li><a th:href="@{/Item/ItemOut}">🎁 아이템 목록</a></li>
+            <li><a th:href="@{/QuizOut}">📄 퀴즈 관리</a></li>
+            <li><a th:href="@{/Point/GrapeAdmin}">🍇 포도알 관리</a></li>
           </ul>
         </li>
       </ul>
 
+      <!-- 오른쪽 로그인/로그아웃/마이페이지/회원가입 -->
       <ul class="nav navbar-nav navbar-right">
-        <li th:if="${loginstate}">
-          <ul th:if="${session.user_role == 'admin'}">
-            <li><a th:href="@{/mypage}">관리자 정보변경</a></li>
-            <li><a th:href="@{/logout}">로그아웃</a></li>
-          </ul>
 
-          <ul th:if="${session.user_role != 'admin'}">
-            <li><a th:href="@{/mypage}" th:text="${name} + '님의 마이페이지'"></a></li>
-            <li style="padding-top:15px; color:#9B59B6;">🍇 <span th:text="${session.loginUser.grape_count}"></span>개</li>
-            <li><a th:href="@{/pet_input}">펫 등록</a></li>
-            <li><a th:href="@{/items/buy_items}">내 아이템</a></li>
-            <li><a th:href="@{/logout}">로그아웃</a></li>
-          </ul>
+        <!-- 비로그인 사용자 메뉴 -->
+        <li sec:authorize="isAnonymous()">
+          <a href="/signUp"><span class="glyphicon glyphicon-user"></span> 회원가입</a>
+        </li>
+        <li sec:authorize="isAnonymous()">
+          <a href="/login"><span class="glyphicon glyphicon-log-in"></span> 로그인</a>
         </li>
 
-        <ul class="nav na vbar-nav navbar-right" style="display: flex;">
-
-          <li><a href="/signUp" sec:authorize="isAnonymous()"><span class="glyphicon glyphicon-user"></span> 회원가입</a>
-            <a href="/MyPage" sec:authorize="isAuthenticated()"><span style="color:yellow;" th:text="${#authentication.name}+'님의 마이페이지!'">}></span></a>
-          </li>  <!--isAnonymous 인증x(익명), 아이디가 없음 --> <!--isAuthenticated 인증 됨-->
-          <li>
-            <a href="/login" sec:authorize="isAnonymous()"><span class="glyphicon glyphicon-log-in"></span> 로그인</a>
-            <a href="/logout" sec:authorize="isAuthenticated()"><span class="glyphicon glyphicon-log-out" ></span>로그아웃</a>
-          </li>
-
-        </ul>
+        <!-- 로그인 사용자 메뉴 -->
+        <li sec:authorize="isAuthenticated() and hasRole('USER')">
+          <a th:href="@{/MyPage}" th:text="${#authentication.name} + '님의 마이페이지'"></a>
+        </li>
+        <li sec:authorize="hasRole('USER')" class="grape-count">
+          🍇 <span th:text="${session.grapeCount}"></span>개
+        </li>
+        <li sec:authorize="hasRole('USER')">
+          <a th:href="@{/items/buy_items}">내 아이템</a>
+        </li>
+        <li sec:authorize="hasRole('ADMIN')">
+          <a th:href="@{/MyPage}">관리자 정보변경</a>
+        </li>
+        <li sec:authorize="isAuthenticated()">
+          <a href="#" onclick="fullLogout()">🔓 전체 로그아웃</a>
+        </li>
+      </ul>
     </div>
   </nav>
 </div>
+
+<!-- ✅ 전체 로그아웃 스크립트 -->
+<script>
+  function fullLogout() {
+    fetch('/logout', { method: 'POST' })
+      .then(() => {
+        window.location.href = 'https://kauth.kakao.com/oauth/logout?client_id=ffa09356c72a916dfd7f84ed6bd12c8d&logout_redirect_uri=http://localhost:3333';
+      });
+  }
+</script>
 
 </body>
 </html>

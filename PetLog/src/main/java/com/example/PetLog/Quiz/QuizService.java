@@ -7,4 +7,16 @@ public interface QuizService {
     void insertQuiz(QuizEntity quizEntity);
 
     List<QuizEntity> allout();
+
+    QuizEntity updateByQuizId(Long quizId);
+
+    void updateSave(QuizEntity entity);
+
+    QuizEntity DeleteByQuizId(Long quizId);
+
+    void deleteSave(Long quizId);
+
+    QuizDTO getRandomUnsolvedQuiz(Long userId);
+
+    QuizDTO getQuizById(Long quizId);
 }

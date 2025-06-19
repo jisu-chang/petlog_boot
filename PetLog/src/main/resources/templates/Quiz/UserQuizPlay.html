@@ -1,10 +1,156 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{top::menu}"></div>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <style>
+        body {
+          background-color: #f9f4fc;
+          margin-top: 20px;
+          padding: 0;
+          font-family: 'Pretendard', sans-serif;
+          color: #333;
+        }
+
+        .quiz-insert-wrapper {
+          text-align: center;
+          margin: 30px 0 5px;
+        }
+
+        .quiz-insert-link {
+          display: inline-block;
+          font-size: 15px;
+          text-decoration: none;
+          color: #8658a8;
+          font-weight: 500;
+        }
+
+        .quiz-insert-link:hover {
+          text-decoration: underline;
+        }
+
+        .quiz-form {
+          background: #ffffff;
+          padding: 30px 40px;
+          margin: 20px auto;
+          width: 90%;
+          max-width: 600px;
+          border-radius: 16px;
+          box-shadow: 0 8px 20px rgba(200, 160, 220, 0.15);
+          border: 1px solid #ebd9f4;
+          text-align: left;
+        }
+
+        .quiz-title {
+          font-size: 1.4em;
+          color: #8658a8;
+          margin-bottom: 20px;
+          text-align: center;
+        }
+
+        .quiz-option {
+          display: block;
+          margin: 12px 0;
+          font-size: 1.05em;
+          background: #fff7f4;
+          padding: 12px 16px;
+          border-radius: 10px;
+          transition: background-color 0.2s;
+          cursor: pointer;
+          border: 1px solid #f6d8e7;
+        }
+
+        .quiz-option:hover {
+          background: #fde3ec;
+        }
+
+        .quiz-option input {
+          margin-right: 10px;
+          transform: scale(1.1);
+          accent-color: #c59cf3;
+        }
+
+        .quiz-submit {
+          margin-top: 25px;
+          display: block;
+          width: 100%;
+          padding: 12px;
+          background: #d9c7f3;
+          color: #fff;
+          font-size: 1.05em;
+          border: none;
+          border-radius: 10px;
+          cursor: pointer;
+          transition: 0.3s;
+          font-weight: bold;
+        }
+
+        .quiz-submit:hover {
+          background: #c29ee4;
+        }
+
+        .quiz-hint {
+          font-size: 0.95em;
+          color: #666;
+          text-align: center;
+          margin-top: 14px;
+          font-weight: 500;
+        }
+    </style>
 </head>
 <body>
+<!--관리자 전용버튼 -->
+<div th:if="${session.userRole == 'admin'}" class="quiz-insert-wrapper">
+    <a th:href="@{/QuizInput}" class="quiz-insert-link">퀴즈 등록</a>
+    <a th:href="@{/QuizOut}" class="quiz-insert-link">퀴즈 목록</a>
+</div>
+
+<!-- 퀴즈 출력 -->
+<div th:each="dto : ${dto}">
+    <form th:action="@{/QuizSave}" method="post" class="quiz-form" onsubmit="return onSubmitQuiz(this)">
+        <input type="hidden" name="quizId" th:value="${dto.quizId}" />
+        <input type="hidden" name="resultTime" id="resultTime" />
+
+        <h3 class="quiz-title">❓ <span th:text="${dto.quizQuestion}">문제 질문</span></h3>
+
+        <label class="quiz-option">
+            <input type="radio" name="quizAnswer" value="1" required>
+            <span th:text="${dto.quizOption1}">보기 1</span>
+        </label>
+        <label class="quiz-option">
+            <input type="radio" name="quizAnswer" value="2" required>
+            <span th:text="${dto.quizOption2}">보기 2</span>
+        </label>
+        <label class="quiz-option">
+            <input type="radio" name="quizAnswer" value="3" required>
+            <span th:text="${dto.quizOption3}">보기 3</span>
+        </label>
+        <label class="quiz-option">
+            <input type="radio" name="quizAnswer" value="4" required>
+            <span th:text="${dto.quizOption4}">보기 4</span>
+        </label>
+
+        <button type="submit" class="quiz-submit">제출하기</button>
+        <p class="quiz-hint">⏱ 풀이 시간은 자동으로 기록됩니다</p>
+    </form>
+</div>
+
+<!-- 모든 퀴즈 완료 시 -->
+<div th:if="${allDone}">
+    <script>
+        alert("🎉 모든 퀴즈를 완료했습니다! 홈으로 이동합니다.");
+        window.location.href = "/main";
+    </script>
+</div>
+
+<script>
+    const startTime = Date.now();
+    function onSubmitQuiz(form) {
+      const endTime = Date.now();
+      const elapsed = Math.floor((endTime - startTime) / 1000);
+      form.querySelector("input[name='resultTime']").value = elapsed;
+      return true;
+    }
+</script>
 
 </body>
 </html>

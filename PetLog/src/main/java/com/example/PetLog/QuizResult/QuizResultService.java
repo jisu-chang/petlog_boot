@@ -1,4 +1,16 @@
 package com.example.PetLog.QuizResult;
 
+import java.util.List;
+
 public interface QuizResultService {
+
+//    void saveResult(QuizResultDTO resultDTO);
+
+    QuizResultEntity getLatestResultByUser(Long userId);
+
+    List<QuizResultDTO> getTop10ByQuizId(Long userId, Long quizId);
+
+    QuizResultDTO getLatestResultDtoByUser(Long userId);
+
+    void saveResult(QuizResultDTO dto, int quizAnswer);
 }

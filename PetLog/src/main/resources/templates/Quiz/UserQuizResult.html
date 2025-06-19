@@ -1,10 +1,188 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{top::menu}"></div>
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Quiz Result</title>
+    <style>
+        body {
+            background-color: #fff6f6;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            color: #333;
+        }
+
+        .result-wrapper {
+            background-color: white;
+            width: 95%;
+            max-width: 700px;
+            margin: 40px auto 60px auto;
+            border-radius: 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            padding: 40px 30px;
+        }
+        .result-box {
+            background-color: white;
+            width: 100%;
+            max-width: 600px;
+            margin: 40px auto 20px auto;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 30px;
+        }
+        h3 {
+            font-size: 22px;
+            color: #f48aa5;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-weight: normal;
+        }
+
+        .info {
+            font-size: 17px;
+            color: #555;
+            margin: 12px 0;
+        }
+
+        .info strong {
+            font-size: 19px;
+            color: #d65b7b;
+        }
+
+        table {
+            width: 90%;
+            max-width: 600px;
+            margin: 20px auto 50px auto;
+            background-color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-collapse: collapse;
+            overflow: hidden; /* For rounded corners with table */
+        }
+
+        th, td {
+            padding: 14px;
+            font-size: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background-color: #fff0f4;
+            color: #555;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .rank-gold td {
+            background-color: #fff9db;
+            font-weight: bold;
+            color: #caa700;
+        }
+
+        .rank-silver td {
+            background-color: #f1f1f1;
+            font-weight: bold;
+            color: #888;
+        }
+
+        .rank-bronze td {
+            background-color: #fce8dd;
+            font-weight: bold;
+            color: #b56f44;
+        }
+
+        .btn-next {
+            background-color: #ffe1e1;
+            color: #333;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: inline-block;
+            margin-bottom: 60px;
+        }
+
+        .btn-next:hover {
+            background-color: #ffd2d2;
+            transform: scale(1.05);
+        }
+    </style>
 </head>
 <body>
 
+<script th:inline="javascript">
+    window.onload = function() {
+        // Use Thymeleaf's inline syntax for JavaScript variables
+        const isCorrect = /*[[${isCorrect}]]*/ false; // Default value for IDEs
+        if (isCorrect) {
+            alert("🎉 정답입니다! 포도알 3개 획득!");
+        } else {
+            alert("❌ 오답입니다. 다음에 다시 도전해주세요!");
+        }
+    }
+</script>
+
+<div class="container my-5">
+    <div class="result-wrapper">
+        <div class="result-box">
+            <div th:if="${isCorrect}">
+                <p class="info">⌛ <strong><span th:text="${result.resultTime}"></span>초 만에 풀었어요!</strong></p>
+                <p class="info">🏅 현재 순위: <strong><span th:text="${result.resultRank}"></span>위</strong></p>
+            </div>
+
+            <div th:unless="${isCorrect}">
+                <p class="info">정답은
+                    <strong>
+                        <span th:text="${result.quizAnswer}"></span>번 -
+                        <span th:switch="${result.quizAnswer}">
+                            <span th:case="'1'" th:text="${result.quizOption1}"></span>
+                            <span th:case="'2'" th:text="${result.quizOption2}"></span>
+                            <span th:case="'3'" th:text="${result.quizOption3}"></span>
+                            <span th:case="'4'" th:text="${result.quizOption4}"></span>
+                        </span>
+                    </strong> 입니다.
+                </p>
+            </div>
+        </div>
+
+        <h3 class="mt-5 mb-3">🏆 TOP 10</h3>
+        <div class="table-responsive">
+            <table class="table table-borderless">
+                <thead>
+                <tr>
+                    <th scope="col">순위</th>
+                    <th scope="col">유저</th>
+                    <th scope="col">풀이시간</th>
+                </tr>
+                </thead>
+            <tbody>
+
+                <tr th:each="row : ${top10}" th:classappend="${row.resultRank == 1 ? 'rank-gold' : (row.resultRank == 2 ? 'rank-silver' : (row.resultRank == 3 ? 'rank-bronze' : ''))}">
+                    <td>
+                        <span th:if="${row.resultRank == 1}">🥇</span>
+                        <span th:if="${row.resultRank == 2}">🥈</span>
+                        <span th:if="${row.resultRank == 3}">🥉</span>
+                        <span th:text="${row.resultRank}"></span>위
+                    </td>
+                    <td th:text="${row.userLoginId}"></td>
+                    <td th:text="${row.resultTime} + '초'"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <a th:href="@{/UserQuiz}" class="btn-next">다음 문제 풀기 ➡</a>
+    </div>
+</div>
 </body>
 </html>

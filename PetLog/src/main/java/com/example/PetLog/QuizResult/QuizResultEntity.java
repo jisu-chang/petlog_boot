@@ -1,15 +1,15 @@
 package com.example.PetLog.QuizResult;
 
+import com.example.PetLog.Quiz.QuizEntity;
 import com.example.PetLog.User.UserEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Setter
+@Getter
 @Table(name = "Quiz_Result")
 @SequenceGenerator(
         name = "Quiz_result_id",
@@ -38,5 +38,9 @@ public class QuizResultEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     UserEntity user;  //userEntity 객체 설정하여 컬럼 추가 없이 유저 로그인 아이디도 가져다 쓸 수 있음
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "quiz_id", referencedColumnName = "quiz_id", insertable = false, updatable = false)
+    QuizEntity quiz;
 
 }
