@@ -34,8 +34,8 @@ public class QuizResultServiceImp implements QuizResultService{
         };
 
         // 3. 정답 비교
-        int score = quiz.getQuizAnswer().equals(userSelectedAnswer) ? 1 : 0;
-        dto.setResultScore(score);
+        int correctOption = Integer.parseInt(quiz.getQuizAnswer());
+        int score = (correctOption == quizAnswer) ? 1 : 0;
 
         // 4. 중복 저장 방지
         Integer count = quizResultRepository.countByUserIdAndQuizId(dto.getUserId(), dto.getQuizId());

@@ -1,214 +1,218 @@
-<!-- fragments/menu.html -->
+<!DOCTYPE html>
 <div xmlns:th="http://www.thymeleaf.org" th:fragment="menu"
      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <style>
-      .top-wrapper {
-        position: relative;
-        background-color: #b2f2e9;
-        min-height: 60px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-        z-index: 1000;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 20px;
+      .content-wrapper {
+      box-sizing: border-box;
       }
+       .top-wrapper {
+         position: relative;
+         background-color: #b2f2e9;
+         min-height: 60px;
+         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+         z-index: 1000;
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+         padding: 0 20px;
+       }
 
-      .logo-text {
-        font-size: 20px;
-        color: #ff8787;
-        font-family: 'Arial', sans-serif;
-        font-weight: bold;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-      }
+       .logo-text {
+         font-size: 20px;
+         color: #ff8787;
+         font-family: 'Arial', sans-serif;
+         font-weight: bold;
+         position: absolute;
+         left: 50%;
+         transform: translateX(-50%);
+       }
 
-      .menu-toggle {
-        font-size: 26px;
-        cursor: pointer;
-        color: #007f7f;
-        border: none;
-        background: none;
-      }
+       .menu-toggle {
+         font-size: 26px;
+         cursor: pointer;
+         color: #007f7f;
+         border: none;
+         background: none;
+       }
 
-      .back-btn {
-        font-size: 20px;
-        color: #007f7f;
-        cursor: pointer;
-        background: none;
-        border: none;
-      }
+       .back-btn {
+         font-size: 20px;
+         color: #007f7f;
+         cursor: pointer;
+         background: none;
+         border: none;
+       }
 
-      .overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.4);
-        z-index: 998;
-      }
+       .overlay {
+         display: none;
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         background: rgba(0, 0, 0, 0.4);
+         z-index: 998;
+       }
 
-      .side-menu {
-        position: fixed;
-        top: 0;
-        right: -280px;
-        width: 280px;
-        height: 100%;
-        background-color: #e6fcf5;
-        color: #333;
-        z-index: 999;
-        transition: right 0.3s ease;
-        padding: 20px;
-        overflow-y: auto;
-        box-shadow: -2px 0 6px rgba(0, 0, 0, 0.1);
-      }
+       .side-menu {
+         position: fixed;
+         top: 0;
+         right: -280px;
+         width: 280px;
+         height: 100%;
+         background-color: #e6fcf5;
+         color: #333;
+         z-index: 999;
+         transition: right 0.3s ease;
+         padding: 20px;
+         overflow-y: auto;
+         box-shadow: -2px 0 6px rgba(0, 0, 0, 0.1);
+       }
 
-      .side-menu.open {
-        right: 0;
-      }
+       .side-menu.open {
+         right: 0;
+       }
 
-      .side-menu .close-btn {
-        font-size: 25px;
-        color: #555;
-        position: absolute;
-        top: 15px;
-        left: 20px;
-        cursor: pointer;
-      }
+       .side-menu .close-btn {
+         font-size: 25px;
+         color: #555;
+         position: absolute;
+         top: 15px;
+         left: 20px;
+         cursor: pointer;
+       }
 
-      .side-menu h2 {
-        color: #007f7f;
-        margin-top: 30px;
-        margin-bottom: 20px;
-      }
+       .side-menu h2 {
+         color: #007f7f;
+         margin-top: 30px;
+         margin-bottom: 20px;
+       }
 
-      .side-menu ul {
-        list-style: none;
-        padding: 0;
-      }
+       .side-menu ul {
+         list-style: none;
+         padding: 0;
+       }
 
-      .side-menu li {
-        padding: 10px 0;
-      }
+       .side-menu li {
+         padding: 10px 0;
+       }
 
-      .side-menu a {
-        color: #007f7f;
-        text-decoration: none;
-        display: block;
-        font-weight: 600;
-      }
+       .side-menu a {
+         color: #007f7f;
+         text-decoration: none;
+         display: block;
+         font-weight: 600;
+       }
 
-      /* ✅ hover는 a 태그에만 적용, span에는 적용 안됨 */
-      .side-menu a:hover {
-        background-color: #e6fcf5;
-      }
+       /* ✅ hover는 a 태그에만 적용, span에는 적용 안됨 */
+       .side-menu a:hover {
+         background-color: #e6fcf5;
+       }
 
-      /* ✅ 상위 토글 span 배경색 */
-      .side-menu li > span {
-        background-color: #e6fcf5;
-        padding: 6px 10px;
-        border-radius: 6px;
-        font-weight: bold;
-        display: inline-block;
-        margin-bottom: 5px;
-        color: #007f7f;
-      }
+       /* ✅ 상위 토글 span 배경색 */
+       .side-menu li > span {
+         background-color: #e6fcf5;
+         padding: 6px 10px;
+         border-radius: 6px;
+         font-weight: bold;
+         display: inline-block;
+         margin-bottom: 5px;
+         color: #007f7f;
+       }
 
-      /* ✅ 하위 메뉴 배경 흰색 */
-      .side-menu li > ul {
-        padding-left: 15px;
-        background-color: #e6fcf5;
-        border-radius: 5px;
-        margin-top: 5px;
-        margin-bottom: 5px;
-      }
+       /* ✅ 하위 메뉴 배경 흰색 */
+       .side-menu li > ul {
+         padding-left: 15px;
+         background-color: #e6fcf5;
+         border-radius: 5px;
+         margin-top: 5px;
+         margin-bottom: 5px;
+       }
 
-      .side-menu li > ul > li {
-        font-size: 14px;
-        padding: 4px 0;
-      }
+       .side-menu li > ul > li {
+         font-size: 14px;
+         padding: 4px 0;
+       }
 
-     /* 🔹 구분선 있는 큰 그룹 */
-      .side-menu .section-group {
-        border-bottom: 2px solid #e0e0e0;
-        padding-bottom: 10px;
-        margin-bottom: 10px;
-      }
+      /* 🔹 구분선 있는 큰 그룹 */
+       .side-menu .section-group {
+         border-bottom: 2px solid #e0e0e0;
+         padding-bottom: 10px;
+         margin-bottom: 10px;
+       }
 
-      /* 🔹 토글 제목 */
-      .menu-toggle-group > .toggle-header {
-        font-size: 16px;
-        font-weight: 700;
-        background-color: #e6fcf5;
-        padding: 8px 10px;
-        border-radius: 6px;
-        color: #007f7f;
-        cursor: pointer;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
+       /* 🔹 토글 제목 */
+       .menu-toggle-group > .toggle-header {
+         font-size: 16px;
+         font-weight: 700;
+         background-color: #e6fcf5;
+         padding: 8px 10px;
+         border-radius: 6px;
+         color: #007f7f;
+         cursor: pointer;
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+       }
 
-      /* 🔹 화살표 아이콘 (오른쪽 정렬) */
-      .menu-toggle-group .arrow {
-        font-size: 16px;
-      }
+       /* 🔹 화살표 아이콘 (오른쪽 정렬) */
+       .menu-toggle-group .arrow {
+         font-size: 16px;
+       }
 
-      /* 🔹 하위 메뉴 (기본 숨김) */
-      .menu-toggle-group ul {
-        display: none;
-        background-color: #ffffff;
-        border-radius: 5px;
-        margin-top: 6px;
-        padding: 8px 20px; /* ← 들여쓰기 더 깊게 */
-      }
+       /* 🔹 하위 메뉴 (기본 숨김) */
+       .menu-toggle-group ul {
+         display: none;
+         background-color: #ffffff;
+         border-radius: 5px;
+         margin-top: 6px;
+         padding: 8px 20px; /* ← 들여쓰기 더 깊게 */
+       }
 
-      /* 🔹 하위 메뉴 항목 */
-      .menu-toggle-group ul li {
-        font-size: 14px;
-        padding: 6px 0;
-        border-bottom: 1px solid #f0f0f0;
-      }
+       /* 🔹 하위 메뉴 항목 */
+       .menu-toggle-group ul li {
+         font-size: 14px;
+         padding: 6px 0;
+         border-bottom: 1px solid #f0f0f0;
+       }
 
-      .menu-toggle-group ul li:last-child {
-        border-bottom: none;
-      }
+       .menu-toggle-group ul li:last-child {
+         border-bottom: none;
+       }
 
-      .bottom-nav {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background-color: #b2f2e9;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        height: 60px;
-        z-index: 1001;
-      }
+       .bottom-nav {
+         position: fixed;
+         bottom: 0;
+         left: 50%;
+         transform: translateX(-50%);
+         width: 100%;
+         background-color: #b2f2e9;
+         display: flex;
+         justify-content: space-around;
+         align-items: center;
+         height: 60px;
+         z-index: 1001;
+       }
 
-      .bottom-nav a {
-        text-align: center;
-        color: #007f7f;
-        font-weight: bold;
-        text-decoration: none;
-        font-size: 14px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
+       .bottom-nav a {
+         text-align: center;
+         color: #007f7f;
+         font-weight: bold;
+         text-decoration: none;
+         font-size: 14px;
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+       }
     </style>
-
   </head>
-
+<body>
+<div class="content-wrapper">
   <div class="top-wrapper">
     <button class="back-btn" onclick="history.back()"> ⬅ </button>
     <a class="navbar-brand" th:href="@{/main}" style="position: absolute; left: 40%; transform: translateX(-50%);">
@@ -263,7 +267,7 @@
             🧠 멍냥 퀴즈방 <span class="arrow">▼</span>
           </div>
         <ul>
-          <li><a th:href="@{/UserQuizPlay}">🐾 오늘의 퀴즈</a></li>
+          <li><a th:href="@{/UserQuiz}">🐾 오늘의 퀴즈</a></li>
         </ul>
       </li>
 
@@ -303,6 +307,8 @@
       <li sec:authorize="isAnonymous()"><a href="/signUp">👤 회원가입</a></li>
     </ul>
   </div>
+</div>
+
   <div class="bottom-nav">
     <a th:href="@{/mypage}">👤<span>마이페이지</span></a>
     <a th:href="@{/Pet/PetOut}">🐾<span>마이 펫</span></a>
@@ -333,4 +339,5 @@
       }
     }
   </script>
+</body>
 </div>
