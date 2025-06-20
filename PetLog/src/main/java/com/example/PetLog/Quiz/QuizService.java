@@ -19,4 +19,6 @@ public interface QuizService {
     QuizDTO getRandomUnsolvedQuiz(Long userId);
 
     QuizDTO getQuizById(Long quizId);
+
+    List<QuizDTO> getQuizListByIds(List<Long> quizIds);
 }

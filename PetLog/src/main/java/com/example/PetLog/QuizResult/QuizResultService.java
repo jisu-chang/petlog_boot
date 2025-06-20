@@ -12,5 +12,7 @@ public interface QuizResultService {
 
     QuizResultDTO getLatestResultDtoByUser(Long userId);
 
-    void saveResult(QuizResultDTO dto, int quizAnswer);
+    void saveResult(QuizResultDTO dto, String quizAnswer);
+
+    List<QuizResultDTO> getUserQuizList(Long userId);
 }

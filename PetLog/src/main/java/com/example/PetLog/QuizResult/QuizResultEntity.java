@@ -10,10 +10,10 @@ import lombok.*;
 @NoArgsConstructor
 @Setter
 @Getter
-@Table(name = "Quiz_Result")
+@Table(name = "Quiz_Result1")
 @SequenceGenerator(
         name = "Quiz_result_id",
-        sequenceName = "Quiz_result_seq",
+        sequenceName = "user_result_seq",
         allocationSize = 1,
         initialValue = 1
 )
@@ -34,6 +34,8 @@ public class QuizResultEntity {
     Long quizId;
     @Column(name = "get_grape")
     int getGrape;
+    @Column (name = "user_answer")
+    String userAnswer;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)

@@ -2,7 +2,7 @@ package com.example.PetLog.QuizResult;
 
 import com.example.PetLog.Quiz.QuizEntity;
 import com.example.PetLog.Quiz.QuizRepository;
-import com.example.PetLog.User.UserEntity;
+import com.example.PetLog.Quiz.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,44 +17,70 @@ public class QuizResultServiceImp implements QuizResultService{
     QuizResultRepository quizResultRepository;
     @Autowired
     QuizRepository quizRepository;
+    @Autowired
+    QuizService quizService;
 
     @Override
-    public void saveResult(QuizResultDTO dto, int quizAnswer) {
-        // 1. 퀴즈 정답 조회
+    public void saveResult(QuizResultDTO dto, String userAnswer) {
         QuizEntity quiz = quizRepository.findById(dto.getQuizId())
                 .orElseThrow(() -> new IllegalArgumentException("퀴즈 없음"));
 
-        // 2. 선택한 보기 번호로 보기 문자열 가져오기
-        String userSelectedAnswer = switch (quizAnswer) {
-            case 1 -> quiz.getQuizOption1();
-            case 2 -> quiz.getQuizOption2();
-            case 3 -> quiz.getQuizOption3();
-            case 4 -> quiz.getQuizOption4();
-            default -> null;
-        };
+        // 퀴즈의 정답 (DB 저장된 값)
+        String correctAnswer = quiz.getQuizAnswer(); // e.g. "3"
 
-        // 3. 정답 비교
-        int correctOption = Integer.parseInt(quiz.getQuizAnswer());
-        int score = (correctOption == quizAnswer) ? 1 : 0;
+        // 사용자 응답과 정답 비교
+        int score = correctAnswer.equals(userAnswer) ? 1 : 0;
 
-        // 4. 중복 저장 방지
+        // DTO에 사용자 응답과 점수 저장 (userAnswer는 화면 출력용임)
+        dto.setUserAnswer(userAnswer);
+        dto.setResultScore(score);
+        dto.setQuizAnswer(correctAnswer); // 정답도 DTO에 같이 담아야 화면 비교
+
+        // 이미 푼 퀴즈인지 확인
         Integer count = quizResultRepository.countByUserIdAndQuizId(dto.getUserId(), dto.getQuizId());
         if (count != null && count > 0) {
             throw new IllegalStateException("이미 푼 퀴즈입니다.");
         }
 
-        // 5. 저장
+        // 정답일 경우 순위 계산
+        int rank = 0;
+        if (score == 1) {
+            rank = calculateUserRank(dto.getQuizId(), dto.getResultTime());
+        }
+
+        // 엔티티로 저장 (userAnswer는 저장 안 함)
         QuizResultEntity entity = new QuizResultEntity();
         entity.setUserId(dto.getUserId());
         entity.setQuizId(dto.getQuizId());
         entity.setResultScore(score);
         entity.setResultTime(dto.getResultTime());
         entity.setGetGrape(dto.getGetGrape());
-        entity.setQuiz(quiz); // 연관된 퀴즈 정보 저장
-        System.out.println("선택한 번호: " + quizAnswer);
-        System.out.println("사용자 보기 값: " + quizAnswer);
-        System.out.println("정답 보기 값: " + quiz.getQuizAnswer());
+        entity.setUserAnswer(userAnswer);
+        entity.setResultRank(rank);
+        entity.setQuiz(quiz); // quiz 안에 정답이 포함돼 있음
+
         quizResultRepository.save(entity);
+    }
+
+    public List<QuizResultDTO> getUserQuizList(Long userId) {
+        List<QuizResultEntity> entityList = quizResultRepository.findByUserId(userId);
+        List<QuizResultDTO> dtoList = new ArrayList<>();
+
+        for (QuizResultEntity entity : entityList) {
+            QuizResultDTO dto = new QuizResultDTO();
+            dto.setQuizId(entity.getQuizId());
+            dto.setResultScore(entity.getResultScore());
+            dto.setResultTime(entity.getResultTime());
+            dto.setGetGrape(entity.getGetGrape());
+            dto.setUserAnswer(entity.getUserAnswer());
+
+            dtoList.add(dto);
+        }
+        return dtoList;
+    }
+
+    private int calculateUserRank(Long quizId, int resultTime) {
+        return quizResultRepository.countRankByQuizIdAndFasterTime(quizId,resultTime) + 1;
     }
 
     //최신 결과 가져오기
@@ -119,11 +145,6 @@ public class QuizResultServiceImp implements QuizResultService{
         if (entity.getUser() != null) {
             dto.setUser(entity.getUser()); // DTO에 UserEntity 객체 그대로 추가 (필요에 따라 DTO로 변환)
         }
-
         return dto;
     }
-
-
-
-
 }

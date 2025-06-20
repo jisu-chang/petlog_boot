@@ -16,6 +16,7 @@ public class QuizResultDTO {
     Long userId;
     Long quizId;
     int getGrape;
+    String userAnswer;
 
     UserEntity user;
 
@@ -34,6 +35,7 @@ public class QuizResultDTO {
         this.resultRank = entity.getResultRank();
         this.resultScore = entity.getResultScore();
         this.resultTime = entity.getResultTime();
+        this.userAnswer = entity.getUserAnswer();
         this.userId = entity.getUserId();
         this.user = entity.getUser();
     }

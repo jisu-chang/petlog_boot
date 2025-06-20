@@ -70,4 +70,21 @@ public class QuizServiceImp implements QuizService{
         QuizEntity quiz = quizRepository.findById(quizId).orElseThrow(() -> new IllegalArgumentException("모든 퀴즈를 완료하였습니다."+quizId));
         return QuizDTO.fromEntity(quiz);
     }
+
+    @Override
+    public List<QuizDTO> getQuizListByIds(List<Long> ids) {
+        return quizRepository.findByQuizIdIn(ids).stream()
+                .map(entity -> {
+                    QuizDTO dto = new QuizDTO();
+                    dto.setQuizId(entity.getQuizId());
+                    dto.setQuizQuestion(entity.getQuizQuestion());
+                    dto.setQuizOption1(entity.getQuizOption1());
+                    dto.setQuizOption2(entity.getQuizOption2());
+                    dto.setQuizOption3(entity.getQuizOption3());
+                    dto.setQuizOption4(entity.getQuizOption4());
+                    dto.setQuizAnswer(entity.getQuizAnswer());
+                    return dto;
+                })
+                .toList();
+    }
 }

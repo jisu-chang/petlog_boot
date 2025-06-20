@@ -1,5 +1,6 @@
 package com.example.PetLog.QuizResult;
 
+import com.example.PetLog.Quiz.QuizDTO;
 import com.example.PetLog.Quiz.QuizService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class QuizResultController {
@@ -20,24 +22,36 @@ public class QuizResultController {
 
     //퀴즈 결과 저장
     @PostMapping("/QuizSave")
-    public String saveQuizResult(@ModelAttribute QuizResultDTO dto, @RequestParam("quizAnswer") int quizAnswer, HttpSession session, Model mo) {
+    public String saveQuizResult(@ModelAttribute QuizResultDTO resultDTO,
+                                 @RequestParam("quizAnswer") String quizAnswer,
+                                 HttpSession session, Model mo) {
         Long userId = (Long) session.getAttribute("userId");
-        String userRole = (String) session.getAttribute("userRole");
-        if (userId == null) {
-            return "redirect:/login";
-        }
+        if (userId == null) return "redirect:/login";
 
-        System.out.println("quizId = " + dto.getQuizId());
-        dto.setUserId(userId);
+        resultDTO.setUserId(userId);
+        resultDTO.setUserAnswer(quizAnswer); // DB 저장은 아님, DTO만
 
         try {
-            quizResultService.saveResult(dto, quizAnswer);
+            quizResultService.saveResult(resultDTO, quizAnswer);
+
+            // userAnswerMap을 안전하게 가져오고, 없으면 새로 만듦
+            Map<Long, String> userAnswerMap = (Map<Long, String>) session.getAttribute("userAnswerMap");
+            if (userAnswerMap == null) {
+                userAnswerMap = new java.util.HashMap<>();
+            }
+
+            // map에 저장
+            userAnswerMap.put(resultDTO.getQuizId(), quizAnswer);
+            session.setAttribute("userAnswerMap", userAnswerMap);
+
         } catch (IllegalStateException e) {
             mo.addAttribute("message", e.getMessage());
             return "main";
         }
+
         return "redirect:/QuizResultPage";
     }
+
 
     //퀴즈 결과 페이지
     @GetMapping("/QuizResultPage")
@@ -56,18 +70,43 @@ public class QuizResultController {
             return "Quiz/UserQuizResult"; // 또는 다른 오류 페이지
         }
 
-        // 최신 결과의 정답 여부
-        boolean isCorrect = resultDTO.getResultScore() == 1;
+        String userAnswer = (String) session.getAttribute("userAnswer"); //세션에서 꺼내기
+        resultDTO.setUserAnswer(userAnswer); // 다시 DTO에 넣어줌
 
         // TOP 10 랭킹
-        // top10을 가져올 때 quizId가 null이 되지 않도록 유의
         List<QuizResultDTO> top10 = quizResultService.getTop10ByQuizId(resultDTO.getUserId(), resultDTO.getQuizId());
 
-//        model.addAttribute("isCorrect", isCorrect);
         model.addAttribute("isCorrect", resultDTO.getResultScore() == 1);
         model.addAttribute("result", resultDTO); // DTO를 모델에 추가
         model.addAttribute("top10", top10);
 
         return "Quiz/UserQuizResult";
+    }
+
+    @GetMapping("/UserQuizOut")
+    public String userQuizOut(HttpSession session, Model model) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) return "redirect:/login";
+
+        List<QuizResultDTO> resultList = quizResultService.getUserQuizList(userId);
+        Map<Long, String> userAnswerMap = (Map<Long, String>) session.getAttribute("userAnswerMap");
+
+        if (userAnswerMap != null) {
+            for (QuizResultDTO dto : resultList) {
+                Long qid = dto.getQuizId();
+                String userAns = userAnswerMap.get(qid);
+            }
+        } else {
+            System.out.println("userAnswerMap is NULL in session");
+        }
+
+        List<Long> quizIds = resultList.stream().map(QuizResultDTO::getQuizId).distinct().toList();
+        List<QuizDTO> quizList = quizService.getQuizListByIds(quizIds);
+
+        model.addAttribute("dtoList", resultList);
+        model.addAttribute("quizList", quizList);
+        model.addAttribute("optionFields", List.of("quizOption1", "quizOption2", "quizOption3", "quizOption4"));
+
+        return "Quiz/userQuizOut";
     }
 }
