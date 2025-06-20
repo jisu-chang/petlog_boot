@@ -472,36 +472,44 @@
 
 <div th:replace="~{top :: menu}"></div>
 
-<div class="main-dashboard">
+<a class="main-dashboard">
+
     <aside class="left-sidebar" sec:authorize="isAuthenticated()">
-        <div class="sidebar-box" th:onclick="location.href='@{/User/UserMyPage}'">
-            <div class="sidebar-icon">👤</div>
-            <div class="sidebar-label">회원 정보</div>
-        </div>
-        <div class="sidebar-box" th:onclick="location.href='@{/Pet/PetOut}'">
-            <div class="sidebar-icon">🐾</div>
-            <div class="sidebar-label">펫 관리</div>
-        </div>
-        <div class="sidebar-box" th:onclick="location.href='@{/Point/GrapeBar}'">
-            <div class="sidebar-icon">🍇</div>
-            <div class="sidebar-label">내 포도알</div>
-        </div>
-        <div class="sidebar-box" th:onclick="location.href='@{/Diary/DiaryOut}'">
-            <div class="sidebar-icon">✏️</div>
-            <div class="sidebar-label">다이어리</div>
-        </div>
-        <div class="sidebar-box" th:onclick="location.href='@{/Calendar/CalendarView}'">
-            <div class="sidebar-icon">📆</div>
-            <div class="sidebar-label">일정</div>
-        </div>
-        <div class="sidebar-box" th:onclick="location.href='@{/ItemUser/ItemBought}'">
-            <div class="sidebar-icon">🛍️</div>
-            <div class="sidebar-label">내 아이템</div>
-        </div>
-        <div class="sidebar-box" th:onclick="location.href='@{/qnalist}'">
-            <div class="sidebar-icon">❓</div>
-            <div class="sidebar-label">Q&A</div>
-        </div>
+
+            <a class="sidebar-box" th:href="@{/MyPage}">
+                <div class="sidebar-icon">👤</div>
+                <div class="sidebar-label">회원 정보</div>
+            </a>
+
+            <a class="sidebar-box" th:href="@{/Pet/PetOut}">
+                <div class="sidebar-icon">🐾</div>
+                <div class="sidebar-label">펫 관리</div>
+            </a>
+
+            <a class="sidebar-box" th:href="@{/Point/GrapeBar}">
+                <div class="sidebar-icon">🍇</div>
+                <div class="sidebar-label">내 포도알</div>
+            </a>
+
+            <a class="sidebar-box" th:href="@{/Diary/DiaryOut}">
+                <div class="sidebar-icon">✏️</div>
+                <div class="sidebar-label">다이어리</div>
+            </a>
+
+            <a class="sidebar-box" th:href="@{/Calendar/CalendarView}">
+                <div class="sidebar-icon">📆</div>
+                <div class="sidebar-label">일정</div>
+            </a>
+
+            <a class="sidebar-box" th:href="@{/ItemUser/ItemBought}">
+                <div class="sidebar-icon">🛍️</div>
+                <div class="sidebar-label">내 아이템</div>
+            </a>
+
+            <a class="sidebar-box" th:href="@{/qnalist}">
+                <div class="sidebar-icon">❓</div>
+                <div class="sidebar-label">Q&A</div>
+            </a>
     </aside>
 </div>
 

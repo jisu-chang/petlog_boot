@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @Setter
 @Getter
-@Table(name = "Quiz_Result1")
+@Table(name = "Quiz_Result1") //Quiz_Result1
 @SequenceGenerator(
         name = "Quiz_result_id",
         sequenceName = "user_result_seq",

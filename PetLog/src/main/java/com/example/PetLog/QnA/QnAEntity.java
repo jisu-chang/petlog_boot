@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -26,12 +27,14 @@ public class QnAEntity {
     Long userId;
     @Column (name = "qna_title")
     String qnaTitle;
+    @Lob
     @Column (name = "qna_content")
     String qnaContent;
     @Column (name = "qna_status")
     String qnaStatus;
     @Column (name = "qna_date")
     LocalDate qnaDate;
+    @Lob
     @Column (name = "qna_answer")
     String qnaAnswer;
     @Column (name = "user_login_id")
