@@ -178,7 +178,7 @@
     <!-- 관리자 답변 표시 -->
     <div th:if="${dto.qnaAnswer != null}" style="margin-top: 40px; padding: 20px; border: 1px solid #f4c6d2; border-radius: 10px;">
         <h3 style="color: #d66b7d; font-size: 18px; margin-bottom: 10px;">
-            <img th:src="@{/image/{img}(img=${dto.image})}" style="width: 20px; vertical-align: middle; margin-right: 5px;">
+            <img th:src="@{/image/{img}(img=${dto.user.profileimg})}" style="width: 20px; vertical-align: middle; margin-right: 5px;">
             관리자 답변
         </h3>
         <div style="white-space: pre-wrap; line-height: 1.6; font-size: 14px; color: #444;"
@@ -209,24 +209,25 @@
     </div>
 
     <div class="btn-wrap">
+        <!-- 수정 버튼 -->
         <div th:if="${session.userId == dto.userId}">
-            <div th:if="${dto.qnaStatus == '완료'}">
+            <div th:if="${dto.qnaAnswer != null}">
                 <button onclick="alert('답변이 달린 글은 수정할 수 없습니다.'); return false;">✏️ 수정</button>
             </div>
-            <div th:if="${dto.qnaStatus != '완료'}">
+            <div th:if="${dto.qnaAnswer == null}">
                 <button th:onclick="|location.href='@{QnAUpdate(qnaId=${dto.qnaId})}'|">✏️ 수정</button>
             </div>
-        </div>
 
-        <div th:if="${dto.qnaStatus == '완료'}">
-            <button onclick="alert('답변이 달린 글은 삭제할 수 없습니다.'); return false;">🗑 삭제</button>
+            <!-- 삭제 버튼 -->
+            <div th:if="${dto.qnaAnswer != null}">
+                <button onclick="alert('답변이 달린 글은 삭제할 수 없습니다.'); return false;">🗑 삭제</button>
+            </div>
+            <div th:if="${dto.qnaAnswer == null}">
+                <button th:onclick="|if(confirm('삭제하시겠습니까?')) location.href='@{/QnADelete(qnaId=${dto.qnaId})}'|">🗑 삭제</button>
+            </div>
         </div>
-        <div th:if="${dto.qnaStatus != '완료'}">
-            <button th:onclick="|if(confirm('삭제하시겠습니까?')) location.href='@{/QnADelete(qnaId=${dto.qnaId})}'|">🗑 삭제</button>
-        </div>
-
         <button th:onclick="|location.href='@{/QnAOut}'|">목록으로 돌아가기</button>
-    </div>
+</div>
 </div>
 </body>
 </html>

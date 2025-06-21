@@ -137,11 +137,11 @@
     </tbody>
   </table>
 
-<!--  <th:if test="${not empty requestScope.alertMsg}">-->
-<!--    <script>-->
-<!--      alert("${requestScope.alertMsg}");-->
-<!--    </script>-->
-<!--  </th:if>-->
+  <div th:if="${alertMsg != null}">
+    <script th:inline="javascript">
+      alert([[${alertMsg}]]);
+    </script>
+  </div>
 
 <!--  <div class="pagination">-->
 <!--    <th:each var="i" begin="1" end="${page_count}">-->

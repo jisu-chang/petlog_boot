@@ -17,4 +17,6 @@ public interface QnAService {
     QnAEntity DeleteById(Long qnaId);
 
     void DeleteSave(Long qnaId);
+
+
 }

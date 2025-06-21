@@ -92,6 +92,8 @@
 <div class="container">
     <h2 style="color: #f48aa5">✏️ 등록 된 Q&A를 수정하시겠습니까?</h2>
     <form th:action="@{/QnAUpdateSave}" method="post">
+        <input type="hidden" name="qnaId" th:value="${dto.qnaId}" >
+
         <div class="form-group">
             <label for="qnaTitle">제목</label>
             <input type="text" id="qnaTitle" name="qnaTitle" th:value="${dto.qnaTitle}" required>

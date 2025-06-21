@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -34,7 +35,7 @@ public class QnAController {
         }
 
         qnADTO.setQnaDate(LocalDate.now());
-        qnADTO.setQnaStatus("처리중");
+        qnADTO.setQnaStatus("접수");
         qnADTO.setUserId(userId);
         qnADTO.setQnaAnswer(null);
 
@@ -53,10 +54,16 @@ public class QnAController {
     }
 
     @GetMapping("/QnADetail")
-    public String qnadetail(@RequestParam("qnaId") Long qnaId, HttpSession session, Model mo){
+    public String qnadetail(@RequestParam("qnaId") Long qnaId, HttpSession session, RedirectAttributes redirectAttributes, Model mo){
         Long userId = (Long) session.getAttribute("userId");
 
         QnAEntity qnAEntity=qnaService.DetailById(qnaId);
+
+        //게시글 작성자만 보기
+        if (!qnAEntity.getUserId().equals(userId)) {
+            redirectAttributes.addFlashAttribute("alertMsg", "본인만 해당 게시글을 볼 수 있습니다.");
+            return "redirect:/QnAOut";
+        }
         mo.addAttribute("dto", qnAEntity);
         return "QnA/QnADetail";
     }
@@ -71,11 +78,11 @@ public class QnAController {
     }
 
     @PostMapping("/QnAUpdateSave")
-    public String qnaupdatesave(QnADTO qnADTO ,HttpSession session){
+    public String qnaupdatesave(QnADTO qnADTO,@RequestParam("qnaId") Long qnaId ,HttpSession session){
         Long userId = (Long) session.getAttribute("userId");
 
         qnADTO.setQnaDate(LocalDate.now());
-        qnADTO.setQnaStatus("처리중");
+        qnADTO.setQnaStatus("접수");
         qnADTO.setUserId(userId);
         qnADTO.setQnaAnswer(null);
 
@@ -98,4 +105,31 @@ public class QnAController {
         qnaService.DeleteSave(qnaId);
         return "redirect:/QnAOut";
     }
+
+    @PostMapping("/updateAnswer")
+    public String updateAnswer(@RequestParam("qnaId") Long qnaId,
+                               @RequestParam("qnaAnswer") String qnaAnswer,
+                               @RequestParam("qnaStatus") String qnaStatus,
+                               HttpSession session,
+                               RedirectAttributes redirectAttributes) {
+
+        // 세션에서 관리자 확인 (선택)
+        String role = (String) session.getAttribute("userRole");
+        if (role == null || !role.equals("admin")) {
+            redirectAttributes.addFlashAttribute("alertMsg", "접근 권한이 없습니다.");
+            return "redirect:/QnADetail?qnaId=" + qnaId;
+        }
+
+        // 기존 QnA 불러오기
+        QnAEntity qnaEntity = qnaService.DetailById(qnaId);
+        qnaEntity.setQnaAnswer(qnaAnswer);
+        qnaEntity.setQnaStatus(qnaStatus);
+
+        // 저장
+        qnaService.UpdateSave(qnaEntity);
+
+        redirectAttributes.addFlashAttribute("alertMsg", "답변이 등록되었습니다.");
+        return "redirect:/QnADetail?qnaId=" + qnaId;
+    }
+
 }

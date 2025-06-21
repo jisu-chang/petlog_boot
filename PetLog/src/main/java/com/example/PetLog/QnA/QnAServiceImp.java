@@ -10,8 +10,6 @@ public class QnAServiceImp implements QnAService{
 
     @Autowired
     QnARepository qnARepository;
-
-
     @Override
     public void insertQnA(QnAEntity qnaEntity) {
         qnARepository.save(qnaEntity);
@@ -46,4 +44,5 @@ public class QnAServiceImp implements QnAService{
     public void DeleteSave(Long qnaId) {
         qnARepository.deleteById(qnaId);
     }
+
 }
