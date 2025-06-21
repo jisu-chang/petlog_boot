@@ -4,12 +4,9 @@ import java.util.List;
 
 public interface QnAService {
 
-<<<<<<< Updated upstream
     List<QnAEntity> allout();
-=======
-    void insertQnA(QnAEntity qnaEntity);
 
-    List<QnAEntity> allout();
+    void insertQnA(QnAEntity qnaEntity);
 
     QnAEntity DetailById(Long qnaId);
 
@@ -20,5 +17,4 @@ public interface QnAService {
     QnAEntity DeleteById(Long qnaId);
 
     void DeleteSave(Long qnaId);
->>>>>>> Stashed changes
 }

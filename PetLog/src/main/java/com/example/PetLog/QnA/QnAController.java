@@ -98,5 +98,4 @@ public class QnAController {
         qnaService.DeleteSave(qnaId);
         return "redirect:/QnAOut";
     }
-
 }

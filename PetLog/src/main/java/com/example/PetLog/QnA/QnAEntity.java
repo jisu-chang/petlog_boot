@@ -29,22 +29,14 @@ public class QnAEntity {
     @Column (name = "qna_title")
     String qnaTitle;
     @Lob
-<<<<<<< Updated upstream
-    @Column (name = "qna_content")
-=======
     @Column (name = "qna_content",  columnDefinition = "CLOB")
->>>>>>> Stashed changes
     String qnaContent;
     @Column (name = "qna_status")
     String qnaStatus;
     @Column (name = "qna_date")
     LocalDate qnaDate;
     @Lob
-<<<<<<< Updated upstream
-    @Column (name = "qna_answer")
-=======
     @Column (name = "qna_answer",  columnDefinition = "CLOB")
->>>>>>> Stashed changes
     String qnaAnswer;
 
     @ManyToOne(fetch = FetchType.EAGER)
