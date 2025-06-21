@@ -32,8 +32,9 @@
 
     <div class="form-group">
       <label for="email">이메일</label>
-      <input type="text" class="form-control" id="email" th:value="${userDTO.email}" th:field="*{email}" required />
+      <input type="text" class="form-control" id="email" th:value="${userDTO.email}" th:field="*{email}" th:attr="readonly=${session.loginType == 'kakao'} ? 'readonly' : null" />
       <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+      <p th:if="${session.loginType == 'kakao'}" class="text-muted">※ 소셜 로그인 유저는 이메일을 수정할 수 없습니다.</p>
     </div>
 
     <div class="form-group">

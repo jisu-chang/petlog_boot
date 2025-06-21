@@ -84,15 +84,16 @@ public class UserDTO {
     }
 
     public UserEntity toEntity() {
-        String emailAddress = getFullEmail(); // 이메일 합치기
+        // 카카오 로그인으로 들어오면 email 필드에 이미 전체 이메일이 들어가 있으므로 우선 사용
+        String finalEmail = (email != null && !email.isEmpty()) ? email : getFullEmail();
 
         return UserEntity.builder()
                 .userId(userId)
                 .userLoginId(userLoginId)
                 .password(password)
+                .email(finalEmail)
                 .name(name)
                 .phone(phone)
-                .email(emailAddress)  // 이메일을 설정
                 .profileimg(profileimgName)
                 .rank("일반회원")
                 .userRole("USER")

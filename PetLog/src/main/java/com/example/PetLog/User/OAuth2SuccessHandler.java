@@ -5,29 +5,52 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
-@RequiredArgsConstructor
-public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
+public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private final HttpSession session;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
-                                        Authentication authentication)
-            throws IOException, ServletException {
+                                        Authentication authentication) throws IOException, ServletException {
 
-        Boolean isSocialSignup = (Boolean) session.getAttribute("social_signup");
+        CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
 
-        if (Boolean.TRUE.equals(isSocialSignup)) {
-            response.sendRedirect("/signUpKakao");  // 소셜 회원가입 화면으로 리다이렉트
+        String email = oauthUser.getEmail();
+        String name = oauthUser.getName();
+        String profileImg = oauthUser.getProfileImage();
+
+        HttpSession session = request.getSession();
+
+        Optional<UserEntity> userOpt = userRepository.findByEmail(email);
+
+        if (userOpt.isPresent()) {
+            // 기존 유저 → 로그인 처리
+            UserEntity user = userOpt.get();
+            session.setAttribute("userId", user.getUserId());
+            session.setAttribute("userLoginId", user.getUserLoginId());
+            session.setAttribute("userRole", user.getUserRole());
+            session.setAttribute("name", user.getName());
+            session.setAttribute("profileimg", user.getProfileimg());
+            session.setAttribute("loginType", "kakao");
+            getRedirectStrategy().sendRedirect(request, response, "/");
         } else {
-            response.sendRedirect("/main");  // 기존 회원이면 메인으로 이동
+            // 신규 유저 → 회원가입 창으로 이동
+            session.setAttribute("kakao_email", email);
+            session.setAttribute("kakao_name", name);
+            session.setAttribute("kakao_profile", profileImg);
+            session.setAttribute("loginType", "kakao");
+            getRedirectStrategy().sendRedirect(request, response, "/signUpKakao");
         }
     }
 }

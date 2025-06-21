@@ -1,5 +1,6 @@
 package com.example.PetLog.User;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -7,6 +8,8 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Map;
 import java.util.Optional;
@@ -18,37 +21,29 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final HttpSession session;
 
     @Override
-    public OAuth2User loadUser(OAuth2UserRequest request) throws OAuth2AuthenticationException {
-        OAuth2User oauthUser = super.loadUser(request);
+    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        OAuth2User oauthUser = super.loadUser(userRequest);
 
-        // 1. 카카오 사용자 정보 파싱
-        Map<String, Object> kakaoAccount = (Map<String, Object>) oauthUser.getAttributes().get("kakao_account");
-        Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
+        Map<String, Object> attributes = oauthUser.getAttributes();
+        Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
 
-        String nickname = (String) profile.get("nickname"); // 이제 이름으로 사용
-        String email = kakaoAccount.containsKey("email") ? (String) kakaoAccount.get("email") : null;
-        String profileImgUrl = (String) profile.get("profile_image_url");
-//        String phone = kakaoAccount.containsKey("phone_number") ? (String) kakaoAccount.get("phone_number") : null;
+        String email = kakaoAccount != null ? (String) kakaoAccount.get("email") : null;
+        String nickname = (String) ((Map<String, Object>) attributes.get("properties")).get("nickname");
+        String profileImage = (String) ((Map<String, Object>) attributes.get("properties")).get("profile_image");
 
-        // 2. 닉네임을 이름으로, 로그인 아이디는 나중에 입력받기
-        session.setAttribute("kakao_name", nickname); // nickname → name
+        // 확인용 로그
+        System.out.println("✅ 카카오 이메일: " + email);
+        System.out.println("✅ 카카오 닉네임: " + nickname);
+        System.out.println("✅ 카카오 이미지: " + profileImage);
+
+        // 세션 저장
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        HttpSession session = request.getSession();
         session.setAttribute("kakao_email", email);
-        session.setAttribute("kakao_profile", profileImgUrl);
-//        session.setAttribute("kakao_phone", phone);
-        session.setAttribute("social_signup", true);
-
-        // 3. DB에 동일 이메일 있는지 확인
-        Optional<UserEntity> userOpt = userRepository.findOptionalByEmail(email);
-
-        if (userOpt.isPresent()) {
-            UserEntity user = userOpt.get();
-            session.setAttribute("userId", user.getUserId());
-            session.setAttribute("userLoginId", user.getUserLoginId());
-            session.setAttribute("userRole", user.getUserRole());
-            session.setAttribute("loginUser", user);
-            session.removeAttribute("social_signup"); // 중복 회원가입 방지
-        }
-
-        return oauthUser;
+        session.setAttribute("kakao_name", nickname);
+        session.setAttribute("kakao_profile", profileImage);
+        session.setAttribute("loginType", "kakao");
+        return new CustomOAuth2User(oauthUser.getAttributes());
     }
+
 }

@@ -127,8 +127,17 @@
     <div class="info-card">
       <!-- 프로필 이미지 + 프레임 -->
       <div class="profile-frame-container">
-        <!-- 프로필 이미지 경로 수정 -->
-        <img th:src="@{/images/{fileName}(fileName=${list.profileimg != null ? list.profileimg : 'default.png'})}" alt="Profile Image" class="profile-img" />
+        <!-- 카카오 로그인 유저: 외부 URL 사용 -->
+        <img th:if="${session.loginType == 'kakao'}"
+             th:src="${list.profileimg != null ? list.profileimg : '/images/default.png'}"
+             alt="카카오 프로필 이미지"
+             class="profile-img" />
+
+        <!-- 일반 유저: 내부 파일 경로 사용 -->
+        <img th:if="${session.loginType != 'kakao'}"
+             th:src="@{/images/{fileName}(fileName=${list.profileimg != null ? list.profileimg : 'default.png'})}"
+             alt="일반 유저 프로필 이미지"
+             class="profile-img" />
       </div>
 
       <!-- 회원 정보 -->

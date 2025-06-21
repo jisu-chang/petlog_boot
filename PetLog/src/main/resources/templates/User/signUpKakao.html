@@ -73,7 +73,9 @@
 
         <div>
             <label>로그인 아이디</label>
-            <input type="text" name="userLoginId" placeholder="아이디를 입력하세요" required />
+            <input type="text" id="userLoginId" name="userLoginId" placeholder="아이디를 입력하세요" required />
+            <button type="button" onclick="checkId()">중복확인</button>
+            <p id="idCheckResult" style="color: red;"></p>
         </div>
 
         <div>
@@ -100,5 +102,22 @@
     </form>
 </div>
 
+<script>
+    function checkId() {
+        const userLoginId = document.getElementById("userLoginId").value;
+
+        fetch(`/idCheck?userLoginId=${userLoginId}`)
+            .then(res => res.text())
+            .then(result => {
+                const resultElem = document.getElementById("idCheckResult");
+                if (result === "duplicate") {
+                    resultElem.textContent = "이미 사용 중인 아이디입니다.";
+                } else {
+                    resultElem.textContent = "사용 가능한 아이디입니다.";
+                    resultElem.style.color = "green";
+                }
+            });
+    }
+</script>
 </body>
 </html>

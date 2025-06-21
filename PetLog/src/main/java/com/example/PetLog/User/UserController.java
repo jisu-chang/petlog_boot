@@ -169,21 +169,42 @@ public class UserController {
 
     //카카오 회원가입 처리
     @PostMapping("/signUpKakaoSave")
-    public String signUpKakaoSave(@ModelAttribute UserDTO dto, HttpSession session) {
-        // 카카오에서 받아온 이미지 URL을 직접 저장
-        String kakaoImageUrl = dto.getProfileimgName();  // 또는 dto.getProfileimg()로 받아온 경우
-        dto.setProfileimg(null); // MultipartFile 안 씀
-        dto.setProfileimgName(kakaoImageUrl); // 여기에 URL 문자열 직접 세팅
+    public String signUpKakaoSave(@ModelAttribute UserDTO dto, HttpSession session, Model model) {
+        // 세션에서 카카오 정보 꺼내기
+        String email = (String) session.getAttribute("kakao_email");
+        String name = (String) session.getAttribute("kakao_name");
+        String profile = (String) session.getAttribute("kakao_profile");
 
-        dto.setPassword("kakao"); // 의미 없는 비번
+        dto.setEmail(email);
+        dto.setName(name);
+        dto.setProfileimgName(profile);
+
+        // 이메일 중복 검사
+        Optional<UserEntity> existingUser = userRepository.findByEmail(email);
+        if (existingUser.isPresent()) {
+            UserEntity user = existingUser.get();
+            session.setAttribute("userId", user.getUserId());
+            session.setAttribute("userLoginId", user.getUserLoginId());
+            return "redirect:/";
+        }
+
+        // 아이디 중복 검사
+        if (userRepository.existsByUserLoginIdNative(dto.getUserLoginId()) > 0) {
+            model.addAttribute("error", "이미 사용 중인 아이디입니다.");
+            return "/User/signUpKakao";
+        }
+
+        dto.setPassword("kakao");
         dto.setUserRole("USER");
         dto.setRank("일반회원");
         dto.setGrapeCount(0);
 
-        userService.save(dto);
-        session.setAttribute("userId", dto.getUserId());
-        session.setAttribute("userLoginId", dto.getUserLoginId());
-        return "redirect:/"; // 회원가입 후 홈으로
+        UserEntity savedUser = userRepository.save(dto.toEntity());
+        session.setAttribute("userId", savedUser.getUserId());
+        session.setAttribute("userLoginId", savedUser.getUserLoginId());
+        System.out.println("📌 세션 email: " + email);
+        System.out.println("📌 dto.getEmail(): " + dto.getEmail());
+        return "redirect:/";
     }
 
     //아이디 찾기
@@ -308,12 +329,6 @@ public class UserController {
 
         // userId로 사용자 정보를 조회
         UserDTO userDTO = userService.getUserDTOById(userId); // 사용자 정보 가져오기
-        if (userDTO != null) {
-            System.out.println("✅ 기존 이미지명: " + userDTO.getProfileimgName()); //profileimgName 확인
-            System.out.println("✅ 기존 이미지: " + userDTO.getProfileimg());// profileimg 확인
-        } else {
-            System.out.println("❌ userDTO가 null입니다.");
-        }
 
         model.addAttribute("userDTO", userDTO);  // userDTO를 모델에 담아 뷰로 전달
         return "User/UserUpdate";  // 수정 페이지로 이동
@@ -340,6 +355,13 @@ public class UserController {
         if (userEntity == null) {
             model.addAttribute("error", "사용자를 찾을 수 없습니다.");
             return "User/UserError";
+        }
+
+        String loginType = (String) session.getAttribute("loginType");
+
+        // 카카오 유저면 이메일 수정 금지
+        if ("kakao".equals(loginType)) {
+            dto.setEmail(userEntity.getEmail()); // 기존 이메일로 덮어쓰기
         }
 
         // 기존 비밀번호 유지

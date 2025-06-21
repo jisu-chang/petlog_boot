@@ -97,6 +97,7 @@ public class SecurityConfiguration {
                             request.getSession().setAttribute("profileimgName", loginUser.getProfileimgName());
                             request.getSession().setAttribute("profileimg", loginUser.getProfileimg());
                             request.getSession().setAttribute("loginUser", loginUser);
+                            request.getSession().setAttribute("loginType", "local");
 
                             // 세션 정보 출력 (디버깅용)
                             log.info("세션에 저장된 userRole: {}", request.getSession().getAttribute("userRole"));
