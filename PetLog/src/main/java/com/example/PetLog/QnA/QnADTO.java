@@ -20,4 +20,15 @@ public class QnADTO {
     String qnaAnswer;
     String userLoginId;
 
+    public QnAEntity entity() {
+        QnAEntity entity = new QnAEntity();
+        entity.setQnaId(this.qnaId);
+        entity.setUserId(this.userId);
+        entity.setQnaTitle(this.qnaTitle);
+        entity.setQnaContent(this.qnaContent);
+        entity.setQnaStatus(this.qnaStatus);
+        entity.setQnaDate(this.qnaDate);
+        entity.setQnaAnswer(this.qnaAnswer);
+        return entity;
+    }
 }

@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{top::menu}"></div>
 <head>
   <meta charset="UTF-8">
-
+  <title>내 문의글 삭제</title>
   <style>
     body {
       background-color: #fff6f6;
@@ -89,17 +90,37 @@
 </head>
 <body>
 <div class="container">
-  <h2 style="color: #f48aa5">📮 Q&A 작성하기</h2>
-  <form action="submitContact" method="post">
+  <h2 style="color: #f48aa5">⚠️등록 된 Q&A를 삭제하시겠습니까?</h2>
+  <form th:action="@{/QnADeleteSave}" method="post">
+
     <div class="form-group">
-      <input type="text" name="qna_title" placeholder="제목을 입력하세요." required>
+    <label for="qnaTitle">제목</label>
+    <input type="text" id="qnaTitle" name="qnaTitle" th:value="${dto.qnaTitle}" readonly>
     </div>
     <div class="form-group">
-      <textarea name="qna_content" placeholder="내용을 입력하세요." required></textarea>
+      <label for="userLoginId">작성자</label>
+      <textarea id="userLoginId" name="userLoginId" th:text="${dto.user.userLoginId}" readonly></textarea>
     </div>
+    <div class="form-group">
+      <label for="qnaDate">작성일</label>
+      <textarea id="qnaDate" name="qnaDate" th:text="${dto.qnaDate}" readonly></textarea>
+    </div>
+    <div class="form-group">
+      <label for="qnaStatus">상태</label>
+      <textarea id="qnaStatus" name="qnaStatus" th:text="${dto.qnaStatus}" readonly></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="qnaContent">내용</label>
+      <textarea id="qnaContent" name="qnaContent" th:text="${dto.qnaContent}" readonly></textarea>
+    </div>
+
+
+
+
     <div class="form-actions">
-      <button type="submit">💌 등록</button>
-      <button type="reset" onclick="history.back()">❌ 취소</button>
+      <button type="submit">🗑️ 삭제</button>
+      <button type="reset" th:onclick="history.back()">❌ 취소</button>
     </div>
   </form>
 </div>
