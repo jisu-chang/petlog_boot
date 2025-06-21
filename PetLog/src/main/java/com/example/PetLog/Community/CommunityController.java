@@ -56,10 +56,7 @@ public class CommunityController {
 
         if ("notice".equals(communityDTO.getPostType())) {
             if (userRole == null || !"admin".equalsIgnoreCase(userRole)) {
-                System.out.println("🚨 일반 유저 또는 세션 없음 — 강제로 normal로 변경");
                 communityDTO.setPostType("normal");
-            } else {
-                System.out.println("✅ 관리자 확인 — notice 유지");
             }
         }
 

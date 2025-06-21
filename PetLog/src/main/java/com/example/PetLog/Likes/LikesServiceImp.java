@@ -21,6 +21,7 @@ public class LikesServiceImp implements LikesService{
     }
 
     @Override
+    @Transactional
     public void deleteByUserId(Long userId) {
         likesRepository.deleteByUser_UserId(userId);
     }

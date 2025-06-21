@@ -6,6 +6,7 @@ import com.example.PetLog.Snack.SnackEntity;
 import com.example.PetLog.Snack.SnackRepository;
 import com.example.PetLog.User.UserEntity;
 import com.example.PetLog.User.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,7 @@ public class CommentsServiceImp implements CommentsService{
 
     //회원탈퇴
     @Override
+    @Transactional
     public void deleteByUserId(Long userId) {
         commentsRepository.deleteByUser_UserId(userId);
     }

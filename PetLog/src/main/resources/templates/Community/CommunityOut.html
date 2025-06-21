@@ -175,13 +175,13 @@
           <td style="text-align: left;">
               <a th:href="@{/CommunityDetail(num=${cc.postId})}">
                   <span th:text="${cc.postTitle}"></span>
-  <!--                <span style="margin-left:10px;" th:text="'🗨️ ' + ${cc.comment_count}"></span>-->
-<!--                <span style="margin-left:6px;" th:text="'❤️ ' + ${cc.like_count}"></span>-->
+<!--                  <span style="margin-left:10px;" th:text="'🗨️ ' + ${cc.commentCount}"></span>-->
+<!--                <span style="margin-left:6px;" th:text="'❤️ ' + ${cc.likeCount}"></span>-->
             </a>
         </td>
 
 <!--        <td th:text="${cc.user.userLoginId}"></td>-->
-        <td th:text="${cc.user.userLoginId}"></td>
+        <td th:text="${cc.user != null ? cc.user.userLoginId : '탈퇴회원'}"></td>
         <td th:text="${cc.postDate}"></td>
         <td th:text="${cc.postReadcnt}"></td>
     </tr>

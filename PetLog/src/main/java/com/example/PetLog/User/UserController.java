@@ -382,9 +382,9 @@ public class UserController {
             if (oldFile.exists()) {
                 boolean deleted = oldFile.delete(); // 기존 이미지 삭제
                 if (deleted) {
-                    System.out.println("✅ 기존 이미지 삭제: " + oldFilePath);
+                    System.out.println("기존 이미지 삭제: " + oldFilePath);
                 } else {
-                    System.out.println("❌ 기존 이미지 삭제 실패: " + oldFilePath);
+                    System.out.println("기존 이미지 삭제 실패: " + oldFilePath);
                 }
             }
         }
@@ -413,64 +413,6 @@ public class UserController {
 
         return "redirect:/MyPage";  // 수정 후 마이페이지로 리디렉션
     }
-
-//    @PostMapping("/UserUpdateSave")
-//    public String userUpdateSave(@Valid @ModelAttribute UserUpdateDTO dto, BindingResult bindingResult,
-//                                 @RequestParam("profileimg") MultipartFile mf,
-//                                 @RequestParam("dfname") String dfname, HttpSession session, Model model) throws IOException {
-//
-//        if (bindingResult.hasErrors()) {
-//            System.out.println("⚠ 유효성 검사 실패:");
-//            bindingResult.getAllErrors().forEach(error -> {
-//                System.out.println(" - " + error.getDefaultMessage());
-//            });
-//            return "User/UserUpdate";
-//        }
-//
-//        // 기존 유저 정보 가져오기
-//        Long userId = (Long) session.getAttribute("userId");
-//        UserEntity userEntity = userService.findById(userId);
-//
-//        if (userEntity == null) {
-//            model.addAttribute("error", "사용자를 찾을 수 없습니다.");
-//            return "User/UserError";
-//        }
-//
-//        // 기존 비밀번호 유지
-//        String encryptedPassword = userEntity.getPassword();
-//
-//        // 프로필 이미지 처리
-//        String profileImageName = dfname;  // 기본 값은 기존 이미지 파일명
-//        if (mf != null && !mf.isEmpty()) {
-//            // handleProfileImage 메서드를 사용해 이미지 업로드
-//            dto.handleProfileImage(mf); // 업로드 후 파일명 저장
-//            profileImageName = dto.getProfileimgName();  // 저장된 파일명 사용
-//        }
-//
-//        // UserEntity 업데이트
-//        userEntity.setName(dto.getName());
-//        userEntity.setPhone(dto.getPhone());
-//        userEntity.setEmail(dto.getEmail());
-//        userEntity.setProfileimg(profileImageName);  // 업데이트된 프로필 이미지 이름
-//        userEntity.setPassword(encryptedPassword);
-//
-//        try {
-//            userService.updateUser(userEntity);  // DB 업데이트
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        // 세션 정보 업데이트
-//        session.setAttribute("userId", userEntity.getUserId());
-//        session.setAttribute("userLoginId", userEntity.getUserLoginId());
-//        session.setAttribute("userRole", userEntity.getUserRole());
-//        session.setAttribute("name", userEntity.getName());
-//        session.setAttribute("grapeCount", userEntity.getGrapeCount());
-//        session.setAttribute("rank", userEntity.getRank());
-//
-//        return "redirect:/MyPage";  // 수정 후 마이페이지로 리디렉션
-//    }
-
     //회원탈퇴- 활동이력 보이기
     @GetMapping("/UserDelete")
     public String userdelete(HttpSession session, Model mo){
@@ -499,7 +441,6 @@ public class UserController {
     @PostMapping("/user/withdraw")
     public String withdraw(HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) return "redirect:/login";
 
         likesService.deleteByUserId(userId); //좋아요 삭제
         commentsService.deleteByUserId(userId); //댓글 삭제
@@ -509,6 +450,6 @@ public class UserController {
         userService.deleteUser(userId);  //유저 삭제
 
         session.invalidate(); // 세션 종료
-        return "redirect:/DeleteMessage";
+        return "User/DeleteMessage";
     }
 }

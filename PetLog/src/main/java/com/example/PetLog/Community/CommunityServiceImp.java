@@ -4,6 +4,7 @@ import com.example.PetLog.Comments.CommentsEntity;
 import com.example.PetLog.Likes.LikesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -56,6 +57,7 @@ public class CommunityServiceImp implements CommunityService{
     }
 
     @Override
+    @Transactional
     public void deleteByUserId(Long userId) {
         communityRepository.deleteByUser_UserId(userId);
     }
