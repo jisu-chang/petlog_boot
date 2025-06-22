@@ -11,13 +11,18 @@
             margin: 0;
             padding: 0;
             color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* 화면 전체 높이 확보 */
         }
 
         .container {
-            max-width: 400px;
-            margin: 60px auto;
+            max-width: 450px;
+            margin: 70px auto;
             background-color: #ffffff;
             border: 2px solid #dbf5f0;
+            padding-top: 100px;
             border-radius: 16px;
             padding: 30px 40px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
@@ -54,15 +59,16 @@
         }
 
         button {
-            background-color: #f48aa5;
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%;
-            margin-top: 10px;
+          background-color: #f48aa5;
+          color: white;
+          padding: 12px 24px;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          font-weight: bold;
+          margin-top: 10px;
+          max-width: 100%;
+          display: inline-block;
         }
 
         button:hover {
@@ -88,9 +94,9 @@
     </style>
 </head>
 <body>
+
 <div class="container">
     <h2>아이디 찾기</h2>
-
     <form th:action="@{/findIdSave}" th:object="${userFindIdDTO}" method="post" enctype="multipart/form-data" id="findIdForm">
 
         <input type="hidden" name="email" id="fullEmail" />
@@ -133,7 +139,7 @@
 
     <p th:if="${error}" th:text="${error}" class="error"></p>
 
-    <a th:href="@{/login}" class="back-link">← 로그인 페이지로 돌아가기</a>
+    <a th:href="@{/login}" class="back-link"> 로그인하러 가기 </a>
 </div>
 
 <!-- 전화번호 유효성 검사 -->

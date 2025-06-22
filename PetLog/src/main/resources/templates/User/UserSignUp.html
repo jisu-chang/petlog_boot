@@ -10,6 +10,10 @@
       font-family: 'Pretendard', sans-serif;
       margin: 0;
       padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh; /* 화면 전체 높이 확보 */
     }
 
     .container {
@@ -139,6 +143,47 @@
     color: green;
     font-weight: bold;
   }
+    .check-btn {
+  background-color: #f48aa5;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.check-btn:hover {
+  background-color: #db7093;
+}
+
+#idCheckResult {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 13px;
+}
+    .id-check-wrapper {
+  display: flex;
+  gap: 10px;
+}
+
+.id-check-wrapper input {
+  flex: 1;
+}
+
+.check-btn {
+  background-color: #f48aa5;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
   </style>
 </head>
 
@@ -147,7 +192,7 @@
 <div class="container">
   <div class="kakao-login">
     <form action="/oauth2/authorization/kakao" method="get">
-      <button type="submit">카카오로 회원가입</button>
+      <button type="submit" class="kakao-button">카카오로 회원가입</button>
     </form>
   </div>
 
@@ -157,12 +202,15 @@
 
     <div class="form-group">
       <label for="userLoginId">아이디</label>
+      <div class="id-check-wrapper">
       <input type="text" id="userLoginId" th:field="*{userLoginId}" required/>
-        <button type="button" onclick="checkId()">중복 확인</button> <!-- 중복 확인 버튼 -->
+        <button type="button" class="check-btn"  onclick="checkId()">중복 확인</button> <!-- 중복 확인 버튼 -->
         <span id="idCheckResult" style="margin-left:10px;"></span> <!-- 중복 결과 출력 -->
+
       <input type="hidden" id="idCheckStatus" name="idCheckStatus" value="false" /> <!-- 중복검사 없이 회원가입 진행 시 필요-->
       <div th:if="${idError}" th:text="${idError}" style="color:red;"></div> <!-- 에러메세지 출력용 -->
         <p th:if="${#fields.hasErrors('userLoginId')}" th:errors="*{userLoginId}"></p> <!-- 유효성 검사 메시지 -->
+    </div>
     </div>
 
     <div class="form-group">

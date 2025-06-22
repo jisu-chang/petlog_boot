@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org">
+<div th:replace="~{top::menu}"></div>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=390, user-scalable=no">
@@ -11,22 +12,27 @@
       font-family: 'Pretendard', sans-serif;
       margin: 0;
       padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh; /* 화면 전체 높이 확보 */
     }
 
     .container {
-      max-width: 400px;
-      margin: 80px auto;
-      background-color: white;
+      max-width: 450px;
+      margin: 120px auto;
+      background-color: #ffffff;
+      border: 2px solid #dbf5f0;
+      padding-top: 100px;
       border-radius: 16px;
-      padding: 40px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.05);
+      padding: 30px 40px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
       text-align: center;
     }
 
-    h1 {
-      color: #333;
-      margin-bottom: 30px;
-      font-size: 24px;
+   h2 {
+        color: #f48aa5;
+        margin-bottom: 20px;
     }
 
     label {
@@ -120,13 +126,10 @@
     }
   </style>
 </head>
-
 <body>
 
-<div th:replace="~{top::menu}"></div>
-
 <div class="container">
-  <h1>로그인 후 이용해주세요.</h1>
+  <h2>로그인 후 이용해주세요.</h2>
 
   <div class="error-message" th:if="${param.error}">
     사용자 이름 및 암호가 잘못되었습니다.

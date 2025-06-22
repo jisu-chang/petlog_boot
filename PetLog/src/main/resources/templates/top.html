@@ -233,7 +233,9 @@
     <button class="back-btn" onclick="history.back()"> ⬅ </button>
 
     <div class="logo-center">
-      <a href="/main"> <img src="./image/logo11.png" alt="Petlog" /> </a>
+      <a th:href="@{/}">
+        <img th:src="@{/image/logo11.png}" alt="Petlog" style="height: 80px;">
+      </a>
     </div>
 
     <button class="menu-toggle" onclick="toggleMenu()">&#9776;</button>
