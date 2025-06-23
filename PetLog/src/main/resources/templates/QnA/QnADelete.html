@@ -14,11 +14,12 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh; /* 화면 전체 높이 확보 */
+      min-height: 100vh;
     }
 
     .container {
       max-width: 700px;
+      width: 90%;
       margin: 80px auto;
       background: #fff;
       padding: 50px 60px;
@@ -31,29 +32,46 @@
       font-size: 26px;
       color: #f48aa5;
       font-weight: normal;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
     }
 
     .form-group {
-      margin-bottom: 22px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: #555;
     }
 
     .form-group input[type="text"],
+    .form-group input[type="hidden"],
+    .form-group input,
     .form-group textarea {
       width: 100%;
       padding: 12px 16px;
       font-size: 15px;
       border: 1px solid #ddd;
       border-radius: 8px;
-      background-color: #fffdfd;
+      background-color: #fdfdfd;
       font-family: 'Pretendard', sans-serif;
       transition: all 0.2s ease-in-out;
       box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
     }
 
+    .form-group input[readonly],
+    .form-group textarea[readonly] {
+      background-color: #f9f9f9;
+      color: #666;
+      cursor: not-allowed;
+    }
+
     .form-group textarea {
       resize: vertical;
-      height: 160px;
+      height: 150px;
     }
 
     .form-group input:focus,
@@ -76,56 +94,63 @@
       border-radius: 10px;
       font-size: 15px;
       font-weight: normal;
-      margin: 0 10px;
+      margin: 0 12px;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
 
     .form-actions button:hover {
-      background-color: #db7093;
+      background-color: #e2648d;
     }
 
     @media screen and (max-width: 768px) {
       .container {
         padding: 40px 24px;
       }
+
+      .form-actions button {
+        display: block;
+        width: 100%;
+        margin: 10px 0;
+      }
     }
   </style>
 </head>
+
 <body>
 <div class="container">
-  <h2 style="color: #f48aa5">⚠️등록 된 Q&A를 삭제하시겠습니까?</h2>
+  <h2>⚠️ 등록된 Q&A를 삭제하시겠습니까?</h2>
   <form th:action="@{/QnADeleteSave}" method="post">
-  <input type="hidden" name="qnaId" th:value="${dto.qnaId}" >
+    <input type="hidden" name="qnaId" th:value="${dto.qnaId}">
 
     <div class="form-group">
       <label for="qnaTitle">제목</label>
       <input type="text" id="qnaTitle" name="qnaTitle" th:value="${dto.qnaTitle}" readonly>
     </div>
+
     <div class="form-group">
       <label for="userLoginId">작성자</label>
-      <input id="userLoginId" name="userLoginId" th:value="${dto.user.userLoginId}" readonly>
+      <input type="text" id="userLoginId" name="userLoginId" th:value="${dto.user != null ? dto.user.userLoginId : '알 수 없음'}" readonly>
     </div>
+
     <div class="form-group">
       <label for="qnaDate">작성일</label>
-      <input id="qnaDate" name="qnaDate" th:value="${dto.qnaDate}" readonly>
+      <input type="text" id="qnaDate" name="qnaDate" th:value="${dto.qnaDate}" readonly>
     </div>
+
     <div class="form-group">
       <label for="qnaStatus">상태</label>
-      <input id="qnaStatus" name="qnaStatus" th:value="${dto.qnaStatus}" readonly>
+      <input type="text" id="qnaStatus" name="qnaStatus" th:value="${dto.qnaStatus}" readonly>
     </div>
 
     <div class="form-group">
       <label for="qnaContent">내용</label>
-      <textarea id="qnaContent" name="qnaContent" th:text="${dto.qnaContent}" readonly></textarea>
+      <textarea id="qnaContent" name="qnaContent" readonly th:text="${dto.qnaContent}"></textarea>
     </div>
-
-
-
 
     <div class="form-actions">
       <button type="submit">🗑️ 삭제</button>
-      <button type="reset" th:onclick="history.back()">❌ 취소</button>
+      <button type="button" onclick="history.back()">❌ 취소</button>
     </div>
   </form>
 </div>

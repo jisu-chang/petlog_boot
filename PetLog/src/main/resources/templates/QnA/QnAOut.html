@@ -123,20 +123,21 @@
     <thead>
     <tr>
       <th>번호</th>
-      <th>작성자</th>
       <th>제목</th>
+      <th>작성자</th>
       <th>작성일</th>
       <th>상태</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each ="dto : ${list}">
-        <td th:text="${dto.qnaId}"> </td>
-        <td th:text="${dto.user.userLoginId}"> </td>
-        <td><a th:href="@{/QnADetail(qnaId=${dto.qnaId})}" th:text="${dto.qnaTitle}"></a></td>
-        <td th:text="${dto.qnaDate}"></td>
-        <td th:text="${dto.qnaStatus}"></td>
-
+    <tr th:each="dto : ${list}">
+      <td th:text="${dto.qnaId}"></td>
+      <td>
+        <a th:href="@{/QnADetail(qnaId=${dto.qnaId})}" th:text="${dto.qnaTitle}"></a>
+      </td>
+      <td th:text="${dto.user != null ? dto.user.userLoginId : '알 수 없음'}"></td>
+      <td th:text="${dto.qnaDate}"></td>
+      <td th:text="${dto.qnaStatus}"></td>
     </tr>
     </tbody>
   </table>

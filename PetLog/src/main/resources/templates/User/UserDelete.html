@@ -4,60 +4,75 @@
 <head>
     <meta charset="UTF-8">
     <title>회원 탈퇴</title>
-<style>
-    body {
-      background-color: #fff6f6;
-      font-family: 'Pretendard', sans-serif;
-      color: #333;
-      padding: 40px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh; /* 화면 전체 높이 확보 */
-    }
-    .container {
-      max-width: 800px;
-      margin: auto;
-      background: white;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
-    h2 {
-      text-align: center;
-      color: #f48aa5;
-    }
-    .section {
-      margin-top: 30px;
-    }
-    .section h4 {
-      color: #d65b7b;
-      margin-bottom: 10px;
-    }
-    ul {
-      list-style-type: disc;
-      margin-left: 20px;
-    }
-    .btn-wrap {
-      text-align: center;
-      margin-top: 40px;
-    }
-    .btn-wrap form {
-      display: inline-block;
-    }
-    .btn {
-      background-color: #ffd2d2;
-      border: none;
-      padding: 12px 24px;
-      margin: 0 10px;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .btn:hover {
-      background-color: #f8b3b3;
-    }
-</style>
+    <style>
+        .container {
+          background-color: #fff;
+          padding: 40px;
+          max-width: 720px;
+          width: 100%;
+          border-radius: 30px;
+          box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+          position: relative;
+          border: 1px solid #ffe2e2;
+        }
+
+        h2 {
+          text-align: center;
+          color: #d64569;
+          font-size: 26px;
+          margin-bottom: 30px;
+          font-weight: bold;
+          position: relative;
+        }
+
+        h2::before {
+          font-size: 28px;
+          position: absolute;
+          left: -35px;
+          top: 0;
+        }
+
+        .section {
+          background: linear-gradient(to bottom, #fff9f9, #fff);
+          border-left: 4px solid #ffd1d1;
+          border-radius: 16px;
+          padding: 25px 30px;
+          margin-bottom: 25px;
+          box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);
+        }
+
+        .section h4 {
+          font-size: 17px;
+          color: #f48aa5;
+          margin-bottom: 12px;
+          font-weight: 600;
+        }
+
+        .section p {
+          font-size: 15px;
+          line-height: 1.6;
+          color: #555;
+        }
+
+        .btn {
+          background: linear-gradient(135deg, #ffc1cc, #fbe5c8);
+          color: #444;
+          border: none;
+          padding: 13px 30px;
+          margin: 10px 12px 0;
+          border-radius: 30px;
+          font-weight: bold;
+          cursor: pointer;
+          transition: 0.3s ease;
+          font-size: 15px;
+          box-shadow: 0 4px 10px rgba(255,193,204,0.25);
+        }
+
+        .btn:hover {
+          transform: scale(1.03);
+          box-shadow: 0 6px 14px rgba(255,160,176,0.35);
+        }
+    </style>
 </head>
 <body>
 <div class="container">

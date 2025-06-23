@@ -5,64 +5,76 @@
     <title>아이디 찾기 결과</title>
     <style>
         body {
-            background-color: #fff6f6;
-            font-family: 'Pretendard', sans-serif;
-            margin: 0;
-            padding: 80px 20px;
-            color: #333;
-            text-align: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh; /* 화면 전체 높이 확보 */
+          background-color: #fff6f6;
+          font-family: 'Pretendard', sans-serif;
+          margin: 0;
+          padding: 0;
+          color: #333;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-height: 100vh;
+        }
+
+        .container {
+          background-color: #ffffff;
+          border: 2px solid #ffdede;
+          border-radius: 22px;
+          padding: 40px 32px;
+          max-width: 400px;
+          width: 90%;
+          text-align: center;
+          box-shadow: 4px 4px 12px rgba(255, 182, 193, 0.2);
         }
 
         h2 {
-            font-size: 26px;
-            color: #f48aa5;
-            margin-bottom: 20px;
+          font-size: 22px;
+          color: #f48aa5;
+          margin-bottom: 20px;
         }
 
         p {
-            font-size: 18px;
-            margin-bottom: 30px;
+          font-size: 16px;
+          margin-bottom: 24px;
         }
 
-        strong {
-            color: #1c8d84;
-            font-weight: bold;
-            font-size: 20px;
+        p span {
+          display: inline-block;
+          font-weight: bold;
+          font-size: 18px;
+          color: #1c8d84;
+          background-color: #e6f4f1;
+          padding: 6px 12px;
+          border-radius: 12px;
         }
 
-        a {
-            display: inline-block;
-            margin-top: 10px;
-            font-size: 16px;
-            color: white;
-            background-color: #f48aa5;
-            padding: 10px 22px;
-            border-radius: 24px;
-            text-decoration: none;
-            transition: background-color 0.3s;
+        .back-link {
+          display: inline-block;
+          margin-top: 10px;
+          font-size: 15px;
+          background-color: #ffe3e3;
+          color: #444;
+          padding: 10px 20px;
+          border-radius: 20px;
+          text-decoration: none;
+          font-weight: 600;
+          box-shadow: 2px 2px 6px rgba(0,0,0,0.08);
+          transition: background-color 0.25s, transform 0.2s;
         }
 
-        a:hover {
-            background-color: #e86c94;
+        .back-link:hover {
+          background-color: #ffc6c6;
+          transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
 <div th:replace="~{top::menu}"></div>
 
-<h2>아이디 찾기 결과</h2>
-<p>회원님의 아이디는 <strong th:text="${userId}"></strong> 입니다.</p>
-<a th:href="@{/login}">로그인 하러 가기</a>
-
-<!--<div class="container">-->
-<!--    <h2>아이디 찾기 결과</h2>-->
-<!--    <p>아이디: <span th:text="${userId}"></span></p>-->
-<!--    <a th:href="@{/login}" class="back-link">← 로그인 페이지로 돌아가기</a>-->
-<!--</div>-->
+<div class="container">
+    <h2>아이디 찾기 결과</h2>
+    <p>회원님의 아이디는<br><span th:text="${userId}"></span></p>
+    <a th:href="@{/login}" class="back-link">← 로그인하러 가기</a>
+</div>
 </body>
-
 </html>

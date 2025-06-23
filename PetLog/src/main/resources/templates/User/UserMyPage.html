@@ -1,30 +1,30 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<div th:replace="~{top::menu}"></div>
 <head>
+  <meta charset="UTF-8">
+  <title>마이페이지</title>
   <style>
     body {
         background-color: #ffffff;
-        margin: 0;
-        padding: 0;
         font-family: 'Pretendard', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh; /* 화면 전체 높이 확보 */
+        margin: 30;
+        padding: 70;
+        padding-top: 70px;
+        padding-bottom: 100px;
     }
 
     .container {
-        max-width: 700px;
-        margin: 50px auto;
-        background-color: #ffffff;
-        padding: 40px;
-        border-radius: 20px;
+        width: 100%;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 40px 20px 60px;
+        box-sizing: border-box;
         text-align: center;
     }
 
     h1 {
         font-size: 30px;
+        margin-top: 20px;
         margin-bottom: 25px;
         color: #333;
     }
@@ -49,12 +49,14 @@
         background: #fff6f8;
         border: 2px solid #ffc1cc;
         border-radius: 20px;
-        padding: 25px;
+        padding: 30px;
         margin: 25px auto;
+        width: 100%;
         max-width: 400px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        font-size: 16px;
+        font-size: 19px;
         color: #444;
+        word-break: keep-all;
     }
 
     .info-card p {
@@ -63,27 +65,43 @@
     }
 
     .btn-group {
-        margin-top: 30px;
-    }
+    margin-top: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+}
 
-    .btn-group a {
-        display: inline-block;
-        background: linear-gradient(135deg, #ffc1cc, #fbe5c8);
-        color: #5a5a5a;
-        text-decoration: none;
-        padding: 12px 24px;
-        border-radius: 30px;
-        font-size: 15px;
-        cursor: pointer;
-        font-weight: bold;
-        margin: 0 10px;
-        transition: all 0.3s;
-    }
+.btn-group a {
+    background-color: #ffdfeb;
+    color: #444;
+    text-decoration: none;
+    padding: 14px 26px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
 
-    .btn-group a:hover {
-        background: linear-gradient(135deg, #fba0b2, #f8d7af);
-        color: #333;
-    }
+.btn-group a:hover {
+    background-color: #ffc1cc;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn-group a.danger {
+    background-color: #ffe0e0;
+    color: #c03c3c;
+    border: 2px solid #ff9a9a;
+}
+
+.btn-group a.danger:hover {
+    background-color: #ffb3b3;
+    color: white;
+    box-shadow: 0 6px 14px rgba(255, 0, 0, 0.2);
+}
 
     .profile-frame-container {
         position: relative;
@@ -96,8 +114,8 @@
         position: absolute;
         top: 35px;
         left: 35px;
-        width: 150px;
-        height: 150px;
+        width: 180px;
+        height: 180px;
         border-radius: 50%;
         object-fit: cover;
         z-index: 1;
@@ -122,45 +140,44 @@
   </style>
 </head>
 <body>
+
+<!-- 메뉴는 body 안에 위치 -->
+<div th:replace="~{top::menu}"></div>
+
 <div class="container">
   <h1>🐾 마이페이지</h1>
+  <div class="info-card">
+  <h3><span class="nickname" th:text="${list.name}"></span>님의 회원정보</h3>
 
+
+  <!-- 2. 프로필 이미지 프레임만 따로 -->
   <div class="profile-frame-container">
-    <h3><span class="nickname" th:text="${list.name}"></span>님의 회원정보</h3>
+    <img th:if="${session.loginType == 'kakao'}"
+         th:src="${list.profileimg != null ? list.profileimg : '/images/default.png'}"
+         alt="카카오 프로필 이미지"
+         class="profile-img" />
+    <img th:if="${session.loginType != 'kakao'}"
+         th:src="@{/images/{fileName}(fileName=${list.profileimg != null ? list.profileimg : 'default.png'})}"
+         alt="일반 유저 프로필 이미지"
+         class="profile-img" />
+  </div>
 
-    <div class="info-card">
-      <!-- 프로필 이미지 + 프레임 -->
-      <div class="profile-frame-container">
-        <!-- 카카오 로그인 유저: 외부 URL 사용 -->
-        <img th:if="${session.loginType == 'kakao'}"
-             th:src="${list.profileimg != null ? list.profileimg : '/images/default.png'}"
-             alt="카카오 프로필 이미지"
-             class="profile-img" />
+  <!-- 3. 회원 정보 카드 분리 -->
+    <p><strong>아이디:</strong> <span th:text="${list.userLoginId}"></span></p>
+    <p><strong>이름:</strong> <span th:text="${list.name}"></span></p>
+    <p><strong>전화번호:</strong> <span th:text="${list.phone}"></span></p>
+    <p><strong>포도알:</strong> <span th:text="'🍇'+${list.grapeCount}+'개'"></span></p>
+    <p><strong>퀴즈 등급:</strong> <span th:text="${list.rank}"></span></p>
+  </div>
 
-        <!-- 일반 유저: 내부 파일 경로 사용 -->
-        <img th:if="${session.loginType != 'kakao'}"
-             th:src="@{/images/{fileName}(fileName=${list.profileimg != null ? list.profileimg : 'default.png'})}"
-             alt="일반 유저 프로필 이미지"
-             class="profile-img" />
-      </div>
-
-      <!-- 회원 정보 -->
-      <p><strong>아이디:</strong> <span th:text="${list.userLoginId}"></span></p>
-      <p><strong>이름:</strong> <span th:text="${list.name}"></span></p>
-      <p><strong>전화번호:</strong> <span th:text="${list.phone}"></span></p>
-      <p><strong>포도알:</strong> <span th:text="'🍇'+${list.grapeCount}+'개'"></span></p>
-      <p><strong>퀴즈 등급:</strong> <span th:text="${list.rank}"></span></p>
-    </div>
-
-    <!-- 버튼 그룹 -->
-    <div class="btn-group">
-      <a th:href="@{/UserPwChange}">비밀번호 변경</a>
-      <a th:href="@{/UserUpdate}">회원정보 수정</a>
-      <a th:href="@{/PetOut}">펫 정보</a>
-      <a th:href="@{/UserDelete}">회원탈퇴</a>
-    </div>
+  <!-- 4. 버튼 그룹 -->
+  <div class="btn-group">
+    <a th:href="@{/UserPwChange}">비밀번호 변경</a>
+    <a th:href="@{/UserUpdate}">회원정보 수정</a>
+    <a th:href="@{/UserDelete}">회원탈퇴</a>
   </div>
 </div>
+
 
 <script th:inline="javascript">
   if ([[${msg} != null]]) {

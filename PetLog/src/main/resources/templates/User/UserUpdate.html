@@ -2,8 +2,94 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:replace="~{top::menu}"></div>
 <head>
-</head>
+  <style>
+    body {
+      background-color: #fff;
+      font-family: 'Pretendard', sans-serif;
+      padding-top: 70px;
+      padding-bottom: 100px;
+      display: flex;
+      justify-content: center;
+    }
 
+    .container {
+      width: 100%;
+      max-width: 500px;
+      border: 2px solid #ffc1cc;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #f48aa5;
+    }
+
+    input[type="text"],
+    input[type="file"],
+    input[type="email"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+
+    .form-control:read-only {
+      background-color: #f8f9fa;
+    }
+
+   .profile-img-only {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      margin: 20px auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #ffc1cc, #fbe5c8);
+      color: #5a5a5a;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 15px;
+      cursor: pointer;
+      font-weight: bold;
+      margin: 10px 10px 0 0;
+      transition: all 0.3s;
+      border: none;
+    }
+
+    .btn:hover {
+      background: linear-gradient(135deg, #fba0b2, #f8d7af);
+      color: #333;
+    }
+
+    .text-muted {
+      font-size: 13px;
+      color: #888;
+      margin-top: 5px;
+    }
+
+    p[th\:errors] {
+      color: red;
+      font-size: 14px;
+      margin-top: 6px;
+    }
+  </style>
+</head>
 <body>
 <div class="container">
   <form th:action="@{/UserUpdateSave}" method="post" th:object="${userDTO}" enctype="multipart/form-data" id="userUpdateForm">
@@ -11,84 +97,43 @@
     <input type="hidden" name="dfname" th:value="${userDTO.profileimgName != null ? userDTO.profileimgName : 'default.png'}">
     <input type="hidden" name="phoneCheckStatus" id="phoneCheckStatus" value="false" />
 
+    <img class="profile-img-only" th:src="@{${userDTO.profileimgName != null ? '/images/' + userDTO.profileimgName : '/images/default.png'}}" alt="Profile Image" />
+
     <div class="form-group">
       <label for="userLoginId">아이디</label>
-      <input type="text" class="form-control" id="userLoginId" name="userLoginId" th:value="${userDTO.userLoginId}" readonly />
+      <input type="text" id="userLoginId" name="userLoginId" th:value="${userDTO.userLoginId}" readonly />
       <p th:if="${#fields.hasErrors('userLoginId')}" th:errors="*{userLoginId}"></p>
     </div>
 
     <div class="form-group">
       <label for="name">이름</label>
-      <input type="text" class="form-control" id="name" th:value="${userDTO.name}" th:field="*{name}" required />
-      <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+      <input type="text" id="name" th:value="${userDTO.name}" th:field="*{name}" required />
+      <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
     </div>
 
     <div class="form-group">
       <label for="phone">전화번호</label>
       <input type="text" id="phone" name="phone" placeholder="전화번호는 010으로 시작하는 숫자 11자리여야 합니다."
              maxlength="13" oninput="autoFormatPhone(this)" th:value="${userDTO.phone}" th:field="*{phone}" required />
-      <div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+      <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></p>
     </div>
 
     <div class="form-group">
       <label for="email">이메일</label>
-      <input type="text" class="form-control" id="email" th:value="${userDTO.email}" th:field="*{email}" th:attr="readonly=${session.loginType == 'kakao'} ? 'readonly' : null" />
+      <input type="text" id="email" th:value="${userDTO.email}" th:field="*{email}" th:attr="readonly=${session.loginType == 'kakao'} ? 'readonly' : null" />
       <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
       <p th:if="${session.loginType == 'kakao'}" class="text-muted">※ 소셜 로그인 유저는 이메일을 수정할 수 없습니다.</p>
     </div>
 
     <div class="form-group">
       <label for="profileimg">프로필 이미지</label>
-      <!-- 프로필 이미지 출력 -->
-      <img th:src="@{${userDTO.profileimgName != null ? '/images/' + userDTO.profileimgName : '/images/default.png'}}" alt="Profile Image" />
-      <!-- 프로필 이미지 파일 업로드 -->
-      <input type="file" class="form-control" id="profileimg" name="profileimg" />
+      <input type="file" id="profileimg" name="profileimg" />
       <p th:if="${#fields.hasErrors('profileimg')}" th:errors="*{profileimg}"></p>
     </div>
 
-    <button type="submit" class="btn btn-primary">수정</button>
-    <button type="reset" class="btn btn-primary" onclick="location.href='/'">취소</button>
+    <button type="submit" class="btn">수정</button>
+    <button type="reset" class="btn" onclick="location.href='/'">취소</button>
   </form>
 </div>
-
-<!-- 이메일 합치기 -->
-<script>
-  document.getElementById("userUpdateForm").addEventListener("submit", function (e) {
-    const id = document.getElementById("email").value; // 이메일 아이디
-    const domain = document.getElementById("emailDomain").value === "direct"
-        ? document.getElementById("emailCustom").value
-        : document.getElementById("emailDomain").value;
-
-    if (domain === "direct" && document.getElementById("emailCustom").value.trim() === "") {
-        alert("이메일 도메인을 입력해 주세요.");
-        e.preventDefault();
-        return false;
-    }
-
-    document.getElementById("fullEmail").value = id + "@" + domain;
-  });
-</script>
-
-<!-- 전화번호 유효성 검사 -->
-<script>
-  function autoFormatPhone(input) {
-    let value = input.value.replace(/[^0-9]/g, "");
-
-    if (!value.startsWith("010")) {
-      value = "010" + value;
-    }
-
-    if (value.length <= 3) {
-      input.value = value;
-    } else if (value.length <= 7) {
-      input.value = value.slice(0, 3) + "-" + value.slice(3);
-    } else if (value.length <= 11) {
-      input.value = value.slice(0, 3) + "-" + value.slice(3, 7) + "-" + value.slice(7);
-    } else {
-      input.value = value.slice(0, 3) + "-" + value.slice(3, 7) + "-" + value.slice(7, 11);
-    }
-  }
-</script>
-
 </body>
 </html>

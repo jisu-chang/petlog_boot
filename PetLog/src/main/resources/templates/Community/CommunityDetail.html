@@ -5,31 +5,28 @@
     <title>게시글 상세보기</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f7f7f7;
+            font-family: 'Pretendard', sans-serif;
+            background-color: #fff6f6;
             color: #333;
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh; /* 화면 전체 높이 확보 */
         }
 
         .container {
-            width: 80%;
-            margin: 20px auto;
+            width: 90%;
+            max-width: 1000px;
+            margin: 40px auto;
             background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
         h2 {
             color: #f48aa5;
             text-align: center;
-            font-size: 1.8em;
-            margin-bottom: 20px;
+            font-size: 2em;
+            margin-bottom: 30px;
         }
 
         .post-header {
@@ -44,7 +41,7 @@
             height: 50px;
             border-radius: 50%;
             object-fit: cover;
-            margin-right: 10px;
+            margin-right: 12px;
         }
 
         table {
@@ -54,68 +51,26 @@
         }
 
         th, td {
-            padding: 10px;
+            padding: 14px 18px;
             text-align: left;
-            font-size: 1.1em;
+            font-size: 1em;
+            vertical-align: top;
         }
 
         th {
             width: 120px;
-            color: #888;
-        }
-
-        td {
-            color: #333;
-            word-wrap: break-word;
-        }
-
-        input[type="button"], input[type="submit"], button {
-            background-color: #f48aa5;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            font-size: 1.1em;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-
-        input[type="submit"] {
-            background-color: #e74c3c;
-        }
-
-        input[type="button"]:hover, button:hover {
-            background-color: #db7093;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #c0392b;
-        }
-
-        .like-info {
-            font-size: 15px;
-            color: #8b8386;
-            text-align: right;
-        }
-
-        .like-info span {
-            margin-right: 10px;
-        }
-
-        .btn-group {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
+            background-color: #ffeef2;
+            color: #555;
+            text-align: center;
         }
 
         .post-content {
             white-space: pre-line;
-            width: 100%;
-            min-height: 300px;
             padding: 15px;
             background-color: #fafafa;
             border: 1px solid #eee;
-            border-radius: 4px;
+            border-radius: 6px;
+            min-height: 300px;
         }
 
         .post-content img {
@@ -125,155 +80,180 @@
             border-radius: 8px;
         }
 
-        .comment-container, .reply-comment {
-            background: #f1f1f1;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 15px;
-        }
-
-        .reply-comment {
-            margin-left: 30px;
-            background: #e9e9e9;
-            border-left: 3px solid #f48aa5;
-        }
-
-        .reply-form {
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
             margin-top: 10px;
-            margin-left: 30px;
         }
 
-        input[type="text"], textarea {
+        .btn-group input[type="button"] {
+            color: #333;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .btn-group .list-btn {
+            background-color: #eeeeee;
+        }
+
+        .btn-group .edit-delete {
+            background-color: #ffe1e1;
+        }
+
+        .btn-group input[type="button"]:hover {
+            background-color: #ddd;
+        }
+
+        .like-button {
+            font-size: 22px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .like-button.liked {
+            color: red;
+        }
+
+        .top-icons {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .comment-box {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .comment-form textarea {
             width: 100%;
-            padding: 8px;
-            margin-top: 5px;
+            padding: 10px;
             border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 8px;
         }
 
-        @media (max-width: 768px) {
-            .container {
-                width: 90%;
-            }
-
-            .btn-group {
-                flex-direction: column;
-                align-items: flex-end;
-            }
-
-            input[type="button"], input[type="submit"] {
-                width: 100%;
-                margin: 5px 0;
-            }
+        .comment-form button {
+            background-color: #ffe1e1;
+            color: #333;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+            margin-top: 10px;
         }
+
+        .comment {
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+
     </style>
 </head>
 <body>
 <div th:replace="~{top::menu}"></div>
 <div class="container">
-    <form th:action="@{/CommunityDelete}" method="post">
+    <div class="post-header">
+        <img class="profile-img" th:if="${dto?.user?.profileimg != null}" th:src="@{/images/{img}(img=${dto.user.profileimg})}" alt="Profile Image"/>
+        <img class="profile-img" th:if="${dto?.user?.profileimg == null}" th:src="@{/images/default.png}" alt="Default Image"/>
+        <h2 th:text="${dto.user.userLoginId} + '님의 게시물'"></h2>
+    </div>
 
-        <input type="hidden" name="postType" th:value="${dto.postType}" />
+    <div class="top-icons">
+        <span>👁 <span th:text="${dto.postReadcnt}"></span></span>
+        <span style="margin-left: 10px;">💬 <span th:text="${#lists.size(comments)}"></span></span>
+        <span style="margin-left: 10px;">❤️ <span th:text="${likeCount}"></span></span>
+    </div>
 
-        <div class="post-header">
-            <!-- 프로필 이미지가 있는 경우 -->
-            <img class="profile-img" th:if="${dto?.user?.profileimg != null}" th:src="@{/images/{img}(img=${dto.user.profileimg})}" alt="Profile Image"/>
-            <!-- 프로필 이미지가 없는 경우 기본 이미지로 -->
-            <img class="profile-img" th:if="${dto?.user?.profileimg == null}" th:src="@{/images/default.png}" alt="Default Image"/>
-            <h2><span th:text="${dto.user.userLoginId} + '님의 게시물'"></span></h2>
-        </div>
-
-        <div class="like-info">
-            <span>👁<span th:text="${dto.postReadcnt}"></span></span>
-            <span>❤️<span th:text="${likeCount}"></span></span>
-        </div>
-
-        <table>
-            <tr><th>제목</th><td th:text="${dto.postTitle}"></td></tr>
-            <tr><th>작성자</th><td th:text="${dto.user.userLoginId}"></td></tr>
-            <tr><th>게시일</th><td th:text="${dto.postDate}"></td></tr>
-            <tr>
-                <th>내용</th>
-                <td>
-                    <div class="post-content">
-                        <span th:text="${dto.postContent}"></span>
-                        <th:block th:if="${dto.postImage != null and !#strings.isEmpty(dto.postImage)}">
-                            <br>
-                            <img th:src="@{'/image/' + ${dto.postImage}}" />
-                        </th:block>
+    <table>
+        <tr>
+            <th>제목</th>
+            <td><div class="form-group">
+                <div style="white-space: pre-line;" th:text="${dto.postTitle}">
+                </div>
+            </div>
+            </td>
+        </tr>
+        <tr>
+            <th>작성자</th>
+            <td><div class="form-group">
+                <div style="white-space: pre-line;" th:text="${dto.user.userLoginId}">
+                </div>
+            </div>
+            </td>
+        </tr>
+        <tr>
+            <th>게시일</th>
+            <td><div class="form-group">
+                <div style="white-space: pre-line;" th:text="${dto.postDate}">
+                </div>
+            </div>
+            </td>
+        </tr>
+        <tr>
+            <th>내용</th>
+            <td>
+                <div class="post-content">
+                    <span th:text="${dto.postContent}"></span>
+                    <div th:if="${dto.postImage != null and !#strings.isEmpty(dto.postImage)}" style="margin-top: 20px; text-align: center;">
+                        <img th:src="@{'/image/' + ${dto.postImage}}" />
                     </div>
-                </td>
-            </tr>
-        </table>
+                </div>
+            </td>
+        </tr>
+    </table>
 
-        <input type="hidden" name="dnum" th:value="${dto.postId}" />
-        <div class="btn-group">
-            <input type="button" value="목록" th:onclick="location.href='/CommunityOut'">
+    <div class="btn-group">
+        <input type="button" class="list-btn" value="목록" onclick="location.href='/CommunityOut'">
+        <th:block th:if="${#authentication.principal.userId == dto.user.userId || #authentication.principal.userRole == 'admin'}">
+            <input type="button" class="edit-delete" value="수정" onclick="location.href='/CommunityUpdate?unum=' + [[${dto.postId}]]">
+            <input type="button" class="edit-delete" value="삭제" onclick="if(confirm('삭제하시겠습니까?')) location.href='/CommunityDelete?dnum=' + [[${dto.postId}]]">
+        </th:block>
+    </div>
 
-            <!-- 게시글 삭제: 관리자(admin) 또는 작성자(user_id)만 가능 -->
-            <th:block th:if="${#authentication.principal.userRole == 'admin' or #authentication.principal.userId == dto.user.userId}">
-                <input type="submit" value="삭제" th:onclick="return confirm('삭제하시겠습니까?');">
-            </th:block>
-
-            <!-- 게시글 수정: 작성자(user_id)만 가능 -->
-            <th:block th:if="${#authentication.principal.userId == dto.user.userId}">
-                <input type="button" value="수정" th:onclick="|location.href='@{/CommunityUpdate(unum=${dto.postId})}'|" />
-            </th:block>
-        </div>
-
+    <form th:action="@{'/post/' + ${dto.postId} + '/like'}" method="post" style="text-align:center; margin-top: 10px;">
+        <button type="submit" th:classappend="${likedByUser} ? 'like-button liked' : 'like-button'">
+            <span th:text="${likedByUser ? '❤️' : '🤍'} + ' (' + ${likeCount} + ')'">좋아요</span>
+        </button>
     </form>
 
-    <!-- 좋아요 버튼 -->
-    <form th:action="@{'/post/' + ${dto.postId} + '/like'}" method="post">
-        <button type="submit" th:text="${likedByUser ? '좋아요 취소' : '좋아요'}"></button>
-    </form>
+    <div class="comment-box">
+        <h3>💬 댓글</h3>
+        <form class="comment-form" th:action="@{/community/comment}" method="post">
+            <input type="hidden" name="post_id" th:value="${dto.postId}" />
+            <input type="hidden" name="parent_id" value="0" />
+            <input type="hidden" name="depth" value="0" />
+            <textarea name="com_com" rows="3" placeholder="댓글을 입력하세요" required></textarea>
+            <button type="submit">댓글 작성</button>
+        </form>
 
-
-    <!-- 원댓글 작성 폼 -->
-    <form th:action="@{/community/comment}" method="post">
-        <input type="hidden" name="post_id" th:value="${dto.postId}" />
-        <input type="hidden" name="parent_id" value="0" />
-        <input type="hidden" name="depth" value="0" />
-        <input type="hidden" name="user_login_id" th:value="${session.userLoginId}" />
-        <input type="hidden" name="user_id" th:value="${session.userId}" />
-        <input type="text" name="com_com" placeholder="댓글 작성" required/>
-        <button type="submit">등록</button>
-    </form>
-
-    <!-- 댓글 출력 -->
-    <div th:each="comment : ${comments}">
-               <div th:if="${comment.depth == 0}" class="comment-container">
+        <div th:each="comment : ${comments}" class="comment">
             <p><strong th:text="${comment.userLoginId}">작성자</strong>: <span th:text="${comment.com_com}">내용</span></p>
-            <button type="button" th:onclick="'toggleReplyForm(' + ${comment.com_id} + ')'">대댓글</button>
+            <button type="button" onclick="toggleReplyForm([[${comment.com_id}]])">답글</button>
 
-            <!-- 대댓글 출력 -->
-            <div th:each="reply : ${comments}" th:if="${reply.parent_id == comment.com_id}" class="reply-comment">
+            <div th:each="reply : ${comments}" th:if="${reply.parent_id == comment.com_id}" style="margin-left: 20px;">
                 ↳ <strong th:text="${reply.userLoginId}">작성자</strong>: <span th:text="${reply.com_com}">대댓글내용</span>
             </div>
 
-           <!-- 대댓글 입력폼 -->
-           <form th:id="'reply-form-' + ${comment.com_id}"
-                 class="reply-form"
-                 th:action="@{/community/comment}"
-                 method="post"
-                 style="display: none;">
-               <input type="hidden" name="post_id" th:value="${dto.postId}" />
-               <input type="hidden" name="parent_id" th:value="${comment.com_id}" />
-               <input type="hidden" name="depth" value="1" />
-               <input type="hidden" name="user_id" th:value="${session.userId}" />
-               <input type="text" name="com_com" placeholder="대댓글 작성" required />
-               <button type="submit">등록</button>
-           </form>
+            <form th:id="'reply-form-' + ${comment.com_id}" class="comment-form" th:action="@{/community/comment}" method="post" style="display: none;">
+                <input type="hidden" name="post_id" th:value="${dto.postId}" />
+                <input type="hidden" name="parent_id" th:value="${comment.com_id}" />
+                <input type="hidden" name="depth" value="1" />
+                <textarea name="com_com" rows="2" placeholder="답글을 입력하세요" required></textarea>
+                <button type="submit">작성</button>
+            </form>
         </div>
     </div>
 </div>
-
 <script>
     function toggleReplyForm(id) {
-        const replyForm = document.getElementById('reply-form-' + id);
-        if (replyForm) {
-        replyForm.style.display = replyForm.style.display === 'block' ? 'none' : 'block';
-        }
+        const form = document.getElementById('reply-form-' + id);
+        if (form) form.style.display = form.style.display === 'block' ? 'none' : 'block';
     }
 </script>
 </body>
