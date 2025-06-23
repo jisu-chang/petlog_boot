@@ -54,16 +54,23 @@ public class QnAController {
     }
 
     @GetMapping("/QnADetail")
-    public String qnadetail(@RequestParam("qnaId") Long qnaId, HttpSession session, RedirectAttributes redirectAttributes, Model mo){
+    public String qnadetail(@RequestParam("qnaId") Long qnaId,
+                            HttpSession session,
+                            RedirectAttributes redirectAttributes,
+                            Model mo) {
         Long userId = (Long) session.getAttribute("userId");
+        String userRole = (String) session.getAttribute("userRole"); // 관리자 여부 확인
 
-        QnAEntity qnAEntity=qnaService.DetailById(qnaId);
+        QnAEntity qnAEntity = qnaService.DetailById(qnaId);
 
-        //게시글 작성자만 보기
+        // 작성자 본인이 아니면서 관리자가 아닌 경우 차단
         if (!qnAEntity.getUserId().equals(userId)) {
-            redirectAttributes.addFlashAttribute("alertMsg", "본인만 해당 게시글을 볼 수 있습니다.");
-            return "redirect:/QnAOut";
+            if (userRole == null || !userRole.equals("admin")) {
+                redirectAttributes.addFlashAttribute("alertMsg", "본인만 해당 게시글을 볼 수 있습니다.");
+                return "redirect:/QnAOut";
+            }
         }
+
         mo.addAttribute("dto", qnAEntity);
         return "QnA/QnADetail";
     }

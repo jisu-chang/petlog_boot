@@ -14,7 +14,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,7 +30,7 @@ public class CommunityController {
     @Autowired
     CommentsService commentsService;
 
-    String path = new File("src/main/resources/static/image").getAbsolutePath();
+    String path ="C:\\MBC12AI\\git\\petlog_boot\\src\\main\\resources\\static\\image";
 
     // 커뮤니티/공지사항 폼을 type에 따라 다르게 로딩
     @GetMapping("/CommunityIn")
@@ -97,18 +99,22 @@ public class CommunityController {
                 .filter(post -> "normal".equals(post.getPostType()))
                 .collect(Collectors.toList());
 
-        mo.addAttribute("list", filtered);
-        mo.addAttribute("noticePosts", noticePosts);
-        mo.addAttribute("normalPosts", normalPosts);
-        return "Community/CommunityOut";
-    }
+        // 댓글수 / 좋아요수 매핑
+        Map<Long, Integer> commentCounts = new HashMap<>();
+        Map<Long, Integer> likeCounts = new HashMap<>();
 
-    // 공지사항 출력
-    @GetMapping(value = "/CommunityNotice")
-    public String NoticeView(Model mo) {
-        List<CommunityEntity> noticePosts = communityService.getNoticePost();
+        for (CommunityEntity post : normalPosts) {
+            Long id = post.getPostId();
+            commentCounts.put(id, commentsService.getCommentsByPostId(id).size());
+            likeCounts.put(id, likesService.getLikeCount(id));
+        }
+
+        mo.addAttribute("normalPosts", normalPosts);
         mo.addAttribute("noticePosts", noticePosts);
-        return "Notice/NoticeOut";
+        mo.addAttribute("commentCounts", commentCounts);
+        mo.addAttribute("likeCounts", likeCounts);
+        mo.addAttribute("list", filtered);
+        return "Community/CommunityOut";
     }
 
     // 커뮤니티 게시글 상세보기
@@ -176,7 +182,7 @@ public class CommunityController {
         return "redirect:/CommunityOut";
     }
 
-    @PostMapping(value = "/CommunityDelete")
+    @GetMapping(value = "/CommunityDelete")
     public String comdelete(@RequestParam("dnum") Long dnum, Model mo) {
         CommunityEntity edto = communityService.deleteById(dnum);
         mo.addAttribute("dto", edto);
@@ -184,14 +190,108 @@ public class CommunityController {
     }
 
     @PostMapping(value = "/CommunityDeleteSave")
-    public String comdeletesave(@RequestParam("dnum") Long dnum, @RequestParam("dfname") String dfname, HttpSession session, CommunityDTO communityDTO) throws IOException {
-        Long userId = (Long) session.getAttribute("user_id");
+    public String comdeletesave(@RequestParam("dnum") Long dnum,
+                                @RequestParam("dfname") String dfname,
+                                @RequestParam(value = "type", required = false) String type,
+                                @RequestParam(value = "post_type", required = false) String postType,
+                                HttpSession session,
+                                CommunityDTO communityDTO) throws IOException {
+        Long userId = (Long) session.getAttribute("userId");
         communityDTO.setUserId(userId);
 
         communityService.deletesave(dnum);
         File ff = new File(path + "\\" + dfname);
         ff.delete();
+
         return "redirect:/CommunityOut";
+    }
+
+    // 공지사항 출력
+    @GetMapping(value = "/CommunityNotice")
+    public String NoticeView(Model mo) {
+        List<CommunityEntity> noticePosts = communityService.getNoticePost();
+        mo.addAttribute("noticePosts", noticePosts);
+        return "Notice/NoticeOut";
+    }
+
+    //공지사항 게시글 상세보기
+    @GetMapping(value = "/NoticeDetail")
+    public String noticedetail(@RequestParam("num") Long num, Model mo, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        String userLoginId = (String) session.getAttribute("user_login_id");
+        String userRole = (String) session.getAttribute("userRole");
+
+        CommunityEntity dto = communityService.findById(num); // 게시글 정보 가져오기
+
+        communityService.readup(num);
+
+        mo.addAttribute("sessionUserId", userId);
+        mo.addAttribute("sessionUserLoginId", userLoginId);
+        mo.addAttribute("sessionUserRole", userRole);
+        mo.addAttribute("dto", dto);
+        return "Notice/NoticeDetail";
+    }
+
+    @GetMapping(value = "/NoticeUpdate")
+    public String noticeupdate(@RequestParam("unum") Long unum, Model mo) {
+        CommunityEntity edto = communityService.updateById(unum);
+        mo.addAttribute("dto", edto);
+        return "Notice/NoticeUpdate";
+    }
+
+    @PostMapping(value = "/NoticeUpdateSave")
+    public String noticeupdatesave(@RequestParam("dfname") String dfname, @RequestParam("post_readcnt") int readcnt, CommunityDTO communityDTO, HttpSession session) throws IOException {
+        Long userId = (Long) session.getAttribute("userId");
+        communityDTO.setUserId(userId);
+        communityDTO.setPostReadcnt(readcnt);
+
+        MultipartFile mf = communityDTO.getPostImage();
+        String saveImageName;
+        if (mf != null && !mf.isEmpty()) {
+            new File(path + "\\" + dfname).delete(); // 기존 이미지 삭제
+            saveImageName = mf.getOriginalFilename();
+            mf.transferTo(new File(path + "\\" + saveImageName));
+        } else {
+            saveImageName = dfname; // 새 이미지 없으면 기존 이미지 유지
+        }
+
+        CommunityEntity communityEntity = CommunityEntity.builder()
+                .postId(communityDTO.getPostId())
+                .userId(communityDTO.getUserId())
+                .postTitle(communityDTO.getPostTitle())
+                .postContent(communityDTO.getPostContent())
+                .postImage(saveImageName)
+                .postReadcnt(communityDTO.getPostReadcnt())
+                .postDate(communityDTO.getPostDate())
+                .postType(communityDTO.getPostType())
+                .build();
+        communityService.insertpost(communityEntity);
+
+        return "redirect:/CommunityNotice";
+    }
+
+    @GetMapping(value = "/NoticeDelete")
+    public String noticedelete(@RequestParam("dnum") Long dnum, Model mo) {
+        CommunityEntity edto = communityService.deleteById(dnum);
+        mo.addAttribute("dto", edto);
+        return "Notice/NoticeDelete";
+    }
+
+    @PostMapping(value = "/NoticeDeleteSave")
+    public String noticedeletesave(@RequestParam("dnum") Long dnum,
+                                @RequestParam("dfname") String dfname,
+                                @RequestParam(value = "type", required = false) String type,
+                                @RequestParam(value = "post_type", required = false) String postType,
+                                HttpSession session,
+                                CommunityDTO communityDTO) throws IOException {
+        Long userId = (Long) session.getAttribute("userId");
+        communityDTO.setUserId(userId);
+
+        communityService.deletesave(dnum);
+        File ff = new File(path + "\\" + dfname);
+        ff.delete();
+
+        return "redirect:/CommunityNotice";
     }
 
     @GetMapping("/community/{postId}")

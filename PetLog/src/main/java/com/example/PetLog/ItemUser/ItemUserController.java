@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -48,15 +49,12 @@ public class ItemUserController {
 
     @PostMapping(value = "/ItemUser/ItemBought")
     public String buyItem(@RequestParam("itemId") Long itemId, HttpSession session) {
-        System.out.println("🧨 구매 요청 들어옴: itemId = " + itemId);
 
         // 1. 세션에서 로그인된 user_id 꺼내기
         Long userId = (Long) session.getAttribute("userId");
-        System.out.println("세션에서 가져온 userId: " + userId);  // userId가 제대로 나오는지 확인
 
         // 로그인되지 않은 경우 로그인 페이지로 리디렉트
         if (userId == null) {
-            System.out.println("세션에 userId가 없습니다. 로그인 페이지로 리디렉션됩니다.");
             return "redirect:/login";
         }
 
@@ -109,9 +107,6 @@ public class ItemUserController {
         // ✅ 로그 출력 (forEach는 여기까지만!)
         System.out.println("조회된 내 아이템 개수: " + myItems.size());
         myItems.forEach(iue -> {
-            System.out.println("🎯 usertemId = " + iue.getUsertemId());
-            System.out.println("➡ itemId = " + iue.getItemId());
-            System.out.println("➡ 연관된 item = " + iue.getItem());
         });
 
         // ✅ DTO 변환은 forEach 바깥에서
@@ -166,5 +161,33 @@ public class ItemUserController {
         }
 
         return "redirect:/ItemUser/ItemPuton"; // 위에서 만든 HTML 파일로 이동
+    }
+
+    @PostMapping("/ItemDeleteUser")
+    public String deleteUserItem(@RequestParam("delete") Long itemId,
+                                 @RequestParam("dfimage") String itemImageName,
+                                 HttpSession session,
+                                 RedirectAttributes redirectAttributes) {
+        Long userId = (Long) session.getAttribute("userId");
+
+        if (userId == null) {
+            return "redirect:/login";
+        }
+
+        try {
+            ItemUserEntity itemUser = itemUserRepository.findByUserIdAndItem_ItemId(userId, itemId);
+
+            if (itemUser != null) {
+                itemUserRepository.delete(itemUser);
+                redirectAttributes.addFlashAttribute("message", "아이템이 성공적으로 삭제되었습니다.");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "해당 아이템을 찾을 수 없습니다.");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "아이템 삭제 중 오류가 발생했습니다: " + e.getMessage());
+            e.printStackTrace();
+            System.out.println("ERROR: 아이템 삭제 중 예외 발생 - " + e.getMessage());
+        }
+        return "redirect:/ItemUser/ItemBought";
     }
 }

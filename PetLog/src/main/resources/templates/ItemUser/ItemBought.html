@@ -207,7 +207,7 @@
           <input type="hidden" name="itemId" th:value="${item.itemId}" />
           <input type="submit" value="사용하기 🎀" />
         </form>
-        <form th:action="@{/items/itemDeleteUser}" method="post" style="display:inline-block;">
+        <form th:action="@{/ItemDeleteUser}" method="post" style="display:inline-block;">
           <input type="hidden" name="delete" th:value="${item.itemId}" />
           <input type="hidden" name="dfimage" th:value="${item.itemImageName}" />
           <button type="submit" class="delete-btn">🗑️ 삭제</button>

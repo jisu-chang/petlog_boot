@@ -33,44 +33,68 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+       .post-title-wrapper {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          margin-bottom: 30px;
         }
 
         .profile-img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-right: 12px;
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          object-fit: cover;
         }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .top-icons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 14px;
             margin-bottom: 20px;
+            font-size: 15px;
         }
 
-        th, td {
-            padding: 14px 18px;
-            text-align: left;
-            font-size: 1em;
-            vertical-align: top;
+        .post-info {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
         }
 
-        th {
-            width: 120px;
-            background-color: #ffeef2;
-            color: #555;
+        .post-row {
+            display: flex;
+            border-radius: 0; /* 둥근 모서리 제거 시 */
+            overflow: hidden;
+            margin-bottom: 0; /* 간격 제거 */
+            box-shadow: none; /* 필요 시 그림자 제거 */
+            border-bottom: 1px solid #f2f2f2; /* 구분선 유지할 경우 */
+        }
+
+        .post-label {
+            flex: 0 0 20%;
+            background-color: #ffe4ec;
+            color: #444;
             text-align: center;
+            padding: 18px 10px;
+            font-weight: 600;
+            font-size: clamp(10px, 2vw, 16px); /* 최소 10px, 최대 16px까지 자동 조절 */
+        }
+
+        .post-value {
+            flex: 1;
+            background-color: #fff;
+            padding: 18px 20px;
+            line-height: 1.8;
+            word-break: break-word;
         }
 
         .post-content {
-            white-space: pre-line;
-            padding: 15px;
-            background-color: #fafafa;
-            border: 1px solid #eee;
-            border-radius: 6px;
-            min-height: 300px;
+            white-space: pre-wrap;
+            line-height: 1.8;
         }
 
         .post-content img {
@@ -84,7 +108,7 @@
             display: flex;
             justify-content: center;
             gap: 10px;
-            margin-top: 10px;
+            margin-top: 30px;
         }
 
         .btn-group input[type="button"] {
@@ -103,10 +127,6 @@
             background-color: #ffe1e1;
         }
 
-        .btn-group input[type="button"]:hover {
-            background-color: #ddd;
-        }
-
         .like-button {
             font-size: 22px;
             background: none;
@@ -118,21 +138,16 @@
             color: red;
         }
 
-        .top-icons {
-            text-align: right;
-            margin-bottom: 10px;
-        }
-
         .comment-box {
             background-color: #fff;
             padding: 20px;
             border-radius: 12px;
-            margin-top: 30px;
+            margin-top: 40px;
         }
 
         .comment-form textarea {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ccc;
             border-radius: 8px;
         }
@@ -149,15 +164,16 @@
 
         .comment {
             border-top: 1px solid #eee;
-            padding-top: 10px;
-            margin-top: 10px;
+            padding-top: 12px;
+            margin-top: 14px;
         }
-
     </style>
 </head>
 <body>
 <div th:replace="~{top::menu}"></div>
 <div class="container">
+ <form th:action="@{/CommunityDelete}" method="post" th:id="'deleteForm-' + ${dto.postId}">
+
     <div class="post-header">
         <img class="profile-img" th:if="${dto?.user?.profileimg != null}" th:src="@{/images/{img}(img=${dto.user.profileimg})}" alt="Profile Image"/>
         <img class="profile-img" th:if="${dto?.user?.profileimg == null}" th:src="@{/images/default.png}" alt="Default Image"/>
@@ -166,55 +182,43 @@
 
     <div class="top-icons">
         <span>👁 <span th:text="${dto.postReadcnt}"></span></span>
-        <span style="margin-left: 10px;">💬 <span th:text="${#lists.size(comments)}"></span></span>
-        <span style="margin-left: 10px;">❤️ <span th:text="${likeCount}"></span></span>
+        <span>💬 <span th:text="${#lists.size(comments)}"></span></span>
+        <span>❤️ <span th:text="${likeCount}"></span></span>
     </div>
 
-    <table>
-        <tr>
-            <th>제목</th>
-            <td><div class="form-group">
-                <div style="white-space: pre-line;" th:text="${dto.postTitle}">
-                </div>
+    <div class="post-info">
+        <div class="post-row">
+            <div class="post-label">제목</div>
+            <div class="post-value" th:text="${dto.postTitle}"></div>
+        </div>
+        <div class="post-row">
+            <div class="post-label">작성자</div>
+            <div class="post-value" th:text="${dto.user.userLoginId}"></div>
+        </div>
+        <div class="post-row">
+            <div class="post-label">게시일</div>
+            <div class="post-value" th:text="${dto.postDate}"></div>
+        </div>
+        <div class="post-row">
+            <div class="post-label">내용</div>
+            <div class="post-value">
+                <div th:text="${dto.postContent}" style="margin-bottom: 20px;"></div>
+                <img th:if="${dto.postImage != null and !#strings.isEmpty(dto.postImage)}"
+                     th:src="@{'/image/' + ${dto.postImage}}" style="max-width: 100%; border-radius: 8px;" />
             </div>
-            </td>
-        </tr>
-        <tr>
-            <th>작성자</th>
-            <td><div class="form-group">
-                <div style="white-space: pre-line;" th:text="${dto.user.userLoginId}">
-                </div>
-            </div>
-            </td>
-        </tr>
-        <tr>
-            <th>게시일</th>
-            <td><div class="form-group">
-                <div style="white-space: pre-line;" th:text="${dto.postDate}">
-                </div>
-            </div>
-            </td>
-        </tr>
-        <tr>
-            <th>내용</th>
-            <td>
-                <div class="post-content">
-                    <span th:text="${dto.postContent}"></span>
-                    <div th:if="${dto.postImage != null and !#strings.isEmpty(dto.postImage)}" style="margin-top: 20px; text-align: center;">
-                        <img th:src="@{'/image/' + ${dto.postImage}}" />
-                    </div>
-                </div>
-            </td>
-        </tr>
-    </table>
-
+        </div>
+    </div>
+ </form>
     <div class="btn-group">
         <input type="button" class="list-btn" value="목록" onclick="location.href='/CommunityOut'">
         <th:block th:if="${#authentication.principal.userId == dto.user.userId || #authentication.principal.userRole == 'admin'}">
-            <input type="button" class="edit-delete" value="수정" onclick="location.href='/CommunityUpdate?unum=' + [[${dto.postId}]]">
-            <input type="button" class="edit-delete" value="삭제" onclick="if(confirm('삭제하시겠습니까?')) location.href='/CommunityDelete?dnum=' + [[${dto.postId}]]">
+            <input type="button" class="edit-delete" value="수정"
+                   th:onclick="|location.href='/CommunityUpdate?unum=' + ${dto.postId}|">
+            <input type="button" class="edit-delete" value="삭제"
+                   th:onclick="|if(confirm('삭제하시겠습니까?')) location.href='/CommunityDelete?dnum=' + ${dto.postId}|">
         </th:block>
     </div>
+
 
     <form th:action="@{'/post/' + ${dto.postId} + '/like'}" method="post" style="text-align:center; margin-top: 10px;">
         <button type="submit" th:classappend="${likedByUser} ? 'like-button liked' : 'like-button'">
@@ -250,6 +254,7 @@
         </div>
     </div>
 </div>
+
 <script>
     function toggleReplyForm(id) {
         const form = document.getElementById('reply-form-' + id);

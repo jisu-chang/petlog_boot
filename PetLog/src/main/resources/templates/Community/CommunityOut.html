@@ -67,6 +67,12 @@
       text-decoration: underline;
     }
 
+    td a span {
+      margin-left: 4px;
+      font-size: 1em;
+      color: #888;
+    }
+
     .btn-wrap {
       text-align: right;
       margin-bottom: 20px;
@@ -139,7 +145,7 @@
       background-color: #ffe1e1;
     }
 
-        .btn-write {
+    .btn-write {
         float: right;
         margin-bottom: 10px;
         background-color: #ffe1e1;
@@ -155,7 +161,22 @@
       .btn-write:hover {
         background-color: #ffd2d2;
       }
-</style>
+      .board-meta {
+        font-size: 1em;
+        margin-left: 6px;
+        display: inline-flex;
+        gap: 4px;
+        align-items: center;
+      }
+
+      .board-meta span {
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        line-height: 1;
+        white-space: nowrap;
+      }
+      </style>
 
 <body>
 <div class="table-wrapper">
@@ -165,29 +186,25 @@
     <table>
       <thead>
       <tr>
-        <th style="width:5%;">No.</th>
-        <th style="width:45%; text-align: center;">제목</th>
-        <th style="width:15%;">작성자</th>
-        <th style="width:20%;">작성일자</th>
-        <th style="width:10%;">조회수</th>
+        <th style="width:40%; text-align: center;">제목</th>
+        <th style="width:20%;">작성자</th>
       </tr>
       </thead>
 
       <tbody>
       <tr th:each="cc:${normalPosts}">
-          <td th:text="${cc.postId}"></td>
-          <td style="text-align: left;">
-              <a th:href="@{/CommunityDetail(num=${cc.postId})}">
-                  <span th:text="${cc.postTitle}"></span>
-<!--                  <span style="margin-left:10px;" th:text="'🗨️ ' + ${cc.commentCount}"></span>-->
-<!--                <span style="margin-left:6px;" th:text="'❤️ ' + ${cc.likeCount}"></span>-->
-            </a>
+        <td style="text-align: left;">
+          <a th:href="@{/CommunityDetail(num=${cc.postId})}" style="color: #333; text-decoration: none;">
+            <span th:text="${cc.postTitle}" style="font-weight: 500;"></span>
+            <span class="board-meta">
+              <span class="comments">[<span th:text="${commentCounts[cc.postId]}"></span>]</span>
+              <span class="likes">❤️<span th:text="${likeCounts[cc.postId]}"></span></span>
+              <span class="views">👁<span th:text="${cc.postReadcnt}"></span></span>
+            </span>
+          </a>
         </td>
-
 <!--        <td th:text="${cc.user.userLoginId}"></td>-->
         <td th:text="${cc.user != null ? cc.user.userLoginId : '탈퇴회원'}"></td>
-        <td th:text="${cc.postDate}"></td>
-        <td th:text="${cc.postReadcnt}"></td>
     </tr>
     </tbody>
   </table>

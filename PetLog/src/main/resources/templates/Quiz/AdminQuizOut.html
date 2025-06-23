@@ -4,7 +4,15 @@
 <head>
   <meta charset="UTF-8">
   <title>관리자권한-퀴즈목록</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    .container {
+      max-width: 1000px;
+      margin: 40px auto 100px auto;
+      padding: 40px 40px;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
     body {
       background-color: #fff6f6;
       margin: 0;
@@ -13,14 +21,16 @@
       color: #333;
       display: flex;
       justify-content: center;
-      align-items: center;
-      min-height: 100vh; /* 화면 전체 높이 확보 */
+    }
+
+    .container {
+      width: 100%;
+      max-width: 960px;
+      padding: 20px;
+      box-sizing: border-box;
     }
 
     .quiz-list {
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 0 20px;
       display: flex;
       flex-direction: column;
       gap: 24px;
@@ -51,6 +61,7 @@
       font-size: 1.2em;
       font-weight: 600;
       margin-bottom: 14px;
+      word-break: break-word;
     }
 
     .quiz-options {
@@ -59,17 +70,18 @@
       margin: 0 0 16px 0;
     }
 
-.quiz-options li {
-  padding: 10px 12px;
-  border-radius: 8px;
-  margin-bottom: 6px;
-  transition: background-color 0.2s;
-}
+    .quiz-options li {
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      transition: background-color 0.2s;
+      word-break: break-word;
+    }
 
-.quiz-options li.correct {
-  font-weight: 600;
-  color: #226622;
-}
+    .quiz-options li.correct {
+      font-weight: 600;
+      color: #226622;
+    }
 
     .quiz-actions {
       text-align: right;
@@ -87,9 +99,11 @@
     }
 
     .btn-wrap {
-      max-width: 900px;
+      max-width: 960px;
       margin: 0 auto 20px;
       text-align: right;
+      padding: 0 20px;
+      box-sizing: border-box;
     }
 
     .btn-wrap button {
@@ -116,36 +130,38 @@
   </style>
 </head>
 <body>
+<div class="container">
+  <div style="width: 100%">
+    <h2 class="title">관리자권한-멍냥 리스트</h2>
 
-<h2 class="title">🎈멍냥 퀴즈 리스트</h2>
-
-<div class="btn-wrap" th:if="${session.userRole eq 'admin'}">
-  <button type="button" onclick="location.href='/QuizInput'">➕퀴즈 등록</button>
-</div>
-
-<div class="quiz-list">
-  <div class="quiz-card" th:each="dto : ${dto}">
-    <div class="quiz-header">
-      <span>No. <span th:text="${dto.quizId}"></span></span>
-      <span th:text="'정답: ' + ${dto.quizAnswer}"></span>
+    <div class="btn-wrap" th:if="${session.userRole eq 'admin'}">
+      <button type="button" onclick="location.href='/QuizInput'">➕퀴즈 등록</button>
     </div>
 
-    <div class="quiz-question" th:text="${dto.quizQuestion}">문제 내용</div>
+    <div class="quiz-list">
+      <div class="quiz-card" th:each="dto : ${dto}">
+        <div class="quiz-header">
+          <span>No. <span th:text="${dto.quizId}"></span></span>
+          <span th:text="'정답: ' + ${dto.quizAnswer}"></span>
+        </div>
 
-    <ul class="quiz-options">
-      <li th:each="opt, i : ${optionFields}"
-          th:with="value=${dto[opt]}"
-          th:classappend="${value == dto.quizAnswer} ? 'correct'">
-        <span th:text="${i.index + 1} + '. ' + ${value}"></span>
-      </li>
-    </ul>
+        <div class="quiz-question" th:text="${dto.quizQuestion}">문제 내용</div>
 
-    <div class="quiz-actions">
-      <a th:href="@{/QuizUpdate(quizId=${dto.quizId})}">✏ 수정</a>
-      <a th:href="@{/QuizDelete(quizId=${dto.quizId})}" onclick="return confirm('삭제할까요?')">🗑 삭제</a>
+        <ul class="quiz-options">
+          <li th:each="opt, i : ${optionFields}"
+              th:with="value=${dto[opt]}"
+              th:classappend="${value == dto.quizAnswer} ? 'correct'">
+            <span th:text="${i.index + 1} + '. ' + ${value}"></span>
+          </li>
+        </ul>
+
+        <div class="quiz-actions">
+          <a th:href="@{/QuizUpdate(quizId=${dto.quizId})}">✏ 수정</a>
+          <a th:href="@{/QuizDelete(quizId=${dto.quizId})}" onclick="return confirm('삭제할까요?')">🗑 삭제</a>
+        </div>
+      </div>
     </div>
   </div>
 </div>
-
 </body>
 </html>

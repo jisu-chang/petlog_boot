@@ -252,7 +252,11 @@
     <ul>
       <li><a th:href="@{/main}">🏠 홈</a></li>
 
-      <li th:if="${session.user_role == 'admin'}" class="menu-toggle-group section-group">
+<<<<<<< HEAD
+      <li th:if="${session.userRole == 'admin'}" class="menu-toggle-group section-group">
+=======
+      <li th:if="${session.userRole  == 'admin'}" class="menu-toggle-group section-group">
+>>>>>>> c417e17aa25dc45c6cc1e398b807ba7d540210ad
         <div class="toggle-header" onclick="toggleMenuGroup(this)">
           👑 관리자 <span class="arrow">▼</span>
         </div>
@@ -304,7 +308,12 @@
           </div>
         <ul>
           <li><a th:href="@{/UserQuiz}">💡 오늘의 멍냥🎲</a></li>
-          <li><a th:href="@{/UserQuizOut}">🎯 멍냥 리스트</a></li>
+          <li th:if="${session.userRole == 'admin'}">
+            <a th:href="@{/QuizOut}">🎯 퀴즈 목록 리스트</a>
+          </li>
+          <li th:if="${session.userRole == 'USER'}">
+            <a th:href="@{/UserQuizOut}">🎯 멍냥 리스트</a>
+          </li>
         </ul>
       </li>
 
@@ -382,5 +391,6 @@
       }
     }
   </script>
+
 </body>
 </div>

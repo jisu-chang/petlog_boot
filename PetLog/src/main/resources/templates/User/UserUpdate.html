@@ -56,14 +56,20 @@
       margin: 20px auto;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-
+    .btn-wrap {
+      display: flex;
+      justify-content: center; /* 가로 중앙 정렬 */
+      flex-wrap: wrap;          /* 버튼이 많을 경우 줄바꿈 */
+      gap: 10px;                /* 버튼 간 간격 */
+      margin-top: 30px;
+    }
     .btn {
       display: inline-block;
-      background: linear-gradient(135deg, #ffc1cc, #fbe5c8);
+      background-color: #ffc1cc;
       color: #5a5a5a;
       text-decoration: none;
       padding: 12px 24px;
-      border-radius: 30px;
+      border-radius: 15px;
       font-size: 15px;
       cursor: pointer;
       font-weight: bold;
@@ -73,7 +79,7 @@
     }
 
     .btn:hover {
-      background: linear-gradient(135deg, #fba0b2, #f8d7af);
+      background-color: #fba0b2;
       color: #333;
     }
 
@@ -130,9 +136,10 @@
       <input type="file" id="profileimg" name="profileimg" />
       <p th:if="${#fields.hasErrors('profileimg')}" th:errors="*{profileimg}"></p>
     </div>
-
-    <button type="submit" class="btn">수정</button>
-    <button type="reset" class="btn" onclick="location.href='/'">취소</button>
+    <div class="btn-wrap">
+      <button type="submit" class="btn">수정</button>
+      <button type="reset" class="btn" onclick="location.href='/'">취소</button>
+    </div>
   </form>
 </div>
 </body>

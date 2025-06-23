@@ -4,6 +4,7 @@
 <div th:replace="~{top::menu}"></div>
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>유저-퀴즈풀이목록</title>
   <style>
     body {
@@ -12,10 +13,6 @@
       padding: 0;
       font-family: 'Pretendard', sans-serif;
       color: #333;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh; /* 화면 전체 높이 확보 */
     }
 
     .quiz-list {
@@ -25,6 +22,7 @@
       display: flex;
       flex-direction: column;
       gap: 24px;
+      box-sizing: border-box;
     }
 
     .quiz-card {
@@ -33,6 +31,7 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.05);
       padding: 24px;
       transition: transform 0.2s;
+      box-sizing: border-box;
     }
 
     .quiz-card:hover {
@@ -52,6 +51,7 @@
       font-size: 1.2em;
       font-weight: 600;
       margin-bottom: 14px;
+      word-break: break-word;
     }
 
     .quiz-options {
@@ -65,9 +65,9 @@
       font-size: 1em;
       border-radius: 10px;
       transition: all 0.3s ease;
+      word-break: break-word;
     }
 
-    /* 사용자가 고른 정답 */
     .user-correct {
       background-color: #e6fff2;
       border: 2px solid #30c97a;
@@ -75,17 +75,14 @@
       font-weight: bold;
     }
 
-    /* 사용자가 고른 오답 */
     .user-wrong {
       background-color: #fff0f0;
       border: 2px solid #ff6b6b;
       color: #c0392b;
     }
 
-    /* 오답일 경우 정답 보여주기 */
     .only-correct {
       background-color: #e6fff2;
-
       color: #2b8a3e;
       font-style: italic;
     }
@@ -95,16 +92,19 @@
       font-size: 0.85em;
       color: #555;
     }
+
+    h2.title {
+      text-align: center;
+      color: #f48aa5;
+      font-size: 1.8em;
+      margin: 30px 0 20px;
+    }
   </style>
 </head>
 <body>
-
-<h2 class="title">🎈멍냥 퀴즈 리스트</h2>
+<h2 class="title">🎈멍냥 리스트</h2>
 <div class="quiz-list">
-
-  <!-- 유저가 푼 퀴즈 결과 DTO 목록 루프 -->
   <div class="quiz-card" th:each="dto : ${dtoList}">
-    <!-- 문제 정보와 매칭되는 퀴즈 내용 찾기 -->
     <div th:each="quiz : ${quizList}" th:if="${quiz.quizId == dto.quizId}">
       <div class="quiz-header">
         <span>No. <span th:text="${quiz.quizId}"></span></span>

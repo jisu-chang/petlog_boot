@@ -50,7 +50,7 @@ public class UserController {
     @Autowired
     LikesService likesService;
 
-    String path = new File("src/main/resources/static/image").getAbsolutePath();
+    String path ="C:\\MBC12AI\\git\\petlog_boot\\src\\main\\resources\\static\\image";
 
     //로그인
     @GetMapping(value = "/login")

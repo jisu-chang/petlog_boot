@@ -6,37 +6,63 @@
   <title>비밀번호 변경</title>
   <style>
     body {
-      background-color: #fff6f6;
-      font-family: 'Pretendard', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh; /* 화면 전체 높이 확보 */
-    }
-    .container {
-      max-width: 500px;
-      margin: 50px auto;
-      padding: 30px;
       background-color: #fff;
-      border-radius: 12px;
-      border: 2px solid #f48aa5;
+      font-family: 'Pretendard', sans-serif;
+      min-height: 100vh; /* 화면 전체 높이 확보 */
+      margin: 0;
+      display: flex;
+      justify-content: center; /* 가로 중앙 */
+      align-items: center;     /* 세로 중앙 */
+      padding: 70px 20px 100px; /* 상단, 좌우, 하단 여백 */
+      box-sizing: border-box;
     }
-    input, button {
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      border: 2px solid #ffc1cc;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      background-color: #fff6f8; /* 배경색도 있으면 더 부드럽게 보여요 */
+    }
+    input[type="text"],
+    input[type="password"] {
       display: block;
       width: 100%;
       padding: 12px;
-      margin-top: 15px;
-      border-radius: 8px;
+      margin-top: 10px;
       border: 1px solid #ccc;
-      display: inline-block;
+      border-radius: 8px;
       font-size: 1em;
     }
-    button {
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 12px; /* 버튼 간격 */
+      margin-top: 20px; /* 인풋창과의 간격 */
+    }
+
+    button,
+    input[type="submit"],
+    input[type="reset"] {
+      padding: 10px 24px;
       background-color: #f48aa5;
       color: white;
       border: none;
+      border-radius: 8px;
+      font-size: 15px;
       font-weight: bold;
-      display: inline-block;
+      cursor: pointer;
+      margin-left: 10px;
+      width: auto;
+    }
+
+    /* hover 스타일은 hover에만 적용되도록! */
+    button:hover,
+    input[type="submit"]:hover,
+    input[type="reset"]:hover {
+      background-color: #db7093;
     }
     .error {
       color: red;
@@ -63,6 +89,7 @@
       font-size: 13px;
       margin-top: 5px;
     }
+
   </style>
 </head>
 
@@ -82,7 +109,10 @@
     <input type="password" id="newPwConfirm" name="newPwConfirm" placeholder="새 비밀번호 확인" required oninput="checkPasswordMatch()">
     <span id="pwMatchMsg"></span>
 
-    <button type="submit">비밀번호 변경</button>
+    <div class="btn-group">
+      <button type="submit">비밀번호 변경</button>
+      <button type="reset" th:onclick="history.back();">취소</button>
+    </div>
   </form>
 
   <p class="error" th:if="${error}" th:text="${error}"></p>
