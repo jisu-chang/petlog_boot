@@ -12,28 +12,29 @@
           color: #333;
         }
 
-        .table-wrapper {
-          background-color: white;
-          width: 100%;
-          max-width: 1200px;
-          margin: 40px auto 80px auto;
-          border-radius: 12px;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-          padding: 30px;
-        }
+.table-wrapper {
+  background-color: white;
+  width: 100%;
+  max-width: 600px;
+  margin: 80px auto 60px auto;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 20px;
+  box-sizing: border-box;
+}
 
         .back-btn-wrap {
           text-align: left;
-          margin-bottom: 10px;
+          margin-bottom: 16px;
         }
 
         .back-btn {
           background-color: #ffe1e1;
           color: #444;
           border: none;
-          padding: 10px 20px;
+          padding: 8px 16px;
           border-radius: 6px;
-          font-size: 1em;
+          font-size: 0.95em;
           cursor: pointer;
         }
 
@@ -45,107 +46,157 @@
           text-align: center;
           color: #f48aa5;
           font-weight: normal;
-          font-size: 1.8em;
-          margin-top: 0;
-          margin-bottom: 30px;
+          font-size: 1.5em;
+          margin: 0 0 24px;
         }
 
-        table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 10px;
-          background-color: #fff;
-          box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-          border-radius: 8px;
-          overflow: hidden;
-        }
+.diary-item-container {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  margin-top: 15px;
+}
 
-        th, td {
-          padding: 14px 12px;
+        .diary-field {
+          display: flex;
+          margin-bottom: 12px;
+          align-items: flex-start;
           font-size: 1em;
-          border-bottom: 1px solid #eee;
-          text-align: center;
         }
 
-        th {
-          background-color: #fff0f4;
-          color: #555;
+        .diary-field-label {
           font-weight: bold;
+          color: #555;
+          width: 80px;
+          flex-shrink: 0;
+          text-align: left;
         }
 
-        td a {
+        .diary-field-content {
+          flex-grow: 1;
           color: #333;
-          text-decoration: none;
-          font-weight: 500;
+          text-align: left;
         }
 
-        td a:hover {
-          color: #d65b7b;
-          text-decoration: underline;
-        }
-
-        td img {
-          max-width: 70px;
+        .diary-field-content img {
+          max-width: 100%;
           height: auto;
+          border-radius: 4px;
+          margin-top: 5px;
+          display: block;
+        }
+
+.diary-content-box {
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 15px;
+    min-height: 100px;
+    white-space: pre-line;
+    text-align: left;
+    line-height: 1.6;
+}
+
+        .action-buttons {
+          text-align: center;
+          margin-top: 20px;
+        }
+
+        .action-buttons a {
+          display: inline-block;
+          background-color: #ffe1e1;
+          color: #333;
+          border: none;
+          padding: 8px 16px;
+          border-radius: 10px;
+          font-weight: normal;
+          cursor: pointer;
+          text-decoration: none;
+          font-size: 0.95em;
+          margin-left: 8px;
+        }
+
+        .action-buttons a:hover {
+          background-color: #ffd2d2;
+        }
+        .action-buttons a.delete-btn {
+            background-color: #ffcccc;
+        }
+        .action-buttons a.delete-btn:hover {
+            background-color: #ffb3b3;
+        }
+
+@media screen and (min-width: 768px) {
+  .table-wrapper {
+    max-width: 700px;
+    padding: 30px;
+    margin-top: 90px;
+  }
+          h2 {
+            font-size: 1.8em;
+          }
+
+          .back-btn {
+            font-size: 1em;
+            padding: 10px 20px;
+          }
+
+          .diary-field {
+            margin-bottom: 15px;
+          }
+
+          .diary-field-label {
+            width: 100px;
+          }
+       .diary-content-box {
+      padding: 50px;
+      margin-top: 25px;
+  }
         }
     </style>
+
 </head>
 <body>
-<div class="table-wrapper">
+<div class="table-wrapper"> <div class="back-btn-wrap">
+<!--
+    <button class="back-btn" onclick="history.back()">⬅ 뒤로가기</button>
+</div>
+-->
 
-    <!-- 뒤로가기 버튼 줄 -->
-    <div class="back-btn-wrap">
-        <button class="back-btn" onclick="history.back()">⬅ 뒤로가기</button>
-    </div>
-
-    <!-- 제목 줄 -->
     <h2>📔 내 일기</h2>
 
-    <table>
-        <colgroup>
-            <col style="width: 10%;">
-            <col style="width: 15%;">
-            <col style="width: 10%;">
-            <col style="width: 10%;">
-            <col style="width: 45%;">
-            <col style="width: 5%;">
-            <col style="width: 5%;">
-        </colgroup>
-        <thead>
-        <tr>
-            <th>이름</th>
-            <th>제목</th>
-            <th>날짜</th>
-            <th>이미지</th>
-            <th>일기 내용</th>
-            <th>수정</th>
-            <th>삭제</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:object="${dto}">
-            <td>이름(수정)</td>
-            <td th:text="*{diaryTitle}">제목</td>
-            <td th:text="${#temporals.format(dto.diaryDate, 'yyyy-MM-dd')}"></td>
-            <td>
-                <img th:src="@{'/image/' + *{diaryImageName}}" />
-            </td>
-            <td>
-                <div style="white-space: pre-line; text-align: center; width: 100%; min-height: 100px; padding: 10px;"
-                     th:text="*{diaryContent}">일기 내용</div>
-            </td>
-            <td>
-                <!--<a th:href="@{'/Diary/DiaryUpdate(diaryId=' + *{diaryId} + ')'}">✏️</a> -->
-                <a th:href="@{'/Diary/DiaryUpdate?diaryId=' + *{diaryId}}">✏️</a>
-            </td>
-            <td>
-                <!--<a th:href="@{'/Diary/DiaryDelete(diaryId=' + *{diaryId} + ')'}">🗑️</a>-->
-                <a th:href="@{'/Diary/DiaryDelete?delete=' + ${dto.diaryId} + '&dfimage=' + ${dto.diaryImage}}">🗑️</a>
-            </td>
-        </tr>
+    <div th:object="${dto}" class="diary-item-container">
+        <div class="diary-field">
+            <span class="diary-field-label">이름:</span>
+            <span class="diary-field-content" th:text="*{petName}"></span>
+        </div>
+        <div class="diary-field">
+            <span class="diary-field-label">제목:</span>
+            <span class="diary-field-content" th:text="*{diaryTitle}"></span>
+        </div>
+        <div class="diary-field">
+            <span class="diary-field-label">날짜:</span>
+            <span class="diary-field-content" th:text="${#temporals.format(dto.diaryDate, 'yyyy년 MM월 dd일')}"></span>
+        </div>
+        <div class="diary-field">
+            <span class="diary-field-label">이미지:</span>
+            <div class="diary-field-content">
+                <img th:if="*{diaryImageName}" th:src="@{'/image/' + *{diaryImageName}}" alt="일기 이미지" />
+                <span th:unless="*{diaryImageName}">이미지 없음</span>
+            </div>
+        </div>
+        <div class="diary-field">
+            <span class="diary-field-label">내용:</span>
+            <div class="diary-field-content diary-content-box" th:text="*{diaryContent}"></div>
+        </div>
 
-        </tbody>
-    </table>
+        <div class="action-buttons">
+            <a th:href="@{'/Diary/DiaryUpdate?diaryId=' + *{diaryId}}">✏️ 수정</a>
+            <a th:href="@{'/Diary/DiaryDelete?delete=' + ${dto.diaryId} + '&dfimage=' + ${dto.diaryImage}}" class="delete-btn">🗑️ 삭제</a>
+        </div>
+    </div>
 </div>
 </body>
 </html>
