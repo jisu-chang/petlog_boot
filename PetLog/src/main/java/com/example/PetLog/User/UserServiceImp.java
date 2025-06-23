@@ -13,6 +13,10 @@ import java.util.Optional;
 import java.util.UUID;
 import org.thymeleaf.context.Context;
 
+import com.example.PetLog.ItemUser.ItemUserRepository;
+import com.example.PetLog.ItemUser.ItemUserEntity;
+import java.util.List;
+
 @Service
 public class UserServiceImp implements UserService{
 
@@ -26,6 +30,9 @@ public class UserServiceImp implements UserService{
     JavaMailSender mailSender;
     @Autowired
     private SpringTemplateEngine templateEngine;
+
+    @Autowired
+    ItemUserRepository itemUserRepository;//프로필 프레임 용
 
     @Override
     public void signUpInsert(UserDTO userDTO) {
@@ -208,4 +215,38 @@ public class UserServiceImp implements UserService{
         Optional<UserEntity> user = userRepository.findByNameAndEmailAndPhone(name, email, phone);
         return user.map(UserEntity::getUserLoginId).orElse(null);
     }
+
+
+    // 프로필 프레임
+    @Override
+    public UserDTO getUserProfileWithEquippedFrame(Long userId) {
+        Optional<UserEntity> userEntityOptional = userRepository.findById(userId);
+        if (userEntityOptional.isEmpty()) {
+            return null;
+        }
+        UserEntity userEntity = userEntityOptional.get();
+
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUserId(userEntity.getUserId());
+        userDTO.setUserLoginId(userEntity.getUserLoginId());
+        userDTO.setName(userEntity.getName());
+        userDTO.setPhone(userEntity.getPhone());
+        userDTO.setEmail(userEntity.getEmail());
+        userDTO.setProfileimgName(userEntity.getProfileimg());
+        userDTO.setGrapeCount(userEntity.getGrapeCount());
+        userDTO.setRank(userEntity.getRank());
+
+        List<ItemUserEntity> equippedFrames = itemUserRepository.findByUserIdAndUsertemEquipAndItem_ItemCategory(userId, "Y", "프레임");
+
+        if (!equippedFrames.isEmpty()) {
+            ItemUserEntity equippedFrame = equippedFrames.get(0);
+            if (equippedFrame.getItem() != null) {
+                userDTO.setEquippedFrameImageName(equippedFrame.getItem().getItemImage());
+                userDTO.setEquippedFrameName(equippedFrame.getItem().getItemName());
+            }
+        }
+
+        return userDTO;
+    }
+
 }

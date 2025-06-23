@@ -292,34 +292,61 @@ public class UserController {
     }
 
     //마이페이지
+//    @GetMapping("/MyPage")
+//    public String MyPage(Model mo, HttpSession session) {
+//        Long userId = (Long) session.getAttribute("userId");
+//        System.out.println("세션에서 가져온 userId: " + userId);  // userId가 제대로 나오는지 확인
+//
+//        // 로그인되지 않은 경우 로그인 페이지로 리디렉트
+//        if (userId == null) {
+//            System.out.println("세션에 userId가 없습니다. 로그인 페이지로 리디렉션됩니다.");
+//            return "redirect:/login";
+//        }
+//
+//        Optional<UserEntity> user = userRepository.findById(userId);
+//        if (user.isPresent()) {
+//            mo.addAttribute("user", user.get());
+//        }else {
+//            mo.addAttribute("error", "유저 정보를 찾을 수 없습니다.");
+//            return "User/UserError";  // 유저 정보가 없다면 에러 페이지로 이동
+//        }
+//        //프로필 이미지 변경 후 바로 로드되게 하기 위해 추가
+//        long timestamp = System.currentTimeMillis();
+//        mo.addAttribute("timestamp", timestamp);
+//
+//        // UserService를 사용하여 userId로 UserEntity 객체 가져오기
+//        UserEntity userEntity = userService.findById(userId);  // userDTO가 아닌 userId 사용
+//        // UserEntity 객체를 모델에 추가하여 뷰에 전달
+//        mo.addAttribute("list", userEntity);
+//        return "User/UserMyPage";
+//    }
+
     @GetMapping("/MyPage")
     public String MyPage(Model mo, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
-        System.out.println("세션에서 가져온 userId: " + userId);  // userId가 제대로 나오는지 확인
+        System.out.println("세션에서 가져온 userId: " + userId);
 
-        // 로그인되지 않은 경우 로그인 페이지로 리디렉트
         if (userId == null) {
             System.out.println("세션에 userId가 없습니다. 로그인 페이지로 리디렉션됩니다.");
             return "redirect:/login";
         }
 
-        Optional<UserEntity> user = userRepository.findById(userId);
-        if (user.isPresent()) {
-            mo.addAttribute("user", user.get());
-        }else {
+        // 🚨 여기를 수정합니다. userService.getUserProfileWithEquippedFrame을 호출하여 UserDTO를 받습니다.
+        UserDTO userProfile = userService.getUserProfileWithEquippedFrame(userId);
+
+        if (userProfile == null) {
             mo.addAttribute("error", "유저 정보를 찾을 수 없습니다.");
-            return "User/UserError";  // 유저 정보가 없다면 에러 페이지로 이동
+            return "User/UserError";
         }
-        //프로필 이미지 변경 후 바로 로드되게 하기 위해 추가
+
         long timestamp = System.currentTimeMillis();
         mo.addAttribute("timestamp", timestamp);
 
-        // UserService를 사용하여 userId로 UserEntity 객체 가져오기
-        UserEntity userEntity = userService.findById(userId);  // userDTO가 아닌 userId 사용
-        // UserEntity 객체를 모델에 추가하여 뷰에 전달
-        mo.addAttribute("list", userEntity);
+        // 중요: UserDTO 객체를 "list"라는 이름으로 모델에 추가합니다.
+        mo.addAttribute("list", userProfile); // 이제 list는 UserDTO입니다.
         return "User/UserMyPage";
     }
+
 
 
     //회원정보 수정

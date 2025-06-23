@@ -3,6 +3,7 @@ package com.example.PetLog.ItemUser;
 import com.example.PetLog.Item.ItemDTO;
 import com.example.PetLog.Item.ItemEntity;
 import com.example.PetLog.Item.ItemRepository;
+import com.example.PetLog.Item.ItemService;
 import com.example.PetLog.User.UserEntity;
 import com.example.PetLog.User.UserRepository;
 import jakarta.servlet.http.HttpSession;
@@ -25,6 +26,8 @@ public class ItemUserController {
     ItemUserRepository itemUserRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    ItemService itemService;
 
     @GetMapping(value = "/ItemUser/ItemOutUser")
     public String showItemShop(Model model) {
@@ -89,7 +92,7 @@ public class ItemUserController {
                 .build();
         itemUserRepository.save(itemUser);
 
-        return "ItemUser/ItemBought"; // 내 아이템 페이지로 이동
+        return "redirect:/ItemUser/ItemOutUser"; // 내 아이템 페이지로 이동
     }
 
     @GetMapping(value = "/ItemUser/ItemBought")
@@ -189,5 +192,23 @@ public class ItemUserController {
             System.out.println("ERROR: 아이템 삭제 중 예외 발생 - " + e.getMessage());
         }
         return "redirect:/ItemUser/ItemBought";
+    }
+
+    // 프로필 프레임 착용 처리
+    @PostMapping("/ItemOn")
+    public String wearFrame(@RequestParam("itemId") Long itemId, HttpSession session) {
+
+        Long rawUserId = (Long) session.getAttribute("userId");
+        Long userId = (rawUserId != null) ? rawUserId.longValue() : null;
+
+        Long itemIdLong = (long) itemId;
+
+        if (userId == null) {
+            return "redirect:/login?error=login_required";
+        }
+
+        itemUserService.frame_wearing(userId, itemIdLong);
+
+        return "redirect:/ItemUser/ItemPuton";
     }
 }

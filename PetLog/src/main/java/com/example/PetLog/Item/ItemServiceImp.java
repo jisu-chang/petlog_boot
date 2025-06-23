@@ -1,5 +1,6 @@
 package com.example.PetLog.Item;
 
+import com.example.PetLog.ItemUser.ItemUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -81,5 +82,4 @@ public class ItemServiceImp implements ItemService {
         // 상태 변경 후 저장
         itemRepository.save(item);
     }
-
 }

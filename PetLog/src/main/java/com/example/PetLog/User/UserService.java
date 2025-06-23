@@ -33,4 +33,6 @@ public interface UserService {
     UserEntity updateById(Long userId);
 
     UserDTO getUserDTOById(Long userId);
+
+    UserDTO getUserProfileWithEquippedFrame(Long userId); //프로필 프레임 용
 }

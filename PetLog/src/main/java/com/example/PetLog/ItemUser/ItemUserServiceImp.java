@@ -29,4 +29,17 @@ public class ItemUserServiceImp implements ItemUserService {
                     .build();
         }).toList();
     }
-}
+
+        public void frame_wearing(Long userId, Long itemId) {
+            itemUserRepository.clearEquippedItems(userId, "프레임");
+
+            ItemUserEntity itemToWear = itemUserRepository.findByUserIdAndItem_ItemId(userId, itemId);
+            if (itemToWear != null) {
+                itemToWear.setUsertemEquip("Y");
+                itemUserRepository.save(itemToWear);
+            } else {
+                System.err.println("오류: 사용자 ID " + userId + "는 아이템 ID " + itemId + "를 소유하고 있지 않습니다.");
+            }
+        }
+    }
+
