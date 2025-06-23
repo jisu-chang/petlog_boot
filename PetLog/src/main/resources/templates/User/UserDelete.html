@@ -5,73 +5,89 @@
     <meta charset="UTF-8">
     <title>회원 탈퇴</title>
     <style>
-        .container {
-          background-color: #fff;
-          padding: 40px;
-          max-width: 720px;
-          width: 100%;
-          border-radius: 30px;
-          box-shadow: 0 8px 24px rgba(0,0,0,0.07);
-          position: relative;
-          border: 1px solid #ffe2e2;
-        }
+        body {
+              font-family: 'Pretendard', sans-serif;
+              min-height: 100vh; /* 화면 전체 높이 확보 */
+              margin: 0;
+              display: flex;
+              justify-content: center; /* 가로 중앙 */
+              align-items: center;     /* 세로 중앙 */
+              padding: 70px 20px 100px; /* 상단, 좌우, 하단 여백 */
+              box-sizing: border-box;
+            }
 
-        h2 {
-          text-align: center;
-          color: #d64569;
-          font-size: 26px;
-          margin-bottom: 30px;
-          font-weight: bold;
-          position: relative;
-        }
+            .container {
+              width: 100%;
+              max-width: 500px;
+              border: 2px solid #ffc1cc;
+              border-radius: 20px;
+              padding: 40px;
+              box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            }
 
-        h2::before {
-          font-size: 28px;
-          position: absolute;
-          left: -35px;
-          top: 0;
-        }
+            h2 {
+              text-align: center;
+              color: #d64569;
+              font-size: 26px;
+              margin-bottom: 30px;
+              font-weight: bold;
+              position: relative;
+            }
 
-        .section {
-          background: linear-gradient(to bottom, #fff9f9, #fff);
-          border-left: 4px solid #ffd1d1;
-          border-radius: 16px;
-          padding: 25px 30px;
-          margin-bottom: 25px;
-          box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);
-        }
+            h2::before {
+              font-size: 28px;
+              position: absolute;
+              left: -35px;
+              top: 0;
+            }
 
-        .section h4 {
-          font-size: 17px;
-          color: #f48aa5;
-          margin-bottom: 12px;
-          font-weight: 600;
-        }
+            .section {
+              background: linear-gradient(to bottom, #fff9f9, #fff);
+              border-left: 4px solid #ffd1d1;
+              border-radius: 16px;
+              padding: 20px; /* 내부 여백 적당히 */
+              margin-bottom: 20px;
+              box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);
+              width: 100%; /* 컨테이너 안에서 꽉 차게 */
+              box-sizing: border-box;
+            }
 
-        .section p {
-          font-size: 15px;
-          line-height: 1.6;
-          color: #555;
-        }
+            .section h4 {
+              font-size: 17px;
+              color: #f48aa5;
+              margin-bottom: 12px;
+              font-weight: 600;
+            }
 
-        .btn {
-          background: linear-gradient(135deg, #ffc1cc, #fbe5c8);
-          color: #444;
-          border: none;
-          padding: 13px 30px;
-          margin: 10px 12px 0;
-          border-radius: 30px;
-          font-weight: bold;
-          cursor: pointer;
-          transition: 0.3s ease;
-          font-size: 15px;
-          box-shadow: 0 4px 10px rgba(255,193,204,0.25);
-        }
+            .section p {
+              font-size: 15px;
+              line-height: 1.6;
+              color: #555;
+            }
 
-        .btn:hover {
-          transform: scale(1.03);
-          box-shadow: 0 6px 14px rgba(255,160,176,0.35);
-        }
+            .btn-wrap {
+              display: flex;
+              justify-content: center;
+              gap: 10px; /* 버튼 간 간격 */
+              margin-top: 30px;
+              flex-wrap: wrap;
+            }
+
+            .btn {
+              background-color: #f48aa5;
+              color: white;
+              padding: 12px 28px;
+              border: none;
+              border-radius: 10px;
+              font-size: 15px;
+              font-weight: bold;
+              cursor: pointer;
+              transition: background-color 0.3s;
+            }
+
+            .btn:hover {
+              background-color: #db7093;
+            }
     </style>
 </head>
 <body>
@@ -118,10 +134,10 @@
 
     <div class="btn-wrap">
         <form th:action="@{/user/withdraw}" method="post">
-            <button type="submit" class="btn">🚪 회원 탈퇴</button>
+            <button type="submit" class="btn">회원 탈퇴</button>
         </form>
-        <form th:action="@{/mypage}" method="get">
-            <button type="submit" class="btn">🏠 돌아가기</button>
+        <form th:action="@{/MyPage}" method="get">
+            <button type="submit" class="btn">돌아가기</button>
         </form>
     </div>
 </div>

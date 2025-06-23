@@ -3,111 +3,144 @@
 <div th:replace="~{top::menu}"></div>
 <head>
     <style>
-        body {
-          background-color: #f9f4fc;
-          margin-top: 20px;
-          padding: 0;
-          font-family: 'Pretendard', sans-serif;
-          color: #333;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          min-height: 100vh; /* 화면 전체 높이 확보 */
+        .container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
         }
+body {
+  background-color: #f9f4fc;
+  margin-top: 20px;
+  padding: 0;
+  font-family: 'Pretendard', sans-serif;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* 화면 전체 높이 확보 */
+}
 
-        .quiz-insert-wrapper {
-          text-align: center;
-          margin: 30px 0 5px;
-        }
+.quiz-insert-wrapper {
+  position: fixed;
+  top: 90px;
+  right: 20px;
+  z-index: 1000;
 
-        .quiz-insert-link {
-          display: inline-block;
-          font-size: 15px;
-          text-decoration: none;
-          color: #8658a8;
-          font-weight: 500;
-        }
+  display: flex;
+  gap: 10px; /* 버튼 간격 */
+}
+.quiz-insert-link {
+  font-size: 14px;
+  text-decoration: none;
+  color: #8658a8;
+  font-weight: 500;
+  padding: 6px 12px;
+  border: 1px solid #e0c9f2;
+  border-radius: 8px;
+  background-color: #fff;
+  transition: background 0.2s;
+}
 
-        .quiz-insert-link:hover {
-          text-decoration: underline;
-        }
+.quiz-insert-link:hover {
+  background-color: #f3e7fc;
+}
 
-        .quiz-form {
-          background: #ffffff;
-          padding: 30px 40px;
-          margin: 20px auto;
-          width: 90%;
-          max-width: 600px;
-          border-radius: 16px;
-          box-shadow: 0 8px 20px rgba(200, 160, 220, 0.15);
-          border: 1px solid #ebd9f4;
-          text-align: left;
-        }
+.quiz-form {
+  background: #ffffff;
+  padding: 30px 40px;
+  width: 350px;            /* ✅ 고정 넓이 (반응형 제거) */
+  max-width: 350px;        /* ✅ 꼭 같이 고정 */
+  min-width: 350px;        /* ✅ 최소 넓이도 동일하게 */
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(200, 160, 220, 0.15);
+  border: 1px solid #ebd9f4;
+  text-align: left;
 
-        .quiz-title {
-          font-size: 1.4em;
-          color: #8658a8;
-          margin-bottom: 20px;
-          text-align: center;
-        }
+  min-height: 380px; /* 고정 높이 설정 */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* 내부 요소 정렬 */
+}
 
-        .quiz-option {
-          display: block;
-          margin: 12px 0;
-          font-size: 1.05em;
-          background: #fff7f4;
-          padding: 12px 16px;
-          border-radius: 10px;
-          transition: background-color 0.2s;
-          cursor: pointer;
-          border: 1px solid #f6d8e7;
-        }
+.quiz-title {
+  font-size: 1.4em;
+  color: #8658a8;
+  margin-bottom: 20px;
+  min-height: 48px; /* 질문이 짧을 때도 균형 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
 
-        .quiz-option:hover {
-          background: #fde3ec;
-        }
+.quiz-option {
+  width: 100%;           /* ✅ 전체 폼에 맞춤 */
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+  font-size: 1.05em;
+  background: #fff7f4;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #f6d8e7;
+  word-break: break-word;
+}
 
-        .quiz-option input {
-          margin-right: 10px;
-          transform: scale(1.1);
-          accent-color: #c59cf3;
-        }
+.quiz-option:hover {
+  background: #fde3ec;
+}
 
-        .quiz-submit {
-          margin-top: 25px;
-          display: block;
-          width: 100%;
-          padding: 12px;
-          background: #d9c7f3;
-          color: #fff;
-          font-size: 1.05em;
-          border: none;
-          border-radius: 10px;
-          cursor: pointer;
-          transition: 0.3s;
-          font-weight: bold;
-        }
+.quiz-option span {
+  display: inline-block;
+  word-break: break-word;
+  width: 100%;
+}
 
-        .quiz-submit:hover {
-          background: #c29ee4;
-        }
+.quiz-option input[type="radio"] {
+  flex-shrink: 0;
+  transform: scale(1.1);
+  accent-color: #c59cf3;
+  margin-top: 2px;
+}
 
-        .quiz-hint {
-          font-size: 0.95em;
-          color: #666;
-          text-align: center;
-          margin-top: 14px;
-          font-weight: 500;
-        }
+.quiz-submit {
+  margin-top: 25px;
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background: #d9c7f3;
+  color: #fff;
+  font-size: 1.05em;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: bold;
+}
+
+.quiz-submit:hover {
+  background: #c29ee4;
+}
+
+.quiz-hint {
+  font-size: 0.95em;
+  color: #666;
+  text-align: center;
+  margin-top: 14px;
+  font-weight: 500;
+}
+
     </style>
 </head>
 <body>
-<!--관리자 전용버튼 -->
+<!-- 퀴즈 등록 버튼 (오른쪽 상단) -->
 <div th:if="${session.userRole == 'admin'}" class="quiz-insert-wrapper">
     <a th:href="@{/QuizInput}" class="quiz-insert-link">퀴즈 등록</a>
     <a th:href="@{/QuizOut}" class="quiz-insert-link">퀴즈 목록</a>
 </div>
-
 <!-- 퀴즈 출력 -->
 <div th:each="dto : ${dto}">
     <form th:action="@{/QuizSave}" method="post" class="quiz-form" onsubmit="return onSubmitQuiz(this)">

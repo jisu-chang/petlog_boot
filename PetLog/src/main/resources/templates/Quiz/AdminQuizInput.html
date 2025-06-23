@@ -1,121 +1,123 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <div th:replace="~{top::menu}"></div>
 <head>
   <meta charset="UTF-8">
-  <title>관리자권한-퀴즈등록</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>퀴즈 등록</title>
   <style>
+    .container {
+      max-width: 1000px;
+      margin: 80px auto 100px auto;
+      background: #fff;
+      padding: 80px 80px;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
     body {
-      background-color: #fff6f6;
       margin: 0;
       padding: 0;
       font-family: 'Pretendard', sans-serif;
-      color: #333;
+      background-color: #fff6f6;
       display: flex;
       justify-content: center;
-      align-items: center;
-      min-height: 100vh; /* 화면 전체 높이 확보 */
+      align-items: flex-start;
+      min-height: 100vh;
     }
 
     .container {
-      max-width: 1000px;
-      margin: 60px auto 100px auto;
-      background: #fff;
-      padding: 60px 80px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      width: 100%;
+      max-width: 500px;
+      padding: 40px 20px 80px;
+      box-sizing: border-box;
+      background-color: #ffffff;
     }
 
     h2 {
       text-align: center;
-      font-size: 26px;
       color: #f48aa5;
-      font-weight: normal;
-      margin-top: 0;
-      margin-bottom: 30px;
+      font-size: 24px;
+      margin-bottom: 32px;
     }
 
     .form-group {
       display: flex;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .form-group label {
-      flex: 0 0 120px;
+      width: 28px;
+      font-size: 16px;
       font-weight: bold;
-      font-size: 15px;
       color: #555;
+      flex-shrink: 0;
     }
 
     .form-group input[type="text"],
     .form-group select {
       flex: 1;
-      padding: 12px 16px;
+      padding: 12px 14px;
       font-size: 15px;
       border: 1px solid #ddd;
       border-radius: 8px;
       background-color: #fffdfd;
-      font-family: 'Pretendard', sans-serif;
-      transition: all 0.2s ease-in-out;
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+      box-sizing: border-box;
     }
 
     .form-group input:focus,
     .form-group select:focus {
+      outline: none;
       border-color: #f48aa5;
       box-shadow: 0 0 0 3px rgba(244, 138, 165, 0.2);
-      outline: none;
     }
 
     .form-actions {
+      margin-top: 32px;
       text-align: center;
-      margin-top: 40px;
+      display: flex;
+      gap: 12px;
+      justify-content: center;
     }
 
-    button[type="submit"] {
+    .form-actions button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .form-actions button[type="submit"] {
       background-color: #f48aa5;
       color: white;
-      border: none;
-      padding: 12px 30px;
-      border-radius: 10px;
-      font-size: 15px;
-      font-weight: normal;
-      margin: 0 10px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
     }
 
-    button[type="submit"]:hover {
-      background-color: #db7093;
+    .form-actions button[type="reset"] {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      color: #555;
     }
 
-    @media screen and (max-width: 768px) {
+    @media (max-width: 480px) {
       .form-group {
+        gap: 10px;
+      }
+      .form-actions {
         flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .form-group label {
-        margin-bottom: 8px;
-      }
-
-      .container {
-        padding: 40px 24px;
       }
     }
   </style>
 </head>
-
 <body>
 
 <div class="container">
-  <h2 style="color: #f48aa5">📄 퀴즈 등록하기</h2>
-
+  <h2>📄 퀴즈 등록하기</h2>
   <form th:action="@{/QuizInputSave}" method="post">
     <div class="form-group">
-      <label for="quizQuestion">❓ 문제</label>
-      <input type="text" id="quizQuestion" name="quizQuestion" required>
+      <label for="quizQuestion">❓</label>
+      <input type="text" id="quizQuestion" name="quizQuestion" placeholder="문제 입력" required>
     </div>
 
     <div class="form-group">
@@ -139,7 +141,7 @@
     </div>
 
     <div class="form-group">
-      <label for="quizAnswer">✅ 정답</label>
+      <label for="quizAnswer">✅</label>
       <select name="quizAnswer" id="quizAnswer" required>
         <option value="">정답을 등록하세요.</option>
         <option value="1">1번</option>
@@ -150,7 +152,7 @@
     </div>
 
     <div class="form-actions">
-      <button type="submit">💾 퀴즈 등록</button>
+      <button type="submit">📂 퀴즈 등록</button>
       <button type="reset" onclick="location.href='/QuizOut'">❌ 등록 취소</button>
     </div>
   </form>

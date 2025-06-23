@@ -6,48 +6,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Quiz Result</title>
     <style>
+        .container {
+          width: 100%;
+          max-width: 500px;
+          padding: 80px 20px 100px; /* 상단 padding을 80px로! */
+          box-sizing: border-box;
+          background-color: #ffffff;
+        }
+
         body {
             background-color: #fff6f6;
             margin: 0;
             padding: 0;
-            text-align: center;
+            font-family: 'Pretendard', sans-serif;
             color: #333;
+        }
+
+        .container {
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh; /* 화면 전체 높이 확보 */
+            min-height: 100vh;
         }
 
         .result-wrapper {
             background-color: white;
-            width: 95%;
+            width: 100%;
             max-width: 700px;
-            margin: 40px auto 60px auto;
+            margin: 40px 20px;
             border-radius: 20px;
             box-shadow: 0 4px 16px rgba(0,0,0,0.06);
             padding: 40px 30px;
+            box-sizing: border-box;
         }
+
         .result-box {
             background-color: white;
             width: 100%;
-            max-width: 600px;
-            margin: 40px auto 20px auto;
             border-radius: 16px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             padding: 30px;
+            box-sizing: border-box;
         }
+
         h3 {
             font-size: 22px;
             color: #f48aa5;
             margin-top: 40px;
             margin-bottom: 20px;
             font-weight: normal;
+            text-align: center;
         }
 
         .info {
             font-size: 17px;
             color: #555;
             margin: 12px 0;
+            text-align: center;
         }
 
         .info strong {
@@ -56,26 +71,26 @@
         }
 
         table {
-            width: 90%;
-            max-width: 600px;
+            width: 100%;
             margin: 20px auto 50px auto;
             background-color: #fff;
             border-radius: 16px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             border-collapse: collapse;
-            overflow: hidden; /* For rounded corners with table */
+            overflow: hidden;
         }
 
         th, td {
             padding: 14px;
             font-size: 15px;
             border-bottom: 1px solid #eee;
+            text-align: center;
         }
+
         th {
             background-color: #fff0f4;
             color: #555;
             font-weight: bold;
-            text-align: center;
         }
 
         tr:last-child td {
@@ -113,7 +128,7 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
             transition: background-color 0.3s ease, transform 0.2s ease;
             display: inline-block;
-            margin-bottom: 60px;
+            margin: 0 auto;
         }
 
         .btn-next:hover {
@@ -123,20 +138,18 @@
     </style>
 </head>
 <body>
-
 <script th:inline="javascript">
     window.onload = function() {
-        // Use Thymeleaf's inline syntax for JavaScript variables
-        const isCorrect = /*[[${isCorrect}]]*/ false; // Default value for IDEs
+        const isCorrect = /*[[${isCorrect}]]*/ false;
         if (isCorrect) {
-            alert("🎉 정답입니다! 포도알 3개 획득!");
+            alert("\uD83C\uDF89 정답입니다! 포도알 3개 획득!");
         } else {
-            alert("❌ 오답입니다. 다음에 다시 도전해주세요!");
+            alert("\u274C 오답입니다. 다음에 다시 도전해주세요!");
         }
     }
 </script>
 
-<div class="container my-5">
+<div class="container">
     <div class="result-wrapper">
         <div class="result-box">
             <div th:if="${isCorrect}">
@@ -159,31 +172,28 @@
             </div>
         </div>
 
-        <h3 class="mt-5 mb-3">🏆 TOP 10</h3>
-        <div class="table-responsive">
-            <table class="table table-borderless">
-                <thead>
-                <tr>
-                    <th scope="col">순위</th>
-                    <th scope="col">유저</th>
-                    <th scope="col">풀이시간</th>
-                </tr>
-                </thead>
+        <h3>🏆 TOP 10</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>순위</th>
+                <th>유저</th>
+                <th>풀이시간</th>
+            </tr>
+            </thead>
             <tbody>
-
-                <tr th:each="row : ${top10}" th:classappend="${row.resultRank == 1 ? 'rank-gold' : (row.resultRank == 2 ? 'rank-silver' : (row.resultRank == 3 ? 'rank-bronze' : ''))}">
-                    <td>
-                        <span th:if="${row.resultRank == 1}">🥇</span>
-                        <span th:if="${row.resultRank == 2}">🥈</span>
-                        <span th:if="${row.resultRank == 3}">🥉</span>
-                        <span th:text="${row.resultRank}"></span>위
-                    </td>
-                    <td th:text="${row.userLoginId}"></td>
-                    <td th:text="${row.resultTime} + '초'"></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+            <tr th:each="row : ${top10}" th:classappend="${row.resultRank == 1 ? 'rank-gold' : (row.resultRank == 2 ? 'rank-silver' : (row.resultRank == 3 ? 'rank-bronze' : ''))}">
+                <td>
+                    <span th:if="${row.resultRank == 1}">🥇</span>
+                    <span th:if="${row.resultRank == 2}">🥈</span>
+                    <span th:if="${row.resultRank == 3}">🥉</span>
+                    <span th:text="${row.resultRank}"></span>위
+                </td>
+                <td th:text="${row.userLoginId}"></td>
+                <td th:text="${row.resultTime} + '초'"></td>
+            </tr>
+            </tbody>
+        </table>
 
         <a th:href="@{/UserQuiz}" class="btn-next">다음 문제 풀기 ➡</a>
     </div>

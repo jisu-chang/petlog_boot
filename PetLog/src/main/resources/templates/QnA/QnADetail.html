@@ -85,11 +85,14 @@
           background-color: #e0bfc7;
         }
 
+        /* 관리자 답변 보기 박스 */
         .admin-answer-box {
-          margin-top: 40px;
-          padding: 25px;
-          background-color: #fff8fb;
-          border-radius: 10px;
+          border: 1px solid #f5b7c3;
+          padding: 5px 20px;
+          border-radius: 12px;
+          margin-bottom: 20px;
+          font-size: 15px;
+          color: #444;
         }
 
         .admin-answer-box h3 {
@@ -140,9 +143,9 @@
         }
 
         table tr:first-child th,
-    table tr:first-child td {
-      border-top: 1px solid #eee;
-    }
+        table tr:first-child td {
+          border-top: 1px solid #eee;
+        }
     </style>
 </head>
 <body>
@@ -180,9 +183,8 @@
     </table>
 
     <!-- 관리자 답변 표시 -->
-    <div th:if="${dto.qnaAnswer != null}" style="margin-top: 40px; padding: 20px; border: 1px solid #f4c6d2; border-radius: 10px;">
+    <div class="admin-answer-box" th:if="${dto.qnaAnswer != null}" style="margin-top: 40px; padding: 20px; border: 1px solid #f4c6d2; border-radius: 10px;">
         <h3 style="color: #d66b7d; font-size: 18px; margin-bottom: 10px;">
-            <img th:src="@{/image/{img}(img=${dto.user.profileimg})}" style="width: 20px; vertical-align: middle; margin-right: 5px;">
             관리자 답변
         </h3>
         <div style="white-space: pre-wrap; line-height: 1.6; font-size: 14px; color: #444;"
@@ -193,7 +195,6 @@
     <!-- 관리자 전용 답변 폼 -->
     <div th:if="${session.userRole == 'admin'}" class="admin-answer-box">
         <h3 style="color: #f48aa5;">
-            <img th:src="@{/image/default.png}" style="width: 18px; vertical-align: middle; margin-right: 5px;">
             관리자 답변 작성
         </h3>
         <form th:action="@{/updateAnswer}" method="post">

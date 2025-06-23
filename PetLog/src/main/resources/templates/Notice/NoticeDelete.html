@@ -142,15 +142,9 @@
 </head>
 
 <div class="container">
-    <form th:action="@{/CommunityDeleteSave}" method="post">
+    <form th:action="@{/NoticeDeleteSave}" method="post">
         <input type="hidden" name="dnum" th:value="${dto.postId}" />
         <input type="hidden" name="dfname" th:value="${dto.postImage}" />
-        <th:block th:if="${isNoticePage}">
-            <input type="hidden" name="type" value="notice" />
-        </th:block>
-        <th:block th:unless="${isNoticePage}">
-            <input type="hidden" name="type" value="normal" />
-        </th:block>
 
         <div class="post-header">
             <!-- 프로필 이미지가 있는 경우 -->
