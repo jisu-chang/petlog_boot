@@ -7,40 +7,319 @@
   <link rel="stylesheet" th:href="@{/resources/css/style.css}">
 
   <style>
-    /* 기존 CSS 그대로 유지 (생략 가능) */
+    body {
+        background-color: #fefefe;
+        margin: 0;
+        padding: 0;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        min-height: 100vh;
+        box-sizing: border-box;
+    }
+
     .main-box {
         background-color: white;
         border-radius: 20px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        width: 90%;
-        max-width: 800px;
-        margin: 40px auto;
-        padding: 40px 30px;
+        width: 95%;
+        max-width: 370px;
+        margin-top: 90px;
+        padding: 25px 15px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        position: relative;
     }
-    .grape-label-flex { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; }
-    .grape-label-text { font-size: 28px; font-weight: bold; color: #7b3fa1; }
-    .grape-bar-wrapper { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 10px; }
-    .grape-bar-position { position: relative; width: 100%; max-width: 600px; }
-    .grape-bar { width: 100%; height: 32px; background: linear-gradient(to right, #fef3ff, #e6d6ff); border-radius: 20px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.08); }
-    .grape-fill { height: 100%; background: linear-gradient(to right, #d59ff8, #b780e5); width: [[${percent}]]%; transition: width 0.5s ease; border-radius: 20px; box-shadow: inset 0 0 6px rgba(255,255,255,0.5); }
-    .grape-indicator { position: absolute; top: -38px; font-size: 24px; left: [[${percent}]]%; transform: translateX(-50%); transition: left 0.5s ease; animation: bounce 1.0s infinite ease-in-out; }
-    @keyframes bounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-6px); } }
-    .grape-growth-text { font-weight: bold; color: #b58ed3; animation: textFlash 1.2s ease-in-out infinite; text-align: center; margin-top: 20px; }
+
+    .grape-label-flex {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 20px;
+        margin-top: 0;
+        width: 100%;
+    }
+    .grape-label-text {
+        font-size: 24px;
+        font-weight: bold;
+        color: #7b3fa1;
+    }
+    .grape-bar-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin: 30px auto 5px auto;
+        width: 100%;
+        max-width: 300px;
+        position: relative;
+    }
+    .grape-bar-position {
+        position: relative;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .grape-bar {
+        width: 100%;
+        height: 28px;
+        background: linear-gradient(to right, #fef3ff, #e6d6ff);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .grape-fill {
+        height: 100%;
+        background: linear-gradient(to right, #d59ff8, #b780e5);
+        width: [[${percent}]]%;
+        transition: width 0.5s ease;
+        border-radius: 20px;
+        box-shadow: inset 0 0 6px rgba(255,255,255,0.5);
+    }
+    .grape-indicator {
+        position: absolute;
+        top: -30px;
+        font-size: 20px;
+        left: [[${percent}]]%;
+        transform: translateX(-50%);
+        transition: left 0.5s ease;
+        animation: bounce 1.0s infinite ease-in-out;
+    }
+    @keyframes bounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-5px); } }
+    .grape-indicator img { height: 35px; }
+
+    .grape-growth-text {
+        font-weight: bold;
+        color: #b58ed3;
+        animation: textFlash 1.2s ease-in-out infinite;
+        text-align: center;
+        margin-top: 15px;
+        font-size: 15px;
+        width: 100%;
+    }
     @keyframes textFlash { 0%, 100% { color: #b58ed3; } 50% { color: #f3e6ff; } }
-    .grape-count { text-align: center; margin-top: 10px; color: #7b3fa1; font-weight: bold; font-size: 16px; }
-    .btn.btn-purple { display: block; margin: 20px auto 0; background-color: #b799e0; color: white; border: none; padding: 10px 24px; border-radius: 24px; font-weight: bold; font-size: 15px; cursor: pointer; }
-    .btn.btn-purple:hover { background-color: #a67de0; }
-    .btn-outline-purple { background-color: transparent; color: #9b59b6; font-size: 15px; font-weight: bold; padding: 10px 24px; border: 2px solid #d6b3f5; border-radius: 30px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: block; margin: 15px auto 0; }
-    .btn-outline-purple:hover { background-color: #f8ebff; color: #7b3fa1; border-color: #caa0f0; }
-    .modal { position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.4); display: none; justify-content: center; align-items: center; }
-    .modal-content { background: #fff; padding: 25px 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); width: 80%; max-width: 400px; text-align: center; color: #5b3b89; }
-    .modal-content h3 { margin-top: 0; margin-bottom: 15px; }
-    .modal-content ul { list-style-type: none; padding-left: 0; text-align: center; }
-    .close { position: absolute; top: 12%; right: 10%; font-size: 26px; font-weight: bold; cursor: pointer; color: #555; }
-    .grape-fixed-right { position: absolute; right: -70px; top: -37px; display: flex; flex-direction: column; align-items: center; }
-    .grape-fixed-right img { width: 60px; }
-    .grape-fixed-right .speech-bubble { background: #fff; border: 2px solid #bfa3e0; border-radius: 12px; padding: 6px 12px; color: #7b3fa1; font-size: 14px; font-weight: bold; white-space: nowrap; box-shadow: 2px 2px 6px rgba(0,0,0,0.6); margin-bottom: 6px; position: relative; z-index: 2; }
-    .grape-fixed-right .speech-bubble::after { content: ""; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); border-width: 8px 8px 0 8px; border-style: solid; border-color: #fff transparent transparent transparent; }
+    .grape-count {
+        text-align: center;
+        margin-top: 8px;
+        color: #7b3fa1;
+        font-weight: bold;
+        font-size: 14px;
+        width: 100%;
+    }
+
+    .btn.btn-purple {
+        display: block;
+        margin: 15px auto 0;
+        background-color: #b799e0;
+        color: white;
+        border: none;
+        padding: 9px 20px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+    }
+    .btn.btn-purple:hover {
+        background-color: #a67de0;
+    }
+    .btn-outline-purple {
+        background-color: transparent;
+        color: #9b59b6;
+        font-size: 14px;
+        font-weight: bold;
+        padding: 9px 20px;
+        border: 2px solid #d6b3f5;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        display: block;
+        margin: 12px auto 0;
+    }
+    .btn-outline-purple:hover {
+        background-color: #f8ebff;
+        color: #7b3fa1;
+        border-color: #caa0f0;
+    }
+
+    .modal {
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.4);
+        display: none;
+        justify-content: center;
+        align-items: center;
+    }
+    .modal-content {
+        background: #fff;
+        padding: 20px 25px;
+        border-radius: 18px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        width: 90%;
+        max-width: 350px;
+        text-align: center;
+        color: #5b3b89;
+    }
+    .modal-content h3 {
+        margin-top: 0;
+        margin-bottom: 12px;
+        font-size: 1.2em;
+    }
+    .modal-content ul {
+        list-style-type: none;
+        padding-left: 0;
+        text-align: center;
+        font-size: 0.9em;
+    }
+    .modal-content ul li {
+        margin-bottom: 5px;
+    }
+    .close {
+        position: absolute;
+        top: 8px;
+        right: 15px;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+        color: #555;
+    }
+
+    .grape-fixed-right {
+        position: absolute;
+        right: 15px;
+        top: 60px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        z-index: 1;
+    }
+    .grape-fixed-right img {
+        width: 50px;
+    }
+    .grape-fixed-right .speech-bubble {
+        background: #fff;
+        border: 2px solid #bfa3e0;
+        border-radius: 10px;
+        padding: 5px 10px;
+        color: #7b3fa1;
+        font-size: 13px;
+        font-weight: bold;
+        white-space: nowrap;
+        box-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+        margin-bottom: 5px;
+        position: relative;
+        z-index: 2;
+    }
+    .grape-fixed-right .speech-bubble::after {
+        content: "";
+        position: absolute;
+        bottom: -7px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 7px 7px 0 7px;
+        border-style: solid;
+        border-color: #fff transparent transparent transparent;
+    }
+
+    @media screen and (min-width: 768px) {
+        .main-box {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 40px 30px;
+        }
+        .grape-label-flex {
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .grape-label-text {
+            font-size: 28px;
+        }
+        .grape-bar-wrapper {
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        .grape-bar-position {
+            max-width: 600px;
+        }
+        .grape-bar {
+            height: 32px;
+        }
+        .grape-indicator {
+            top: -38px;
+            font-size: 24px;
+        }
+        .grape-indicator img { height: 40px; }
+        @keyframes bounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-6px); } }
+
+        .grape-growth-text {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        .grape-count {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+        .btn.btn-purple {
+            margin: 20px auto 0;
+            padding: 10px 24px;
+            border-radius: 24px;
+            font-size: 15px;
+        }
+        .btn-outline-purple {
+            margin: 15px auto 0;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-size: 15px;
+        }
+        .modal-content {
+            padding: 25px 30px;
+            border-radius: 20px;
+            max-width: 400px;
+        }
+        .modal-content h3 {
+            margin-bottom: 15px;
+            font-size: inherit;
+        }
+        .modal-content ul {
+            font-size: inherit;
+        }
+        .modal-content ul li {
+            margin-bottom: 0;
+        }
+        .close {
+            top: 12%;
+            right: 10%;
+            font-size: 26px;
+        }
+        .grape-fixed-right {
+            right: 30px;
+            top: 80px;
+        }
+        .grape-fixed-right img {
+            width: 60px;
+        }
+        .grape-fixed-right .speech-bubble {
+            border-radius: 12px;
+            padding: 6px 12px;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+        .grape-fixed-right .speech-bubble::after {
+            bottom: -8px;
+            border-width: 8px 8px 0 8px;
+        }
+    }
   </style>
 </head>
 <body>
@@ -48,28 +327,27 @@
 <div class="main-box">
   <div class="grape-label-flex">
     <span class="grape-label-text">🍇 내 포도</span>
-  </div><br><br><br>
+  </div>
 
   <div class="grape-bar-wrapper">
     <div class="grape-bar-position">
 
-      <!-- 포도 상태 이미지 -->
       <div class="grape-indicator">
-        <img th:if="${grapeCount <= 10}" th:src="@{/image/seed.png}" alt="포도 상태" style="height: 40px;">
-        <img th:if="${grapeCount > 10 and grapeCount <= 40}" th:src="@{/image/leaf.png}" alt="포도 상태" style="height: 40px;">
-        <img th:if="${grapeCount > 40 and grapeCount <= 60}" th:src="@{/image/green_grapes.png}" alt="포도 상태" style="height: 40px;">
-        <img th:if="${grapeCount > 60}" th:src="@{/image/purple_grapes.png}" alt="포도 상태" style="height: 40px;">
-      </div><br>
+        <img th:if="${grapeCount <= 10}" th:src="@{/image/seed.png}" alt="포도 상태">
+        <img th:if="${grapeCount > 10 and grapeCount <= 40}" th:src="@{/image/leaf.png}" alt="포도 상태">
+        <img th:if="${grapeCount > 40 and grapeCount <= 60}" th:src="@{/image/green_grapes.png}" alt="포도 상태">
+        <img th:if="${grapeCount > 60}" th:src="@{/image/purple_grapes.png}" alt="포도 상태">
+      </div>
 
       <div class="grape-bar">
         <div class="grape-fill"></div>
       </div>
-
-      <div class="grape-fixed-right">
-        <div class="speech-bubble">화이팅!</div>
-        <img th:src="@{/image/sample.png}" alt="캐릭터">
-      </div>
     </div>
+  </div>
+
+  <div class="grape-fixed-right">
+    <div class="speech-bubble">화이팅!</div>
+    <img th:src="@{/image/sample.png}" alt="캐릭터">
   </div>
 
   <div class="grape-growth-text"
@@ -79,7 +357,7 @@
                                     '포도가 다 익었어요! 🍇'))}">
   </div>
 
-  <div class="grape-count" th:text="${grapeCount} + ' / ' + ${maxGrape} + '알'"></div><br>
+  <div class="grape-count" th:text="${grapeCount} + ' / ' + ${maxGrape} + '알'"></div>
 
   <form th:action="@{/ItemUser/ItemOutUser}" method="get">
     <input type="submit" value="포도 쓰러가기 🍇" class="btn btn-purple">

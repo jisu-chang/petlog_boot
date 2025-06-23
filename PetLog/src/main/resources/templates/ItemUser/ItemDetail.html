@@ -11,34 +11,45 @@
             margin: 0;
             padding: 0;
             color: #333;
-             }
+        }
 
         .table-wrapper {
             background-color: white;
             width: 100%;
-            max-width: 800px;
-            margin: 60px auto 100px auto;
+            max-width: 480px; /* 이미지에 맞춰 max-width 조정 */
+            margin: 80px auto 60px auto;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
             border-radius: 8px;
             overflow: hidden;
-            margin-top: 30px;
+            margin: 30px auto; /* 테이블 가운데 정렬 */
+            table-layout: fixed;
         }
 
         th, td {
             padding: 14px 12px;
-            font-size: 1em;
+            font-size: 0.9em;
             border-bottom: 1px solid #eee;
             text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
+
+        /* 컬럼 너비 재조정 (3개 컬럼에 맞춰서) */
+        th:nth-child(1), td:nth-child(1) { width: 45%; } /* 아이템명 (가장 길 수 있으므로 넓게) */
+        th:nth-child(2), td:nth-child(2) { width: 25%; } /* 포도알 */
+        th:nth-child(3), td:nth-child(3) { width: 30%; } /* 아이템 (이미지가 들어가므로 적당히) */
+
 
         th {
             background-color: #fff0f4;
@@ -53,25 +64,50 @@
         }
 
         .btn {
-            background-color: #f48aa5;
-            color: white;
+            background-color: #ffe1e1;
+            color: #333;
             border: none;
-            padding: 12px 30px;
+            padding: 8px 16px;
             border-radius: 10px;
-            font-size: 15px;
-            margin: 0 10px;
+            font-size: 0.95em;
+            margin: 0 8px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            font-weight: normal;
         }
 
         .btn:hover {
-            background-color: #db7093;
+            background-color: #ffd2d2;
         }
 
         h2 {
             text-align: center;
-            margin-top: 5px;
             color: #f48aa5;
+            font-weight: normal;
+            font-size: 1.5em;
+            margin: 0 0 24px;
+        }
+
+        .btn.cancel-btn {
+            background-color: #ffcccc;
+        }
+        .btn.cancel-btn:hover {
+            background-color: #ffb3b3;
+        }
+
+        @media screen and (min-width: 768px) {
+            .table-wrapper {
+                max-width: 550px;
+                padding: 30px;
+                margin-top: 90px;
+            }
+            h2 {
+                font-size: 1.8em;
+            }
+            .btn {
+                font-size: 1em;
+                padding: 10px 20px;
+            }
         }
     </style>
 </head>
@@ -82,26 +118,21 @@
 
     <table>
         <tr>
-            <th>No.</th>
             <th>아이템명</th>
             <th>포도알</th>
-            <th>카테고리</th>
             <th>아이템</th>
         </tr>
         <tr>
-            <td th:text="${dto.itemId}"></td>
             <td th:text="${dto.itemName}"></td>
             <td th:text="${dto.itemCost}"></td>
-            <td th:text="${dto.itemCategory}"></td>
             <td><img th:src="@{'/image/' + ${dto.itemImage}}"/></td>
         </tr>
         <tr>
-            <td colspan="5" style="text-align: center; border-bottom: none;">
-                <form th:action="@{/ItemUser/ItemBought}" method="post" style="display:inline;">
-                    <input type="hidden" name="itemId" th:value="${dto.itemId}" />
-                    <button type="submit" class="btn">💰 구매하기</button>
-                </form>
-                <button type="button" class="btn" onclick="history.back()">❌ 취소하기</button>
+            <td colspan="3" style="text-align: center; border-bottom: none;"> <form th:action="@{/ItemUser/ItemBought}" method="post" style="display:inline;">
+                <input type="hidden" name="itemId" th:value="${dto.itemId}" />
+                <button type="submit" class="btn">💰 구매하기</button>
+            </form>
+                <button type="button" class="btn cancel-btn" onclick="history.back()">❌ 취소하기</button>
             </td>
         </tr>
     </table>

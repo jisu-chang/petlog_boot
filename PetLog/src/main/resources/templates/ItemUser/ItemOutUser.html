@@ -40,6 +40,7 @@
           border-radius: 12px;
           box-shadow: 0 4px 12px rgba(0,0,0,0.08);
           padding: 30px;
+          box-sizing: border-box;
         }
         table {
           width: 100%;
@@ -97,6 +98,86 @@
         .pagination a:hover {
           background-color: #ffe1e1;
         }
+
+        @media screen and (max-width: 768px) {
+            body {
+                padding-top: 50px;
+            }
+            .table-wrapper {
+                margin: 20px auto 40px auto;
+                padding: 15px;
+                border-radius: 8px;
+                box-shadow: none;
+            }
+            h2 {
+                font-size: 1.5em;
+                margin-bottom: 20px;
+            }
+            table {
+                border: none;
+                box-shadow: none;
+            }
+
+            thead {
+                display: none;
+            }
+
+            tr {
+                display: block;
+                margin-bottom: 15px;
+                border: 1px solid #eee;
+                border-radius: 8px;
+                background-color: #fff;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            }
+
+            td {
+                display: block;
+                text-align: left;
+                border-bottom: 1px dashed #eee;
+                padding: 10px 15px;
+                position: relative;
+                font-size: 0.95em;
+            }
+
+            td:last-child {
+                border-bottom: none;
+            }
+
+            td::before {
+                content: attr(data-label) ": ";
+                font-weight: bold;
+                color: #f06292;
+                display: inline-block;
+                width: 90px;
+                margin-right: 5px;
+            }
+
+            td:nth-of-type(5) img {
+                display: block;
+                margin: 5px auto 0;
+                max-width: 60px;
+                height: auto;
+            }
+
+            td:nth-of-type(6) form {
+                text-align: center;
+                margin-top: 10px;
+            }
+            td:nth-of-type(6) .btn {
+                padding: 8px 25px;
+                font-size: 1em;
+            }
+
+            .pagination {
+                margin: 20px 0;
+            }
+            .pagination a {
+                margin: 0 4px;
+                padding: 5px 10px;
+                font-size: 0.9em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -117,12 +198,12 @@
         </thead>
         <tbody>
         <tr th:each="it : ${list}">
-            <td th:text="${it.itemId}"></td>
-            <td th:text="${it.itemName}"></td>
-            <td th:text="${it.itemCost}"></td>
-            <td th:text="${it.itemCategory}"></td>
-            <td><img th:src="@{'/image/' + ${it.itemImage}}"/></td>
-            <td>
+            <td data-label="No." th:text="${it.itemId}"></td>
+            <td data-label="아이템명" th:text="${it.itemName}"></td>
+            <td data-label="포도알" th:text="${it.itemCost}"></td>
+            <td data-label="카테고리" th:text="${it.itemCategory}"></td>
+            <td data-label="아이템"><img th:src="@{'/image/' + ${it.itemImage}}"/></td>
+            <td data-label="아이템 구매">
                 <form th:action="@{/ItemUser/ItemDetail}" method="get">
                     <input type="hidden" name="itemId" th:value="${it.itemId}" />
                     <button type="submit" class="btn">🛒</button>
