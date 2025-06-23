@@ -4,29 +4,33 @@
 <head>
   <meta charset="UTF-8">
   <title>펫 삭제 확인</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       background-color: #fff6f6;
       margin: 0;
       padding: 0;
       color: #333;
+      padding-top: 90px;
     }
 
     h2 {
       text-align: center;
       font-size: 24px;
       color: #f48aa5;
-      margin: 50px 0 30px;
+      margin: 30px 0 25px;
     }
 
     .container {
-      max-width: 500px;
+      max-width: 95%;
+      width: 100%;
       margin: 0 auto 80px auto;
       background-color: #fff;
-      padding: 40px 30px;
+      padding: 30px 20px;
       border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       text-align: center;
+      box-sizing: border-box;
     }
 
     .container img {
@@ -39,7 +43,7 @@
     }
 
     .pet-name {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: bold;
       margin-bottom: 20px;
       color: #d65b7b;
@@ -48,14 +52,20 @@
     .pet-info {
       text-align: left;
       margin: 0 auto 20px auto;
-      font-size: 15px;
+      font-size: 14px;
       color: #555;
       line-height: 1.6;
+      max-width: 280px;
     }
 
     .pet-info span {
       display: block;
       margin-bottom: 8px;
+    }
+
+    .pet-info b {
+        font-weight: bold;
+        color: #333;
     }
 
     .form-actions {
@@ -67,11 +77,11 @@
       background-color: #ffe1e1;
       color: #333;
       border: none;
-      padding: 10px 24px;
+      padding: 10px 20px;
       border-radius: 10px;
-      font-size: 15px;
+      font-size: 14px;
       cursor: pointer;
-      margin: 0 10px;
+      margin: 0 8px;
       transition: background-color 0.3s ease;
     }
 
@@ -83,6 +93,53 @@
     input[type="submit"]:active,
     input[type="reset"]:active {
       transform: scale(0.95);
+    }
+
+    @media screen and (max-width: 390px) {
+      body {
+        padding-top: 60px;
+      }
+
+      h2 {
+        font-size: 20px;
+        margin: 25px 0 20px;
+      }
+
+      .container {
+        padding: 20px 15px;
+        margin: 0 auto 40px auto;
+      }
+
+      .container img {
+        width: 140px;
+        height: 140px;
+        margin-bottom: 15px;
+      }
+
+      .pet-name {
+        font-size: 18px;
+        margin-bottom: 15px;
+      }
+
+      .pet-info {
+        font-size: 13px;
+        margin-bottom: 15px;
+      }
+
+      .pet-info span {
+        margin-bottom: 6px;
+      }
+
+      .form-actions {
+        margin-top: 20px;
+      }
+
+      input[type="submit"],
+      input[type="reset"] {
+        padding: 8px 16px;
+        font-size: 13px;
+        margin: 0 5px;
+      }
     }
   </style>
 
@@ -97,7 +154,6 @@
 <h2>⚠️ 정말 삭제하시겠습니까?</h2>
 
 <form th:action="@{/PetDeleteCheck}" method="post" onsubmit="return confirm_delete()">
-  <!-- 히든값 -->
   <input type="hidden" name="himage" th:value="${dto.petImgName}" />
   <input type="hidden" name="petId" th:value="${dto.petId}" />
   <input type="hidden" name="userId" th:value="${dto.user.userId}">
