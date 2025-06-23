@@ -44,7 +44,7 @@ public class CalendarController {
         }
 
         String loginId = principal.getName();
-        Long userId = userService.findUserIdByLoginId(loginId); // ✅ 실제 로그인된 유저 ID
+        Long userId = userService.findUserIdByLoginId(loginId);
 
         List<PetDTO> petList = calendarService.getPets(userId);
         mo.addAttribute("petlist", petList);
@@ -79,6 +79,8 @@ public class CalendarController {
         int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
         int count = 1;
 
+        html.append("<tr>");
+
         for (int i = 1; i <= 35; i++) {
             if (i < startDay || count > lastDay) {
                 html.append("<td class='calendar-cell'><div class='cell-content'></div></td>");
@@ -92,33 +94,41 @@ public class CalendarController {
 
                 html.append("<td class='calendar-cell'><div class='cell-content'>")
                         .append("<span class='date-number ").append(dayClass).append(todayClass).append("'>")
-                        .append(count).append(isToday ? "<span class='today-label'> today</span>" : "")
-                        .append("</span>");
+                        .append(count);
+                if (isToday) {
+                    html.append("<span class='today-label'> today</span>");
+                }
+                html.append("</span>");
+
+                // --- 여기를 수정합니다. 이모지 외의 모든 텍스트 및 제목 관련 태그를 제거합니다. ---
 
                 for (CalendarDTO e : calList) {
                     if (e.getCalDate().getDayOfMonth() == count) {
-                        html.append("<div class='schedule-item'>📌 <a href='/Calendar/CalendarDetail?calId=")
-                                .append(e.getCalId()).append("'>")
-                                .append(e.getCalTitle()).append("</a></div>");
+                        html.append("<a href='/Calendar/CalendarDetail?calId=").append(e.getCalId()).append("' class='schedule-item' style='background-color:#ffe0ec;'>")
+                                .append("📌") // 핀 이모지만 남깁니다.
+                                .append("</a>");
                     }
                 }
 
                 for (DiaryDTO d : diaryList) {
                     if (d.getDiaryDate().getDayOfMonth() == count) {
-                        html.append("<div class='schedule-item' style='background-color:#e0f7fa;'>📓 <a href='/Diary/DiaryDetail?diaryId=")
-                                .append(d.getDiaryId()).append("'>")
-                                .append(d.getDiaryTitle()).append("</a></div>");
+                        html.append("<a href='/Diary/DiaryDetail?diaryId=").append(d.getDiaryId()).append("' class='schedule-item' style='background-color:#e0f7fa;'>")
+                                .append("📓") // 일기장 이모지만 남깁니다.
+                                .append("</a>");
                     }
                 }
+
+                // --- 여기까지 수정 ---
 
                 html.append("</div></td>");
                 count++;
             }
 
-            if (i % 7 == 0) {
+            if (i % 7 == 0 && i < 35) {
                 html.append("</tr><tr>");
             }
         }
+        html.append("</tr>");
 
         mo.addAttribute("calendarHtml", html.toString());
         return "Calendar/CalendarView";

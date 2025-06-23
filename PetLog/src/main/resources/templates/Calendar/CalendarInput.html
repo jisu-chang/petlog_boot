@@ -1,4 +1,3 @@
-<!-- calendar_input.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:replace="~{top::menu}"></div>
@@ -7,106 +6,103 @@
     <title>일정 등록하기</title>
     <style>
         body {
+          background-color: #fefefe;
           margin: 0;
           padding: 0;
           color: #333;
+          text-align: center;
         }
 
         .container {
-          max-width: 900px;
-          margin: 100px auto 80px auto;
-          background: #fff;
-          padding: 50px 60px;
-          border-radius: 12px;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-          border: 1px solid #e0e0e0;
-        }
-
-        h2 {
-          text-align: center;
-          font-size: 28px;
-          color: #d85a8a;
-          margin-top: 0;
-          margin-bottom: 40px;
-        }
-
-        .form-group {
-          display: flex;
-          align-items: center;
-          margin-bottom: 22px;
-        }
-
-        .form-group label {
-          flex: 0 0 140px;
-          font-weight: bold;
-          font-size: 15px;
-          color: #555;
-        }
-
-        .form-group input[type="text"],
-        .form-group input[type="date"],
-        .form-group textarea,
-        .form-group select {
-          flex: 1;
-          padding: 10px 12px;
-          font-size: 15px;
-          border: 1px solid #ccc;
-          border-radius: 6px;
-          transition: border-color 0.3s ease;
+          width: 90%;
+          max-width: 1000px;
+          margin: 80px auto 60px auto;
+          background-color: #fff;
+          border-radius: 16px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+          padding: 30px;
           box-sizing: border-box;
         }
 
-        .form-group textarea {
-          resize: vertical;
-          height: 140px;
+        caption {
+          font-size: 1.8em;
+          font-weight: bold;
+          color: #db7093;
+          margin-bottom: 20px;
         }
 
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-          border-color: #a3d8cd;
-          outline: none;
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 10px;
+        }
+
+        th, td {
+          padding: 14px 12px;
+          font-size: 14px;
+          border-bottom: 1px solid #eee;
+          text-align: left;
+        }
+
+        th {
+          background-color: #fff0f4;
+          color: #555;
+          font-weight: 600;
+          text-align: right;
+          width: 20%;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea,
+        select {
+          width: 100%;
+          padding: 8px;
+          border-radius: 8px;
+          border: 1px solid #ccc;
+          box-sizing: border-box;
+        }
+
+        textarea {
+          resize: vertical;
+          height: 160px;
         }
 
         .form-actions {
           text-align: center;
-          margin-top: 40px;
+          margin-top: 30px;
         }
 
         input[type="submit"],
         input[type="reset"] {
-          background-color: #d85a8a;
-          color: white;
+          background-color: #ffe1e1;
+          color: #444;
           border: none;
-          padding: 12px 30px;
-          border-radius: 6px;
-          font-size: 16px;
+          padding: 10px 24px;
+          border-radius: 24px;
           font-weight: bold;
-          margin: 0 12px;
           cursor: pointer;
-          transition: background-color 0.3s ease;
+          text-decoration: none;
+          margin: 0 10px;
+          font-size: 15px;
         }
 
         input[type="submit"]:hover,
         input[type="reset"]:hover {
-          background-color: #c14573;
+          background-color: #ffd2d2;
         }
 
-        @media screen and (max-width: 768px) {
-          .form-group {
-            flex-direction: column;
-            align-items: flex-start;
-          }
-
-          .form-group label {
-            margin-bottom: 8px;
+        @media screen and (min-width: 768px) {
+          .container {
+            max-width: 700px;
+            padding: 30px;
+            margin-top: 90px;
           }
         }
     </style>
 </head>
 <body>
 
-<!-- 반려동물이 없으면 경고 -->
 <div th:if="${#lists.isEmpty(petlist)}">
     <script>
         alert("🐶 먼저 반려동물을 등록해주세요!");
@@ -115,40 +111,40 @@
 </div>
 
 <div class="container">
-    <h2>📅 일정 등록하기</h2>
-
-    <form th:action="@{/Calendar/CalendarSave}" method="post">
-    <!--    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />  -->
-        <div class="form-group">
-            <label for="pet_id">반려동물 선택</label>
+    <caption>📅 일정 등록하기</caption> <form th:action="@{/Calendar/CalendarSave}" method="post">
+    <table> <tr>
+        <th><label for="pet_id">이름</label></th>
+        <td>
             <select name="pet_id" id="pet_id" required>
                 <option th:each="pet : ${petlist}"
                         th:value="${pet.petId}"
                         th:text="${pet.petName}">반려동물 이름</option>
             </select>
-        </div>
+        </td>
+    </tr>
 
-        <div class="form-group">
-            <label for="cal_title">제목</label>
-            <input type="text" id="cal_title" name="cal_title" required>
-        </div>
+        <tr>
+            <th><label for="cal_title">제목</label></th>
+            <td><input type="text" id="cal_title" name="cal_title" required></td>
+        </tr>
 
-        <div class="form-group">
-            <label for="cal_date">날짜</label>
-            <input type="date" id="cal_date" name="cal_date" required>
-        </div>
+        <tr>
+            <th><label for="cal_date">날짜</label></th>
+            <td><input type="date" id="cal_date" name="cal_date" required></td>
+        </tr>
 
-        <div class="form-group">
-            <label for="cal_content">내용</label>
-            <textarea id="cal_content" name="cal_content" required></textarea>
-        </div>
+        <tr>
+            <th><label for="cal_content">내용</label></th>
+            <td><textarea id="cal_content" name="cal_content" required></textarea></td>
+        </tr>
+    </table>
 
-        <div class="form-actions">
-            <button type="submit">💾 저장하기</button>
-            <button type="button" onclick="history.back()">❌ 취소하기</button>
-        </div>
+    <div class="form-actions">
+        <input type="submit" value="💾 저장하기">
+        <input type="reset" value="❌ 취소하기" onclick="history.back()">
+    </div>
 
-    </form>
+</form>
 </div>
 
 </body>

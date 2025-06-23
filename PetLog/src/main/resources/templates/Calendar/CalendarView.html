@@ -3,62 +3,79 @@
 <div th:replace="~{top::menu}"></div>
 <head>
     <meta charset="UTF-8">
-    <title th:text="${current_year} + '년 ' + ${current_month} + '월'">달력</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="|${current_year}년 ${current_month}월|">달력</title>
     <style>
         body {
-          margin: 0; padding: 0;
+          margin: 0;
+          padding: 0;
+          background-color: #fff6f6;
+          color: #333;
+          font-size: 14px;
         }
+
         .calendar-wrapper {
-          max-width: 1400px;
-          margin: 0 auto;
-          padding: 0 20px;
+          max-width: 100%;
+          margin: 10px auto 20px auto;
+          padding: 0 5px;
+          box-sizing: border-box;
         }
-       table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 4px;
-        font-size: 1.7rem;
-        table-layout: fixed;
-    }
+
+        table {
+          width: 100%;
+          border-collapse: separate;
+          border-spacing: 2px;
+          font-size: 1rem;
+          table-layout: fixed;
+        }
+
         th {
           background-color: #f3e5f5;
           color: #444;
           font-weight: bold;
-          padding: 10px 0;
+          padding: 6px 0;
           text-align: center;
           border: 1px solid #d0d0d0;
-          border-radius: 10px;
+          border-radius: 6px;
+          font-size: 0.85em;
         }
-        th.sun { color: #f48b94; }
-        th.sat { color: #8bb3f4; }
+
+        th.sun {
+          color: #f48b94;
+        }
+
+        th.sat {
+          color: #8bb3f4;
+        }
 
         td {
-        padding: 0;
-        height: 120px;
-        width: calc(100% / 7 - (4px * 6 / 7));
-
-    }
+          padding: 1px;
+          height: 180px;
+          width: calc(100% / 7 - (2px * 6 / 7));
+          vertical-align: top;
+          box-sizing: border-box;
+          border: none;
+        }
 
         .calendar-cell {
-          background-color: rgba(255, 255, 255, 0.6);
+          background-color: rgba(255, 255, 255, 0.8);
           backdrop-filter: blur(3px);
           -webkit-backdrop-filter: blur(3px);
-          border-radius: 12px;
+          border-radius: 8px;
           padding: 0;
-          margin: 4px;
-          height: 120px;
+          margin: 0;
+          height: 100%;
           width: 100%;
           position: relative;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.3);
-          vertical-align: top;
+          box-shadow: none;
+          border: 1px solid rgba(255, 255, 255, 0.5);
           overflow: hidden;
         }
 
         .cell-content {
           height: 100%;
-          overflow-y: auto;
-          padding: 6px;
+          overflow: hidden;
+          padding: 12px;
           box-sizing: border-box;
           text-align: left;
         }
@@ -66,95 +83,142 @@
         .date-number {
           font-weight: bold;
           color: #ff8a80;
-          font-size: 1.7rem;
-          margin-bottom: 8px;
+          font-size: 1.8rem;
+          margin-bottom: 10px;
           display: block;
         }
 
         .schedule-item {
           background-color: #ffe0ec;
-          font-size: 1.3rem;
-          padding: 6px 10px;
+          border-radius: 6px;
+          box-shadow: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.1rem;
+          line-height: 1;
+          padding: 0;
           margin-top: 6px;
-          border-radius: 12px;
+          width: 25px;
+          height: 25px;
+          text-decoration: none;
+          color: inherit;
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
-          box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-          display: block;
         }
 
-        .sun { color: #f48b94; }
-        .sat { color: #8bb3f4; }
-        .weekday { color: #555; }
+        .schedule-item[style*="background-color:#e0f7fa;"] {
+            background-color: #e0f7fa !important;
+        }
+
+        .sun {
+          color: #f48b94;
+        }
+
+        .sat {
+          color: #8bb3f4;
+        }
+
+        .weekday {
+          color: #555;
+        }
 
         .today {
           display: inline-block;
           background-color: #fff3c4;
-          border: 1px solid #ffcc80;
-          border-radius: 8px;
-          padding: 2px 6px;
+          border: none;
+          border-radius: 6px;
+          padding: 1px 4px;
           font-weight: bold;
           color: #444;
         }
 
+        .today .date-number {
+            font-size: 1.8rem;
+        }
+
         .today-label {
-          font-size: 12px;
+          font-size: 10px;
           color: #f6b9b9;
-          margin-left: 6px;
+          margin-left: 4px;
+        }
+
+        .top-title {
+          text-align: center;
+          font-size: 1.8em;
+          color: #f48aa5;
+          font-weight: bold;
+          margin: 20px 0 16px 0;
+        }
+
+        /* 메뉴바와 다음 컨테이너 간 간격 조정을 위한 클래스: 마진과 패딩 대폭 증가 */
+        .content-container-with-spacing {
+            margin-top: 50px !important; /* 모바일 뷰에서 더 많은 간격 */
+            padding-top: 20px !important; /* 추가 패딩 */
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .top-controls-container {
+          text-align: center;
+          margin-bottom: 20px;
         }
 
         .pet-label {
-          font-size: 1.3rem;
+          font-size: 1rem;
           font-weight: bold;
-          margin-right: 8px;
+          margin-right: 6px;
         }
 
         .pet-select {
-          font-size: 1.2rem;
-          padding: 8px 14px;
-          border-radius: 10px;
+          font-size: 1rem;
+          padding: 6px 10px;
+          border-radius: 8px;
           background-color: #fff0f5;
           border: 1px solid #ccc;
           color: #333;
         }
 
         .schedule-add-btn {
-          font-size: 1.2rem;
-          padding: 10px 18px;
-          margin-left: 10px;
+          font-size: 1rem;
+          padding: 8px 14px;
+          margin-left: 8px;
           background-color: #ffd1dc;
-          border-radius: 14px;
+          border-radius: 10px;
           font-weight: bold;
           cursor: pointer;
           border: none;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          box-shadow: none;
         }
 
         .month-nav {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin: 9px auto;
-          padding: 0 20px;
-          max-width: 1200px;
+          margin: 5px auto;
+          padding: 0 10px;
+          max-width: 100%;
         }
 
         .nav-btn {
-          font-size: 1.1rem;
-          padding: 8px 16px;
+          font-size: 1rem;
+          padding: 6px 12px;
           background-color: #fff3c4;
           border: 1px solid #ffcc80;
           color: #333;
-          border-radius: 12px;
+          border-radius: 10px;
           text-decoration: none;
           font-weight: bold;
+          box-shadow: none;
         }
 
         .modal {
           position: fixed;
-          top: 0; left: 0;
-          width: 100vw; height: 100vh;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
           background: rgba(0, 0, 0, 0.3);
           display: none;
           justify-content: center;
@@ -164,16 +228,18 @@
 
         .modal-box-summary {
           background-color: #e6fbf6;
-          padding: 36px 28px;
-          border-radius: 20px;
-          width: 420px;
+          padding: 24px 20px;
+          border-radius: 16px;
+          width: 90%;
+          max-width: 380px;
           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+          box-sizing: border-box;
         }
 
         .modal-box-summary h3 {
-          font-size: 22px;
+          font-size: 20px;
           color: #6ac9bb;
-          margin-bottom: 18px;
+          margin-bottom: 12px;
           text-align: center;
         }
 
@@ -183,7 +249,7 @@
           margin-top: 4px;
           margin-bottom: 1px;
           color: #444;
-          font-size: 14px;
+          font-size: 13px;
         }
 
         .modal-box-summary input[type="text"],
@@ -191,53 +257,217 @@
         .modal-box-summary select,
         .modal-box-summary textarea {
           width: 100%;
-          margin-top: 6px;
-          padding: 8px 12px;
-          margin-bottom: 4px;
-          font-size: 15px;
+          margin-top: 4px;
+          padding: 6px 10px;
+          margin-bottom: 2px;
+          font-size: 14px;
           border: 1px solid #ddd;
-          border-radius: 10px;
+          border-radius: 8px;
           background: #fffefe;
           box-sizing: border-box;
         }
 
         .modal-box-summary textarea {
           resize: vertical;
-          height: 70px;
+          height: 60px;
         }
 
         .modal-box-summary .submit-btn {
           background-color: #88ddd0;
           color: white;
           border: none;
-          padding: 12px 24px;
-          border-radius: 10px;
-          font-size: 15px;
+          padding: 10px 20px;
+          border-radius: 8px;
+          font-size: 14px;
           font-weight: bold;
-          margin-top: 6px;
+          margin-top: 4px;
           width: 100%;
         }
 
         .close-btn {
           position: absolute;
-          top: 14px;
-          right: 18px;
-          font-size: 20px;
+          top: 10px;
+          right: 14px;
+          font-size: 18px;
           background: none;
           border: none;
           cursor: pointer;
           color: #aaa;
         }
 
+        @media screen and (min-width: 768px) {
+          body {
+            font-size: 16px;
+          }
+
+          .calendar-wrapper {
+            max-width: 1400px;
+            margin: 10px auto 0 auto;
+            padding: 0 20px;
+          }
+
+          table {
+            font-size: 1.7rem;
+            border-spacing: 4px;
+          }
+
+          th {
+            padding: 10px 0;
+            border-radius: 10px;
+            font-size: 1em;
+          }
+
+          td {
+            padding: 0;
+            height: 160px;
+            width: calc(100% / 7 - (4px * 6 / 7));
+          }
+
+          .calendar-cell {
+            border-radius: 12px;
+            margin: 4px;
+            height: 100%;
+            box-shadow: none;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+          }
+
+          .cell-content {
+            padding: 6px;
+            height: 100%;
+            overflow: hidden;
+          }
+
+          .date-number {
+            font-weight: bold;
+            color: #ff8a80;
+            font-size: 2.2rem;
+            margin-bottom: 12px;
+            display: block;
+          }
+
+          .schedule-item {
+            font-size: 1.5rem;
+            padding: 0;
+            margin-top: 10px;
+            width: 35px;
+            height: 35px;
+            border-radius: 12px;
+          }
+
+          .schedule-item[style*="background-color:#e0f7fa;"] {
+              background-color: #e0f7fa !important;
+          }
+
+          .today {
+            padding: 2px 6px;
+            border-radius: 8px;
+            border: none;
+          }
+
+          .today .date-number {
+              font-size: 2.2rem;
+          }
+
+          .today-label {
+            font-size: 12px;
+            margin-left: 6px;
+          }
+
+          .pet-label {
+            font-size: 1.3rem;
+            margin-right: 8px;
+          }
+
+          .pet-select {
+            font-size: 1.2rem;
+            padding: 8px 14px;
+            border-radius: 10px;
+          }
+
+          .schedule-add-btn {
+            background-color: #ffd1dc;
+            font-size: 1rem;
+            padding: 8px 14px;
+            margin-left: 8px;
+            background-color: #ffd1dc;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            box-shadow: none;
+          }
+
+          .top-title {
+            font-size: 2.2em;
+            margin: 24px 0 24px 0;
+          }
+
+          .month-nav {
+            max-width: 1200px;
+            margin: 5px auto;
+            padding: 0 20px;
+          }
+
+          .nav-btn {
+            font-size: 1.1rem;
+            padding: 8px 16px;
+            border-radius: 12px;
+            box-shadow: none;
+          }
+
+          .modal-box-summary {
+            padding: 36px 28px;
+            border-radius: 20px;
+            width: 420px;
+          }
+
+          .modal-box-summary h3 {
+            font-size: 22px;
+            margin-bottom: 18px;
+          }
+
+          .modal-box-summary label {
+            font-size: 14px;
+            margin-top: 4px;
+            margin-bottom: 1px;
+          }
+
+          .modal-box-summary input[type="text"],
+          .modal-box-summary input[type="date"],
+          .modal-box-summary select,
+          .modal-box-summary textarea {
+            padding: 8px 12px;
+            margin-top: 6px;
+            margin-bottom: 4px;
+            font-size: 15px;
+            border-radius: 10px;
+          }
+
+          .modal-box-summary textarea {
+            height: 70px;
+          }
+
+          .modal-box-summary .submit-btn {
+            padding: 12px 24px;
+            font-size: 15px;
+            margin-top: 6px;
+          }
+
+          .close-btn {
+            top: 14px;
+            right: 18px;
+            font-size: 20px;
+          }
+        }
     </style>
 </head>
 <body>
 
-<div style="text-align: center; margin-bottom: 20px;">
-    <h2 th:text="${current_year} + '년 ' + ${current_month} + '월'"></h2>
+<div class="content-container-with-spacing">
+    <h2 th:text="${current_year} + '년 ' + ${current_month} + '월'" class="top-title"></h2>
 
     <form method="get" th:action="@{/Calendar/CalendarDetail}" style="display: inline-block;">
-        <label>🐶 반려동물 선택: </label>
+        <label class="pet-label">🐶 반려동물 선택: </label>
         <select name="pet_id" class="pet-select" onchange="this.form.submit()">
             <option th:each="pet : ${petlist}"
                     th:value="${pet.petId}"
