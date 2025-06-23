@@ -253,18 +253,22 @@
       <li><a th:href="@{/main}">🏠 홈</a></li>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
       <li th:if="${session.userRole == 'admin'}" class="menu-toggle-group section-group">
 =======
       <li th:if="${session.userRole  == 'admin'}" class="menu-toggle-group section-group">
 >>>>>>> c417e17aa25dc45c6cc1e398b807ba7d540210ad
+=======
+      <li th:if="${session.userRole  == 'admin'}" class="menu-toggle-group section-group">
+>>>>>>> fc79c0fefa2e574281c5957d7b55d1a03e8ec9c6
         <div class="toggle-header" onclick="toggleMenuGroup(this)">
           👑 관리자 <span class="arrow">▼</span>
         </div>
         <ul>
-          <li><a th:href="@{/NoticeInput}">📢 공지사항 작성하기</a></li>
+          <li><a th:href="@{/CommunityIn(type='notice')}">📢 공지사항 작성하기</a></li>
           <li><a th:href="@{/items_input}">🎁 아이템 등록</a></li>
           <li><a th:href="@{/items_out_admin}">🎁 아이템 목록</a></li>
-          <li><a th:href="@{/Quiz_admin}">🧠 퀴즈 관리</a></li>
+          <li><a th:href="@{/QuizInput}">🧠 퀴즈 관리</a></li>
           <li><a th:href="@{/point/grapes_admin_form}">🍇 포도알 관리</a></li>
         </ul>
       </li>
