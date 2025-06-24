@@ -1,92 +1,97 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-
 <head>
   <meta charset="UTF-8" />
   <title>메인 페이지</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 
   <style>
-    html, body {
-      height: 100%;
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
       margin: 0;
       padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       background: #fafafa;
     }
-    body {
-      flex-direction: column;
-      box-sizing: border-box;
-    }
 
-    /* 전체 컨테이너 최대 너비, 가운데 정렬 */
     .container {
-      width: 430px; /* iPhone 12 Pro 가로폭 기준 */
-      box-sizing: border-box;
+      max-width: 390px;
+      margin: 0 auto;
+      padding-bottom: 120px;
+      position: relative;
+      min-height: 100vh;
     }
 
-    /* 메뉴바 아래 공간 확보용 */
     .top-menu-wrapper {
-      margin-bottom: 90px;
+      margin-bottom: 40px;
+    }
+
+    .main-content {
+      margin-top: 100px;
     }
 
     .main-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(3, 120px);
-      gap: 20px;
-      padding: 0;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px 10px;
+      padding: 0 20px;
+      justify-items: center;
     }
 
-    .pet-profile {
-      grid-column: 1 / 2;
-      grid-row: 1 / 2;
-      border: 1px solid #ddd;
-      padding: 10px;
-      border-radius: 8px;
-      overflow-y: auto;
+    .icon-grid {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      background: #fff;
-      box-sizing: border-box;
-    }
-
-    .pet-profile img.pet-image {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      margin-bottom: 8px;
-      object-fit: cover;
-    }
-
-    .icon-grid a {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
       text-decoration: none;
       color: #444;
       font-size: 14px;
       font-weight: bold;
+      min-height: 100px;
+    }
+
+    .icon-circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     }
 
     .icon-grid img {
-      width: 60px;
-      height: 60px;
+      width: 50px;
+      height: 50px;
       object-fit: contain;
-      margin-bottom: 8px;
+    }
+
+    .icon-circle .main-pet-image,
+    .icon-circle .default-pet-image {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 4px solid #d6e6b8; /* 펫 프로필 테두리 색상 변경 */
+      box-shadow: none;
+      margin-bottom: 0;
+    }
+
+    .pet-name {
+      font-weight: bold;
+      font-size: 16px;
+      color: #333;
     }
 
     .bottom-nav {
-      position: fixed;
+      position: absolute;
       bottom: 0;
-      width: 430px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 390px;
       background-color: #fff6f6;
       border-top: 1px solid #ddd;
       display: flex;
@@ -96,85 +101,98 @@
       z-index: 1000;
       font-size: 12px;
       font-weight: bold;
-      box-sizing: border-box;
-      left: 50%;
-      transform: translateX(-50%);
     }
   </style>
 </head>
 
 <body>
 <div class="container">
-
   <div class="top-menu-wrapper">
     <div th:replace="~{top :: menu}"></div>
   </div>
 
   <section class="main-content">
     <div class="main-grid">
-      <!-- 펫프로필 영역 -->
-      <div class="pet-profile" sec:authorize="isAuthenticated()">
-        <h2>🐻 펫 프로필</h2>
-        <div class="profile-cards">
-          <th:block th:if="${#lists.isEmpty(list)}">
-            <p class="no-data-message">📭 등록된 펫 정보가 없습니다.</p>
-          </th:block>
-          <th:block th:unless="${#lists.isEmpty(list)}">
-            <th:block th:each="dto : ${list}">
-              <div class="card">
-                <a th:href="@{/Pet/PetDetail(petId=${dto.petId})}">
-                  <img class="pet-image" th:src="@{/image/{filename}(filename=${dto.petImgName})}" alt="펫 이미지" />
-                  <div style="font-weight: bold; text-align: center;" th:text="${dto.petName}"></div>
-                </a>
+      <th:block sec:authorize="isAuthenticated()">
+        <th:block th:if="${#lists.isEmpty(list)}">
+          <a class="icon-grid" style="cursor: default;">
+            <div class="icon-circle" style="background-color: #ffead6;">
+              <img class="default-pet-image" src="/image/default113.png" alt="기본 이미지" />
+            </div>
+            <div class="pet-name">PetLog</div>
+          </a>
+        </th:block>
+        <th:block th:unless="${#lists.isEmpty(list)}">
+          <th:block th:each="dto, dtoStat : ${list}">
+            <a th:if="${dtoStat.first}" class="icon-grid" th:href="@{/Pet/PetDetail(petId=${dto.petId})}">
+              <div class="icon-circle" style="background-color: #ffead6;">
+                <img class="main-pet-image" th:src="@{/image/{filename}(filename=${dto.petImgName})}" alt="펫 이미지" />
               </div>
-            </th:block>
+              <div class="pet-name" th:text="${dto.petName}">펫이름</div>
+            </a>
           </th:block>
+        </th:block>
+      </th:block>
+
+      <th:block sec:authorize="isAnonymous()">
+        <a class="icon-grid" style="cursor: default;">
+          <div class="icon-circle" style="background-color: #ffead6;">
+            <img class="default-pet-image" src="/image/default113.png" alt="기본 펫 이미지" />
+          </div>
+          <div class="pet-name">PetLog</div>
+        </a>
+      </th:block>
+
+      <a th:href="@{/NoticeBoard}" class="icon-grid">
+        <div class="icon-circle" style="background-color: #ffeaea;">
+          <img src="/image/1공지.png" alt="공지사항" />
         </div>
-      </div>
-
-      <div class="pet-profile" sec:authorize="isAnonymous()">
-        <h2>🐾 펫 프로필</h2>
-        <p class="no-data-message">🔒 로그인 후 펫 프로필을 확인하고 관리할 수 있습니다.</p>
-      </div>
-
-      <!-- 아이콘 배치 -->
-      <a th:href="@{/NoticeBoard}" style="grid-column: 2 / 3; grid-row: 1 / 2;" class="icon-grid">
-        <img src="/image/1공지.png" alt="공지사항" />
         <div>공지사항</div>
       </a>
 
-      <a th:href="@{/Calendar/CalendarView}" style="grid-column: 1 / 2; grid-row: 2 / 3;" class="icon-grid">
-        <img src="/image/1일정.png" alt="일정" />
+      <a th:href="@{/Calendar/CalendarView}" class="icon-grid">
+        <div class="icon-circle" style="background-color: #fff3d6;">
+          <img src="/image/1일정.png" alt="일정" />
+        </div>
         <div>일정</div>
       </a>
 
-      <a th:href="@{/Diary/DiaryList}" style="grid-column: 2 / 3; grid-row: 2 / 3;" class="icon-grid">
-        <img src="/image/1다이어리.png" alt="일기" />
+      <a th:href="@{/Diary/DiaryList}" class="icon-grid">
+        <div class="icon-circle" style="background-color: #e3f7ff;">
+          <img src="/image/1다이어리.png" alt="일기" />
+        </div>
         <div>일기</div>
       </a>
 
-      <a th:href="@{/CommunityView}" style="grid-column: 3 / 4; grid-row: 2 / 3;" class="icon-grid">
-        <img src="/image/1커뮤니티.png" alt="게시판" />
+      <a th:href="@{/CommunityView}" class="icon-grid">
+        <div class="icon-circle" style="background-color: #f1e7ff;">
+          <img src="/image/1커뮤니티.png" alt="게시판" />
+        </div>
         <div>게시판</div>
       </a>
 
-      <a th:href="@{/SnackList}" style="grid-column: 1 / 2; grid-row: 3 / 4;" class="icon-grid">
-        <img src="/image/1간식.png" alt="레시피" />
+      <a th:href="@{/SnackList}" class="icon-grid">
+        <div class="icon-circle" style="background-color: #e9ffeb;">
+          <img src="/image/1간식.png" alt="레시피" />
+        </div>
         <div>레시피</div>
       </a>
 
-      <a th:href="@{/QuizInput}" style="grid-column: 2 / 3; grid-row: 3 / 4;" class="icon-grid">
-        <img src="/image/1퀴즈.png" alt="퀴즈" />
+      <a th:href="@{/QuizInput}" class="icon-grid">
+        <div class="icon-circle" style="background-color: #fff9db;">
+          <img src="/image/1퀴즈.png" alt="퀴즈" />
+        </div>
         <div>퀴즈</div>
       </a>
 
-      <a th:href="@{/QnaList}" style="grid-column: 3 / 4; grid-row: 3 / 4;" class="icon-grid">
-        <img src="/image/1qna.png" alt="Q&A" />
+      <a th:href="@{/QnaList}" class="icon-grid">
+        <div class="icon-circle" style="background-color: #ffecf2;">
+          <img src="/image/1qna.png" alt="Q&A" />
+        </div>
         <div>Q&A</div>
       </a>
     </div>
   </section>
-
 </div>
 
 <div class="bottom-nav">
@@ -196,5 +214,4 @@
   </a>
 </div>
 </body>
-
 </html>
