@@ -23,4 +23,6 @@ public interface SnackService {
     List<SnackEntity> findByUserId(Long userId);
     //지수 추가 - 회원탈퇴
     void deleteByUserId(Long userId);
+
+    SnackEntity getSnackById(Long snackId);
 }

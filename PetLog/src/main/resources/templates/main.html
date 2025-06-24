@@ -5,7 +5,6 @@
 <head>
     <meta charset="UTF-8">
     <title>메인 대시보드</title>
-    <link rel="stylesheet" th:href="@{/resources/css/style.css(v=2)}">
     <style>
         body {
           margin: 0;
@@ -466,13 +465,9 @@
   alert([[${alertMessage}]]);
 </script>
 
-<div class="center-logo-container">
-    <img th:src="@{/image/logo11.png}" alt="Logo">
-</div>
-
 <div th:replace="~{top :: menu}"></div>
 
-<a class="main-dashboard">
+<div class="main-dashboard">
 
     <aside class="left-sidebar" sec:authorize="isAuthenticated()">
 

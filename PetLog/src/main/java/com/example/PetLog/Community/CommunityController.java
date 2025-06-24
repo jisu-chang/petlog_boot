@@ -119,20 +119,20 @@ public class CommunityController {
 
     // 커뮤니티 게시글 상세보기
     @GetMapping(value = "/CommunityDetail")
-    public String comdetail(@RequestParam("num") Long num, Model mo, HttpSession session) {
+    public String comdetail(@RequestParam("postId") Long postId, Model mo, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
         String userLoginId = (String) session.getAttribute("user_login_id");
         String userRole = (String) session.getAttribute("userRole");
 
         // 좋아요 처리
-        CommunityEntity dto = communityService.findById(num); // 게시글 정보 가져오기
-        int likeCount = likesService.getLikeCount(num); // 게시글의 좋아요 수 가져오기
-        boolean likedByUser = likesService.islikedByUser(num, userId, userLoginId); // 사용자가 해당 게시글에 좋아요 눌렀는지 확인
+        CommunityEntity dto = communityService.findById(postId); // 게시글 정보 가져오기
+        int likeCount = likesService.getLikeCount(postId); // 게시글의 좋아요 수 가져오기
+        boolean likedByUser = likesService.islikedByUser(postId, userId, userLoginId); // 사용자가 해당 게시글에 좋아요 눌렀는지 확인
 
         // 댓글 목록 가져오기
-        List<CommentsDTO> comments = commentsService.getCommentsByPostId(num);
+        List<CommentsDTO> comments = commentsService.getCommentsByPostId(postId);
 
-        communityService.readup(num);
+        communityService.readup(postId);
 
         mo.addAttribute("sessionUserId", userId);
         mo.addAttribute("sessionUserLoginId", userLoginId);
@@ -145,8 +145,8 @@ public class CommunityController {
     }
 
     @GetMapping(value = "/CommunityUpdate")
-    public String comupdate(@RequestParam("unum") Long unum, Model mo) {
-        CommunityEntity edto = communityService.updateById(unum);
+    public String comupdate(@RequestParam("postId") Long postId, Model mo) {
+        CommunityEntity edto = communityService.updateById(postId);
         mo.addAttribute("dto", edto);
         return "Community/CommunityUpdate";
     }
@@ -183,14 +183,14 @@ public class CommunityController {
     }
 
     @GetMapping(value = "/CommunityDelete")
-    public String comdelete(@RequestParam("dnum") Long dnum, Model mo) {
-        CommunityEntity edto = communityService.deleteById(dnum);
+    public String comdelete(@RequestParam("postId") Long postId, Model mo) {
+        CommunityEntity edto = communityService.deleteById(postId);
         mo.addAttribute("dto", edto);
         return "Community/CommunityDelete";
     }
 
     @PostMapping(value = "/CommunityDeleteSave")
-    public String comdeletesave(@RequestParam("dnum") Long dnum,
+    public String comdeletesave(@RequestParam("postId") Long postId,
                                 @RequestParam("dfname") String dfname,
                                 @RequestParam(value = "type", required = false) String type,
                                 @RequestParam(value = "post_type", required = false) String postType,
@@ -199,7 +199,7 @@ public class CommunityController {
         Long userId = (Long) session.getAttribute("userId");
         communityDTO.setUserId(userId);
 
-        communityService.deletesave(dnum);
+        communityService.deletesave(postId);
         File ff = new File(path + "\\" + dfname);
         ff.delete();
 
@@ -216,14 +216,14 @@ public class CommunityController {
 
     //공지사항 게시글 상세보기
     @GetMapping(value = "/NoticeDetail")
-    public String noticedetail(@RequestParam("num") Long num, Model mo, HttpSession session) {
+    public String noticedetail(@RequestParam("postId") Long postId, Model mo, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
         String userLoginId = (String) session.getAttribute("user_login_id");
         String userRole = (String) session.getAttribute("userRole");
 
-        CommunityEntity dto = communityService.findById(num); // 게시글 정보 가져오기
+        CommunityEntity dto = communityService.findById(postId); // 게시글 정보 가져오기
 
-        communityService.readup(num);
+        communityService.readup(postId);
 
         mo.addAttribute("sessionUserId", userId);
         mo.addAttribute("sessionUserLoginId", userLoginId);
@@ -233,8 +233,8 @@ public class CommunityController {
     }
 
     @GetMapping(value = "/NoticeUpdate")
-    public String noticeupdate(@RequestParam("unum") Long unum, Model mo) {
-        CommunityEntity edto = communityService.updateById(unum);
+    public String noticeupdate(@RequestParam("postId") Long postId, Model mo) {
+        CommunityEntity edto = communityService.updateById(postId);
         mo.addAttribute("dto", edto);
         return "Notice/NoticeUpdate";
     }
@@ -271,14 +271,14 @@ public class CommunityController {
     }
 
     @GetMapping(value = "/NoticeDelete")
-    public String noticedelete(@RequestParam("dnum") Long dnum, Model mo) {
-        CommunityEntity edto = communityService.deleteById(dnum);
+    public String noticedelete(@RequestParam("postId") Long postId, Model mo) {
+        CommunityEntity edto = communityService.deleteById(postId);
         mo.addAttribute("dto", edto);
         return "Notice/NoticeDelete";
     }
 
     @PostMapping(value = "/NoticeDeleteSave")
-    public String noticedeletesave(@RequestParam("dnum") Long dnum,
+    public String noticedeletesave(@RequestParam("postId") Long postId,
                                 @RequestParam("dfname") String dfname,
                                 @RequestParam(value = "type", required = false) String type,
                                 @RequestParam(value = "post_type", required = false) String postType,
@@ -287,13 +287,14 @@ public class CommunityController {
         Long userId = (Long) session.getAttribute("userId");
         communityDTO.setUserId(userId);
 
-        communityService.deletesave(dnum);
+        communityService.deletesave(postId);
         File ff = new File(path + "\\" + dfname);
         ff.delete();
 
         return "redirect:/CommunityNotice";
     }
 
+    //댓글
     @GetMapping("/community/{postId}")
     public String viewPost(@PathVariable Long postId, HttpSession session, Model mo) {
         Long userId = (Long) session.getAttribute("userId");
@@ -307,13 +308,16 @@ public class CommunityController {
         }
 
         int likeCount = likesService.getLikeCount(postId);
+
+
         mo.addAttribute("dto", post);
         mo.addAttribute("likedByUser", likedByUser);
         mo.addAttribute("likeCount", likeCount);
 
-        return "community/CommunityDetail";
+        return "redirect:/CommunityDetail?postId=" + postId;
     }
 
+    //좋아요
     @PostMapping("/post/{postId}/like")
     public String likeOnPost(@PathVariable Long postId, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
@@ -324,31 +328,29 @@ public class CommunityController {
         }
         likesService.likeOnUser(postId, userId, userLoginId);
 
-        return "redirect:/community/" + postId;
+        return "redirect:/CommunityDetail?postId=" + postId;
     }
-
-//    @PostMapping("/community/comment")
-//    public String savecomment(@ModelAttribute("commentsDTO") CommentsDTO commentsDTO, RedirectAttributes redirectAttributes) {
-//        commentsService.saveComment(commentsDTO);
-//        redirectAttributes.addAttribute("postId", commentsDTO.getPost_id());
-//        return "redirect:/CommunityDetail?num=" + commentsDTO.getPost_id();
-//    }
 
     @PostMapping("/community/comment")
     public String saveComment(@ModelAttribute("commentsDTO") CommentsDTO commentsDTO,
-                              RedirectAttributes redirectAttributes) {
+                              RedirectAttributes redirectAttributes, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        String userLoginId = (String) session.getAttribute("userLoginId");
 
+        if (userId == null || userLoginId == null) {
+            return "redirect:/login";
+        }
+        commentsDTO.setUser_id(userId);
+        commentsDTO.setUserLoginId(userLoginId);
         commentsService.saveComment(commentsDTO);
 
         // 값이 null이 아닌 경우에만 파라미터 추가
         if (commentsDTO.getPost_id() != null) {
-            redirectAttributes.addAttribute("num", commentsDTO.getPost_id());
+            redirectAttributes.addAttribute("postId", commentsDTO.getPost_id());
+            return "redirect:/CommunityDetail"; // postId는 리다이렉트 속성으로 붙음
         } else {
-            // 예외 처리 또는 기본 페이지로 리다이렉트
-            return "redirect:/Community"; // 또는 에러 페이지
+            return "redirect:/Community";
         }
-
-        return "redirect:/CommunityDetail";
     }
 
 }

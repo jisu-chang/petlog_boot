@@ -194,7 +194,7 @@
       <tbody>
       <tr th:each="cc:${normalPosts}">
         <td style="text-align: left;">
-          <a th:href="@{/CommunityDetail(num=${cc.postId})}" style="color: #333; text-decoration: none;">
+          <a th:href="@{/CommunityDetail(postId=${cc.postId})}" style="color: #333; text-decoration: none;">
             <span th:text="${cc.postTitle}" style="font-weight: 500;"></span>
             <span class="board-meta">
               <span class="comments">[<span th:text="${commentCounts[cc.postId]}"></span>]</span>

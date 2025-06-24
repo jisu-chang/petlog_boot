@@ -1,30 +1,36 @@
 package com.example.PetLog.Snack;
 
-import com.example.PetLog.Pet.PetDTO;
+import com.example.PetLog.Comments.CommentsDTO;
+import com.example.PetLog.Comments.CommentsEntity;
+import com.example.PetLog.Comments.CommentsService;
+import com.example.PetLog.Likes.LikesService;
 import com.example.PetLog.User.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class SnackController {
 
     @Autowired
     SnackService snackService;
-
     @Autowired
     UserService userService;
+    @Autowired
+    LikesService likesService;
+    @Autowired
+    CommentsService commentsService;
 
     String path = System.getProperty("user.dir") + "/src/main/resources/static/image";
 
@@ -41,10 +47,13 @@ public class SnackController {
     }
 
     @PostMapping(value = "/SnackSave")
-    public String save(SnackDTO dto, Principal pri) throws IOException {
-
-        String loginId = pri.getName();
-        Long userId = userService.findUserIdByLoginId(loginId);
+    public String save(SnackDTO dto, HttpSession session) throws IOException {
+        // 로그인 한 유저 정보 가져옴
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/login";  // 로그인 페이지로 리다이렉트
+        }
+//        Long userId = userService.findUserIdByLoginId(loginId);
 
         dto.setUserId(userId);
 
@@ -66,7 +75,7 @@ public class SnackController {
         SnackEntity snackEntity = dto.entity();  // 이미지 이름까지 포함된 entity로 변환
         snackService.save(snackEntity);
 
-        return "redirect:/Snack/SnackInput";
+        return "redirect:/Snack/SnackOut";
     }
 
     @GetMapping(value = "/Snack/SnackOut")
@@ -76,22 +85,38 @@ public class SnackController {
         Long userId = userService.findUserIdByLoginId(loginId);
 
         List<SnackDTO> list = snackService.out();
+        // 댓글수 / 좋아요수 매핑
+        Map<Long, Integer> commentCounts = new HashMap<>();
+        Map<Long, Integer> likeCounts = new HashMap<>();
 
+        mo.addAttribute("commentCounts", commentCounts);
+        mo.addAttribute("likeCounts", likeCounts);
         mo.addAttribute("list",list);
-
         return "Snack/SnackOut";
     }
 
     @GetMapping(value = "Snack/SnackDetail")
-    public String detail(Model mo, @RequestParam("snackId")long snackId) {
+    public String detail(Model mo, @RequestParam("snackId")long snackId, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        String userLoginId =(String) session.getAttribute("userLoginId");
 
         SnackDTO snackDTO = snackService.detail(snackId);
         if (snackDTO == null) {
             return "redirect:/Snack/SnackOut"; // 또는 에러 페이지
         } //snackId 못 찾으면 여기로 redirect
 
+        // 좋아요 처리
+        int likeCount = likesService.getSnackLikeCount(snackId); // 스낵 게시글의 좋아요 수
+        boolean likedByUser = likesService.isLikedByUserOnSnack(snackId, userId, userLoginId); // 사용자가 해당 스낵에 좋아요 눌렀는지 확인
+
+        // 댓글 목록 가져오기
+        List<CommentsEntity> comments = commentsService.getSnackComments(snackId);
+
         System.out.println("snackDTO = " + snackDTO);
-        mo.addAttribute("dto",snackDTO);
+        mo.addAttribute("dto", snackDTO);
+        mo.addAttribute("likeCount", likeCount);
+        mo.addAttribute("likedByUser", likedByUser);
+        mo.addAttribute("comments", comments);
 
         return "Snack/SnackDetail";
     }
@@ -160,5 +185,55 @@ public class SnackController {
         if(file.exists()) file.delete();
 
         return "redirect:/Snack/SnackOut";
+    }
+
+    // 스낵 상세 페이지
+    @GetMapping("/snack/{snackId}")
+    public String viewSnack(@PathVariable Long snackId, HttpSession session, Model mo) {
+        Long userId = (Long) session.getAttribute("userId");
+        String userLoginId = (String) session.getAttribute("userLoginId");
+
+        SnackEntity snack = snackService.getSnackById(snackId);
+
+        boolean likedByUser = likesService.isLikedByUserOnSnack(snackId, userId, userLoginId);
+
+        int likeCount = likesService.getSnackLikeCount(snackId);
+        List<CommentsEntity> comments = commentsService.getCommentsForSnack(snackId);
+
+        mo.addAttribute("dto", snack);
+        mo.addAttribute("likedByUser", likedByUser);
+        mo.addAttribute("likeCount", likeCount);
+        mo.addAttribute("comments", comments);
+
+        return "snack/SnackDetail";
+    }
+
+    // 스낵 좋아요 누르기
+    @PostMapping("/snack/{snackId}/like")
+    public String likeOnSnack(@PathVariable Long snackId, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        String userLoginId = (String) session.getAttribute("userLoginId");
+
+        if (userId == null || userLoginId == null) {
+            return "redirect:/login";
+        }
+
+        likesService.likeOnSnack(snackId, userId, userLoginId);
+        return "redirect:/snack/" + snackId;
+    }
+
+    // 스낵 댓글 저장
+    @PostMapping("/snack/comment")
+    public String saveSnackComment(@ModelAttribute("commentsDTO") CommentsDTO commentsDTO,
+                                   RedirectAttributes redirectAttributes) {
+
+        commentsService.saveComment(commentsDTO); // 내부에서 snackId로 저장됨
+
+        if (commentsDTO.getSnack_id() != null) {
+            redirectAttributes.addAttribute("snackId", commentsDTO.getSnack_id());
+            return "redirect:/snack/" + commentsDTO.getSnack_id();
+        } else {
+            return "redirect:/snack"; // fallback
+        }
     }
 }

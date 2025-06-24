@@ -218,12 +218,12 @@
             </div>
         </div>
 
-        <input type="hidden" name="dnum" th:value="${dto.postId}" />
+        <input type="hidden" name="postId" th:value="${dto.postId}" />
         <div class="btn-group">
             <input type="button" value="목록" th:onclick="location.href='/CommunityNotice'">
             <!-- 게시글 수정: 작성자(user_id)만 가능 -->
             <th:block th:if="${#authentication.principal.userId == dto.user.userId}">
-                <input type="button" value="수정" th:onclick="|location.href='@{/NoticeUpdate(unum=${dto.postId})}'|" />
+                <input type="button" value="수정" th:onclick="|location.href='@{/NoticeUpdate(postId=${dto.postId})}'|" />
             </th:block>
 
             <!-- 게시글 삭제: 관리자(admin) 또는 작성자(user_id)만 가능 -->

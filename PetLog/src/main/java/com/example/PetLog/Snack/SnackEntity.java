@@ -1,5 +1,7 @@
 package com.example.PetLog.Snack;
 
+import com.example.PetLog.Comments.CommentsEntity;
+import com.example.PetLog.Likes.LikesEntity;
 import com.example.PetLog.User.UserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -24,9 +27,9 @@ import java.time.LocalDate;
 public class SnackEntity {
     @Id
     @Column (name = "snack_id")
-    @SequenceGenerator(
-            name = "snack_seq",sequenceName = "snack_seq",
-            allocationSize = 1, initialValue = 1)
+//    @SequenceGenerator(
+//            name = "snack_seq",sequenceName = "snack_seq",
+//            allocationSize = 1, initialValue = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "snack_seq")
     Long snackId;
     @Column (name = "snack_title")
@@ -45,4 +48,11 @@ public class SnackEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     UserEntity user;
+    // 댓글과의 관계 (게시글은 여러 댓글을 가질 수 있음)
+    @OneToMany(mappedBy = "snack", fetch = FetchType.LAZY)
+    List<CommentsEntity> comments;
+
+    // 좋아요와의 관계 (게시글은 여러 좋아요를 가질 수 있음)
+    @OneToMany(mappedBy = "snack", fetch = FetchType.LAZY)
+    List<LikesEntity> likes;
 }

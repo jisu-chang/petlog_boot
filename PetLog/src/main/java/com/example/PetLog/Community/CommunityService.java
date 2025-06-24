@@ -10,15 +10,15 @@ public interface CommunityService {
 
     List<CommunityEntity> allout();
 
-    CommunityEntity findById(Long num);
+    CommunityEntity findById(Long postId);
 
-    void readup(Long num);
+    void readup(Long postId);
 
-    CommunityEntity updateById(Long unum);
+    CommunityEntity updateById(Long postId);
 
-    CommunityEntity deleteById(Long dnum);
+    CommunityEntity deleteById(Long postId);
 
-    void deletesave(Long dnum);
+    void deletesave(Long postId);
 
     List<CommunityEntity> findByUserId(Long userId);
 

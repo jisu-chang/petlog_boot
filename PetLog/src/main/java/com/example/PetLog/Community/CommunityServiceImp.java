@@ -27,28 +27,28 @@ public class CommunityServiceImp implements CommunityService{
     }
 
     @Override
-    public CommunityEntity findById(Long num) {
-        return communityRepository.findById(num).orElse(null);
+    public CommunityEntity findById(Long postId) {
+        return communityRepository.findById(postId).orElse(null);
     }
 
     @Override
-    public void readup(Long num) {
-        communityRepository.readup(num);
+    public void readup(Long postId) {
+        communityRepository.readup(postId);
     }
 
     @Override
-    public CommunityEntity updateById(Long unum) {
-        return communityRepository.findById(unum).orElse(null);
+    public CommunityEntity updateById(Long postId) {
+        return communityRepository.findById(postId).orElse(null);
     }
 
     @Override
-    public CommunityEntity deleteById(Long dnum) {
-        return communityRepository.findById(dnum).orElse(null);
+    public CommunityEntity deleteById(Long postId) {
+        return communityRepository.findById(postId).orElse(null);
     }
 
     @Override
-    public void deletesave(Long dnum) {
-        communityRepository.deleteById(dnum);
+    public void deletesave(Long postId) {
+        communityRepository.deleteById(postId);
     }
 
     @Override

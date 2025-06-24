@@ -1,6 +1,8 @@
 package com.example.PetLog.Likes;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -25,4 +27,15 @@ public interface LikesRepository extends JpaRepository<LikesEntity, Long> {
 
     //좋아요 유무
     boolean existsByPostIdAndUserId(Long postId, Long userId);
+
+    @Query("SELECT CASE WHEN COUNT(l) > 0 THEN true ELSE false END " +
+            "FROM LikesEntity l " +
+            "WHERE l.snack.snackId = :snackId AND l.user.userId = :userId AND l.user.userLoginId = :userLoginId")
+    boolean existsSnackLike(@Param("snackId") Long snackId,
+                            @Param("userId") Long userId,
+                            @Param("userLoginId") String userLoginId);
+
+    int countBySnackId(Long snackId);
+
+    boolean existsBySnackIdAndUserIdAndUserLoginId(Long snackId, Long userId, String userLoginId);
 }

@@ -11,4 +11,8 @@ public interface CommentsService {
     void saveComment(CommentsDTO commentsDTO);
 
     List<CommentsDTO> getCommentsByPostId(Long postId);
+
+    List<CommentsEntity> getCommentsForSnack(Long snackId);
+
+    List<CommentsEntity> getSnackComments(long snackId);
 }

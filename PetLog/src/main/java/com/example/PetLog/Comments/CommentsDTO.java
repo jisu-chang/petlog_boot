@@ -17,4 +17,5 @@ public class CommentsDTO {
     Long snack_id;
 
     String userLoginId;
+
 }

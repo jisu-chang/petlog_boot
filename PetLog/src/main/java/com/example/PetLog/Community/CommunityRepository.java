@@ -17,7 +17,7 @@ public interface CommunityRepository extends JpaRepository<CommunityEntity, Long
     @Transactional
     @Modifying
     @Query(value = "update community set post_readcnt=post_readcnt+1 where post_id=:post_id", nativeQuery = true)
-    void readup(@Param("post_id") Long num);
+    void readup(@Param("post_id") Long postId);
 
     void deleteByUser_UserId(Long userId);
 

@@ -5,6 +5,7 @@ import com.example.PetLog.Snack.SnackEntity;
 import com.example.PetLog.User.UserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

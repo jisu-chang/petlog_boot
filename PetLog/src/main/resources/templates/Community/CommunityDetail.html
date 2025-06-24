@@ -138,35 +138,118 @@
             color: red;
         }
 
-        .comment-box {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 40px;
-        }
+       /* 댓글 전체 박스 */
+.comment-box {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 40px;
+}
 
-        .comment-form textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-        }
+/* 댓글 제목 */
+.comment-box h3 {
+    font-size: 1.4em;
+    margin-bottom: 20px;
+}
 
-        .comment-form button {
-            background-color: #ffe1e1;
-            color: #333;
-            border: none;
-            border-radius: 10px;
-            padding: 8px 16px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
+/* 댓글 작성 textarea */
+.comment-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    resize: vertical;
+}
 
-        .comment {
-            border-top: 1px solid #eee;
-            padding-top: 12px;
-            margin-top: 14px;
-        }
+/* 댓글 작성 버튼 */
+.comment-form button {
+    background-color: #ffe1e1;
+    color: #333;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+/* 기본 댓글 구조 */
+.comment {
+    border-top: 1px solid #eee;
+    padding-top: 18px;
+    margin-top: 20px;
+}
+
+/* 댓글 헤더: 프로필 + 작성자 + 답글 버튼 한 줄 */
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 프로필 + 닉네임 */
+.comment-user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 프로필 이미지 */
+.profile-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* 닉네임 */
+.comment-header strong {
+    font-weight: 600;
+    font-size: 15px;
+    color: #444;
+}
+
+/* 댓글 내용 */
+.comment span {
+    display: block;
+    font-size: 14px;
+    color: #333;
+    padding-left: 46px;
+    margin-top: 6px;
+    word-break: break-word;
+}
+
+/* 대댓글 */
+.reply {
+    margin-left: 46px;
+    font-size: 14px;
+    color: #555;
+    margin-top: 14px;
+    padding-left: 12px;
+    border-left: 2px solid #f4d6dc;
+}
+
+/* 답글 버튼 */
+.reply-button {
+    background-color: #fce4ec;
+    border: none;
+    color: #c2185b;
+    border-radius: 8px;
+    padding: 5px 12px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* 대댓글 작성 폼 */
+.comment-form textarea {
+    margin-top: 6px;
+}
+
+.comment-form button {
+    margin-left: 2px;
+}
+
     </style>
 </head>
 <body>
@@ -213,9 +296,9 @@
         <input type="button" class="list-btn" value="목록" onclick="location.href='/CommunityOut'">
         <th:block th:if="${#authentication.principal.userId == dto.user.userId || #authentication.principal.userRole == 'admin'}">
             <input type="button" class="edit-delete" value="수정"
-                   th:onclick="|location.href='/CommunityUpdate?unum=' + ${dto.postId}|">
+                   th:onclick="|location.href='/CommunityUpdate?postId=' + ${dto.postId}|">
             <input type="button" class="edit-delete" value="삭제"
-                   th:onclick="|if(confirm('삭제하시겠습니까?')) location.href='/CommunityDelete?dnum=' + ${dto.postId}|">
+                   th:onclick="|if(confirm('삭제하시겠습니까?')) location.href='/CommunityDelete?postId=' + ${dto.postId}|">
         </th:block>
     </div>
 
@@ -237,11 +320,22 @@
         </form>
 
         <div th:each="comment : ${comments}" class="comment">
-            <p><strong th:text="${comment.userLoginId}">작성자</strong>: <span th:text="${comment.com_com}">내용</span></p>
-            <button type="button" onclick="toggleReplyForm([[${comment.com_id}]])">답글</button>
+            <div class="comment-header">
+                <img class="profile-img" th:if="${dto?.user?.profileimg != null}" th:src="@{/images/{img}(img=${dto.user.profileimg})}" alt="Profile Image"/>
+                <img class="profile-img" th:if="${dto?.user?.profileimg == null}" th:src="@{/images/default.png}" alt="Default Image"/>
+                <strong th:text="${comment.userLoginId}">작성자</strong>
+            </div>
+                <span th:text="${comment.com_com}">내용</span>
+            <button type="button" class="reply-button" th:onclick="|toggleReplyForm(${comment.com_id})|">답글</button>
+
 
             <div th:each="reply : ${comments}" th:if="${reply.parent_id == comment.com_id}" style="margin-left: 20px;">
-                ↳ <strong th:text="${reply.userLoginId}">작성자</strong>: <span th:text="${reply.com_com}">대댓글내용</span>
+                <div class="comment-header">
+                  <img class="profile-img" th:if="${dto?.user?.profileimg != null}" th:src="@{/images/{img}(img=${dto.user.profileimg})}" alt="Profile Image"/>
+                  <img class="profile-img" th:if="${dto?.user?.profileimg == null}" th:src="@{/images/default.png}" alt="Default Image"/>
+                  <strong th:text="${reply.userLoginId}">작성자</strong>
+                </div>
+                <span th:text="${reply.com_com}">대댓글내용</span>
             </div>
 
             <form th:id="'reply-form-' + ${comment.com_id}" class="comment-form" th:action="@{/community/comment}" method="post" style="display: none;">

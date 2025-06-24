@@ -175,7 +175,7 @@
     <tr th:each="cc:${noticePosts}">
         <td th:text="${cc.postId}"></td>
         <td style="text-align: left;">
-            <a th:href="@{/NoticeDetail(num=${cc.postId})}">
+            <a th:href="@{/NoticeDetail(postId=${cc.postId})}">
                 <span th:text="${cc.postTitle}"></span>
             </a>
         </td>
