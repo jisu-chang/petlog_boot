@@ -5,12 +5,14 @@
 <head>
     <meta charset="UTF-8">
     <title>메인 대시보드</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
           margin: 0;
           padding: 0;
           background-color: #f4f7f6;
           color: #333;
+          padding-top: 90px;
         }
         .center-logo-container {
           text-align: center;
@@ -32,6 +34,7 @@
           margin: 20px auto;
           gap: 20px;
           padding: 0 20px;
+          flex-wrap: wrap;
         }
         .left-sidebar, .right-info {
           flex: 0 0 250px;
@@ -217,6 +220,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             transition: opacity 0.5s ease-in-out;
             opacity: 0;
             display: none;
@@ -457,77 +461,160 @@
             margin-top: 50px;
           }
         }
+
+        @media screen and (max-width: 390px) {
+            .main-dashboard {
+                margin: 10px auto;
+                padding: 0 5px;
+                gap: 15px;
+            }
+            .sidebar-box, .content-box, .calendar-box, .diary-wrapper-box, .quiz-preview-box, .tab-box, .snack-preview-box {
+                padding: 12px;
+            }
+            h2 {
+                font-size: 1.3rem;
+                margin-bottom: 15px;
+            }
+            .profile-cards {
+                gap: 10px;
+            }
+            .card {
+                width: calc(50% - 15px);
+                padding: 10px;
+            }
+            .card img {
+                width: 80px;
+                height: 80px;
+            }
+            .card > div {
+                font-size: 13px !important;
+            }
+            .tab-header {
+                flex-direction: column;
+                align-items: flex-start;
+                margin-bottom: 10px;
+            }
+            .tabs {
+                width: 100%;
+                justify-content: space-around;
+                margin-bottom: 10px;
+            }
+            .tab {
+                padding: 8px 10px;
+                font-size: 0.8rem;
+            }
+            .more-link {
+                align-self: flex-end;
+                font-size: 0.8rem;
+            }
+            .post-item, .snack-item {
+                padding: 8px 0;
+                font-size: 0.85rem;
+            }
+            .post-meta-right, .snack-meta-right {
+                font-size: 0.75rem;
+            }
+            .comment-count {
+                font-size: 0.75rem;
+            }
+            .snack-slider-wrapper {
+                height: 250px;
+            }
+            .snack-image {
+                width: 90px;
+                height: 90px;
+            }
+            .snack-title {
+                font-size: 1rem;
+            }
+            .snack-writer, .snack-content, .snack-more {
+                font-size: 0.8rem;
+            }
+            .snack-content {
+                max-height: 3.6em;
+            }
+            .slide-button {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+            .calendar-box h2 {
+                font-size: 1.4rem;
+            }
+            .calendar thead th {
+                padding: 6px 0;
+                font-size: 0.8rem;
+            }
+            .calendar tbody td {
+                height: 40px;
+                font-size: 0.8rem;
+            }
+            .calendar tbody td span {
+                margin-bottom: 3px;
+            }
+            .calendar-box h3 {
+                font-size: 1.2rem;
+                margin-top: 15px;
+                margin-bottom: 10px;
+            }
+            .schedule-item {
+                padding: 8px 10px;
+                font-size: 0.8rem;
+            }
+            .schedule-date, .schedule-pet-name, .schedule-header strong {
+                font-size: 0.8rem;
+            }
+            .diary-title {
+                font-size: 1.1rem;
+            }
+            .diary-date, .diary-pet, .quiz-note {
+                font-size: 0.8rem;
+            }
+            .diary-preview {
+                font-size: 0.9rem;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                max-height: 3.9em;
+            }
+            .diary-link, .quiz-start-button {
+                padding: 6px 15px;
+                font-size: 0.85rem;
+            }
+            .quiz-question {
+                font-size: 1rem;
+            }
+            .no-data-message {
+                font-size: 0.85rem;
+                padding: 10px;
+            }
+        }
     </style>
 </head>
 <body>
 
 <script th:if="${alertMessage != null}">
-  alert([[${alertMessage}]]);
+    alert([[${alertMessage}]]);
 </script>
 
 <div th:replace="~{top :: menu}"></div>
 
 <div class="main-dashboard">
-
-    <aside class="left-sidebar" sec:authorize="isAuthenticated()">
-
-            <a class="sidebar-box" th:href="@{/MyPage}">
-                <div class="sidebar-icon">👤</div>
-                <div class="sidebar-label">회원 정보</div>
-            </a>
-
-            <a class="sidebar-box" th:href="@{/Pet/PetOut}">
-                <div class="sidebar-icon">🐾</div>
-                <div class="sidebar-label">펫 관리</div>
-            </a>
-
-            <a class="sidebar-box" th:href="@{/Point/GrapeBar}">
-                <div class="sidebar-icon">🍇</div>
-                <div class="sidebar-label">내 포도알</div>
-            </a>
-
-            <a class="sidebar-box" th:href="@{/Diary/DiaryOut}">
-                <div class="sidebar-icon">✏️</div>
-                <div class="sidebar-label">다이어리</div>
-            </a>
-
-            <a class="sidebar-box" th:href="@{/Calendar/CalendarView}">
-                <div class="sidebar-icon">📆</div>
-                <div class="sidebar-label">일정</div>
-            </a>
-
-            <a class="sidebar-box" th:href="@{/ItemUser/ItemBought}">
-                <div class="sidebar-icon">🛍️</div>
-                <div class="sidebar-label">내 아이템</div>
-            </a>
-
-            <a class="sidebar-box" th:href="@{/qnalist}">
-                <div class="sidebar-icon">❓</div>
-                <div class="sidebar-label">Q&A</div>
-            </a>
-    </aside>
-</div>
-
     <section class="main-content">
         <div class="content-box large" sec:authorize="isAuthenticated()">
             <h2>🐻 펫 프로필</h2>
             <div class="profile-cards">
-                <th:block th:if="${#lists.isEmpty(petdto)}">
-                    <p class="no-data-message">📭 등록된 펫 정보가 없습니다.</p>
+                <th:block th:if="${#lists.isEmpty(list)}"> <p class="no-data-message">📭 등록된 펫 정보가 없습니다.</p>
                 </th:block>
-                <th:block th:unless="${#lists.isEmpty(petdto)}">
-                    <th:block th:each="dto : ${petdto}">
-                        <div class="card">
-                            <a th:href="@{/pet_detail(update1=${dto.petId})}">
-                                <img class="pet-image" th:src="@{/image/{filename}(filename=${dto.petImg})}" width="100px"
-                                     style="border-radius: 50%; margin-bottom: 10px;">
-                                <div style="font-size: px; font-weight: bold; text-align: center;" th:text="${dto.petName}"></div>
-                                <div style="font-size: 15px; color: #777;" th:text="|🐻 성별: ${dto.petBog}|"></div>
-                                <div style="font-size: 15px; color: #777;" th:text="|✨ 중성화: ${dto.petNeuter}|"></div>
-                                <div style="font-size: 15px; color: #777;" th:text="|🎂 생일: ${dto.petHbd}|"></div>
-                            </a>
-                        </div>
-                    </th:block>
+                <th:block th:unless="${#lists.isEmpty(list)}"> <th:block th:each="dto : ${list}"> <div class="card">
+                    <a th:href="@{/Pet/PetDetail(update1=${dto.petId})}">
+                        <img class="pet-image" th:src="@{/image/{filename}(filename=${dto.petImg})}" width="100px"
+                             style="border-radius: 50%; margin-bottom: 10px;">
+                        <div style="font-size: px; font-weight: bold; text-align: center;" th:text="${dto.petName}"></div>
+                        <div style="font-size: 15px; color: #777;" th:text="|🐻 성별: ${dto.petBog}|"></div>
+                        <div style="font-size: 15px; color: #777;" th:text="|✨ 중성화: ${dto.petNeuter}|"></div>
+                        <div style="font-size: 15px; color: #777;" th:text="|🎂 생일: ${dto.petHbd}|"></div>
+                    </a>
+                </div>
+                </th:block>
                 </th:block>
             </div>
         </div>
@@ -782,7 +869,7 @@
     function showSnack(index) {
       snackCards.forEach((card, i) => {
         if (i === index) {
-          card.style.display = 'block';
+          card.style.display = 'flex'; /* display: flex로 변경 */
           card.style.opacity = 1;
         } else {
           card.style.display = 'none';
