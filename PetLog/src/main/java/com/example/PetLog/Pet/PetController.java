@@ -79,7 +79,7 @@ public class PetController {
     }
 
     @GetMapping("/Pet/PetUpdate")
-    public String update(@RequestParam("update") Long petId, Model model, HttpSession session) {
+    public String update(@RequestParam("petId") Long petId, Model model, HttpSession session) {
         UserEntity loginUser = (UserEntity) session.getAttribute("loginUser");
         if (loginUser == null) return "redirect:/login";
 
@@ -126,36 +126,23 @@ public class PetController {
     }
 
     @GetMapping("/Pet/PetDelete")
-    public String delete(@RequestParam("delete") Long petId,
-                         @RequestParam("dfimage") String image,
-                         Model model,
-                         HttpSession session) {
+    public String deleteAndConfirm(@RequestParam("delete") Long petId,
+                                   @RequestParam("dfimage") String imageName,
+                                   HttpSession session) {
 
         UserEntity loginUser = (UserEntity) session.getAttribute("loginUser");
-        if (loginUser == null) return "redirect:/login";
-
-        PetEntity petEntity = petService.detail(petId);
-        PetDTO dto = new PetDTO();
-        dto.setPetId(petEntity.getPetId());
-        dto.setPetName(petEntity.getPetName());
-        dto.setPetBog(petEntity.getPetBog());
-        dto.setPetNeuter(petEntity.getPetNeuter());
-        dto.setPetHbd(petEntity.getPetHbd());
-        dto.setPetImgName(image);
-        dto.setUserId(petEntity.getUser().getUserId());
-
-        model.addAttribute("dto", dto);
-        return "Pet/PetDelete";
-    }
-
-    @PostMapping("/PetDeleteCheck")
-    public String deleteConfirm(@RequestParam("petId") Long petId,
-                                @RequestParam("himage") String imageName) {
+        if (loginUser == null) {
+            return "redirect:/login";
+        }
 
         petService.delete(petId);
+
         File file = new File(path, imageName);
-        if (file.exists()) file.delete();
+        if (file.exists()) {
+            file.delete();
+        }
 
         return "redirect:/Pet/PetOut";
     }
+
 }

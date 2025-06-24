@@ -6,7 +6,6 @@
   <style>
     body {
         background-color: #ffffff;
-        font-family: 'Pretendard', sans-serif;
         margin: 30;
         padding: 70;
         padding-top: 70px;
@@ -64,36 +63,36 @@
         line-height: 1.6;
     }
 
-.btn-group a {
-    width: 160px; /* 모든 버튼 동일 폭 */
-    padding: 14px 12px;
-    text-align: center;
-    background-color: #f48aa5;
-    color: white;
-    text-decoration: none;
-    border-radius: 13px;
-    font-size: 16px;
-    font-weight: 600;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-    white-space: nowrap;
-    letter-spacing: 0.5px;
-}
+    .btn-group a {
+        width: 160px;
+        padding: 14px 12px;
+        text-align: center;
+        background-color: #f48aa5;
+        color: white;
+        text-decoration: none;
+        border-radius: 13px;
+        font-size: 16px;
+        font-weight: 600;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        white-space: nowrap;
+        letter-spacing: 0.5px;
+    }
 
-.btn-group {
-    margin-top: 40px;
-    display: flex;
-    justify-content: center; /* 가운데 정렬 */
-    flex-wrap: wrap;
-    gap: 20px; /* 버튼 사이 간격 */
-}
+    .btn-group {
+        margin-top: 40px;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
 
-.btn-group a:hover {
-    background-color: #ffc1cc;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-}
+    .btn-group a:hover {
+        background-color: #ffc1cc;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
 
     .profile-frame-container {
         position: relative;
@@ -133,28 +132,28 @@
 </head>
 <body>
 
-<!-- 메뉴는 body 안에 위치 -->
 <div th:replace="~{top::menu}"></div>
 
 <div class="container">
   <h1>🐾 마이페이지</h1>
   <div class="info-card">
-  <h3><span class="nickname" th:text="${list.name}"></span>님의 회원정보</h3>
+    <h3><span class="nickname" th:text="${list.name}"></span>님의 회원정보</h3>
 
+    <div class="profile-frame-container">
+      <img th:if="${session.loginType == 'kakao'}"
+           th:src="${list.profileimg != null ? list.profileimg : '/image/default.png'}" alt="카카오 프로필 이미지"
+           th:classappend="${list.equippedFrameImageName == null or list.equippedFrameImageName.isEmpty()} ? 'with-border'"
+           class="profile-img" />
+      <img th:if="${session.loginType != 'kakao'}"
+           th:src="@{/image/{fileName}(fileName=${list.profileimg != null ? list.profileimg : 'default.png'})}" alt="일반 유저 프로필 이미지"
+           th:classappend="${list.equippedFrameImageName == null or list.equippedFrameImageName.isEmpty()} ? 'with-border'"
+           class="profile-img" />
 
-  <!-- 2. 프로필 이미지 프레임만 따로 -->
-  <div class="profile-frame-container">
-    <img th:if="${session.loginType == 'kakao'}"
-         th:src="${list.profileimg != null ? list.profileimg : '/images/default.png'}"
-         alt="카카오 프로필 이미지"
-         class="profile-img" />
-    <img th:if="${session.loginType != 'kakao'}"
-         th:src="@{/images/{fileName}(fileName=${list.profileimg != null ? list.profileimg : 'default.png'})}"
-         alt="일반 유저 프로필 이미지"
-         class="profile-img" />
-  </div>
+      <img th:if="${list.equippedFrameImageName != null and !list.equippedFrameImageName.isEmpty()}"
+           th:src="@{/image/{fileName}(fileName=${list.equippedFrameImageName})}" alt="착용 중인 프레임"
+           class="frame-img" />
+    </div>
 
-  <!-- 3. 회원 정보 카드 분리 -->
     <p><strong>아이디:</strong> <span th:text="${list.userLoginId}"></span></p>
     <p><strong>이름:</strong> <span th:text="${list.name}"></span></p>
     <p><strong>전화번호:</strong> <span th:text="${list.phone}"></span></p>
@@ -162,14 +161,12 @@
     <p><strong>퀴즈 등급:</strong> <span th:text="${list.rank}"></span></p>
   </div>
 
-  <!-- 4. 버튼 그룹 -->
   <div class="btn-group">
     <a th:href="@{/UserPwChange}">비밀번호 변경</a>
     <a th:href="@{/UserUpdate}">회원정보 수정</a>
     <a th:href="@{/UserDelete}">회원탈퇴</a>
   </div>
 </div>
-
 
 <script th:inline="javascript">
   if ([[${msg} != null]]) {

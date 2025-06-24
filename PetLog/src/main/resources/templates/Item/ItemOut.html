@@ -5,14 +5,15 @@
     <div th:replace="~{top::menu}"></div>
     <meta charset="UTF-8">
     <title>🎁 관리자 아이템 상점</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
         body {
           background-color: #fff6f6;
           margin: 0;
           padding: 0;
-          font-family: 'Pretendard', sans-serif;
           color: #333;
+          padding-top: 90px;
         }
 
         h2 {
@@ -33,6 +34,7 @@
           cursor: pointer;
           text-decoration: none;
           display: inline-block;
+          font-size: 0.9em;
         }
 
         .btn:hover {
@@ -45,7 +47,8 @@
           color: #d9534f;
           cursor: pointer;
           font-weight: bold;
-          font-size: 14px;
+          font-size: 0.8em;
+          white-space: nowrap;
         }
 
         .text-btn:hover {
@@ -55,56 +58,99 @@
 
         .table-wrapper {
           background-color: white;
-          width: 100%;
+          width: 95%;
           max-width: 1000px;
-          margin: 40px auto 80px auto;
+          margin: 0px auto 40px auto;
           border-radius: 12px;
           box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-          padding: 30px;
+          padding: 15px;
         }
 
-        table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 10px;
-          background-color: #fff;
-          box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-          border-radius: 8px;
-          overflow: hidden;
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
         }
 
-        th, td {
-          padding: 14px 12px;
-          font-size: 1em;
-          border-bottom: 1px solid #eee;
-          text-align: center;
+        .item-card {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 15px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        th {
-          background-color: #fff0f4;
-          color: #555;
-          font-weight: bold;
+        .item-card img {
+            max-width: 100px;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 10px;
         }
 
-        td img {
-          max-width: 70px;
-          height: auto;
-          border-radius: 12px;
+        .item-card .item-name {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .item-card .item-details {
+            font-size: 0.9em;
+            color: #777;
+            margin-bottom: 15px;
+        }
+
+        .item-card .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .item-card .card-actions .text-btn {
+            font-size: 0.75em;
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+
+        .item-card .card-actions .text-btn:hover {
+            background-color: #eee;
+            text-decoration: none;
+        }
+
+        .item-card .card-actions a {
+            text-decoration: none;
+        }
+        .item-card .card-actions a.edit-btn {
+            background-color: #8dd3c7;
+            color: white;
+            border: none;
+        }
+        .item-card .card-actions a.edit-btn:hover {
+            background-color: #75bfae;
         }
 
         .pagination {
           width: 100%;
           text-align: center;
-          margin: 40px 0;
+          margin: 20px 0;
         }
 
         .pagination a {
-          margin: 0 6px;
-          padding: 6px 12px;
+          margin: 0 4px;
+          padding: 4px 8px;
           color: #888;
           text-decoration: none;
           border-radius: 4px;
           transition: all 0.2s;
+          font-size: 0.9em;
         }
 
         .pagination a.current {
@@ -119,7 +165,68 @@
 
         .text-right {
           text-align: right;
-          margin-top: 20px;
+          margin-top: 15px;
+        }
+
+        @media screen and (max-width: 390px) {
+            body {
+                padding-top: 60px;
+            }
+
+            h2 {
+                font-size: 1.5em;
+                margin-bottom: 20px;
+            }
+
+            .btn {
+                padding: 6px 15px;
+                font-size: 0.8em;
+            }
+
+            .table-wrapper {
+                padding: 10px;
+                margin: 0px auto 30px auto;
+            }
+
+            .card-container {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 15px;
+            }
+
+            .item-card {
+                padding: 10px;
+            }
+
+            .item-card img {
+                max-width: 80px;
+            }
+
+            .item-card .item-name {
+                font-size: 1em;
+            }
+
+            .item-card .item-details {
+                font-size: 0.8em;
+            }
+
+            .item-card .card-actions .text-btn {
+                font-size: 0.7em;
+                padding: 4px 8px;
+            }
+
+            .pagination {
+                margin: 15px 0;
+            }
+
+            .pagination a {
+                margin: 0 2px;
+                padding: 3px 6px;
+                font-size: 0.8em;
+            }
+
+            .text-right {
+                margin-top: 10px;
+            }
         }
     </style>
 </head>
@@ -128,43 +235,30 @@
 <div class="table-wrapper">
     <h2 style="color: #f48aa5">🎁 관리자 아이템 상점</h2>
 
-    <table>
-        <thead>
-        <tr>
-            <th>No.</th>
-            <th>아이템명</th>
-            <th>포도알</th>
-            <th>카테고리</th>
-            <th>아이템</th>
-            <th>수정</th>
-            <th>상태 변경</th>
-        </tr>
-        </thead>
-        <tbody>
+    <div class="text-right">
+        <form th:action="@{'/Item/ItemStopped'}" method="post" style="display:inline;">
+            <button type="submit" class="btn">판매 종료 아이템 보기</button>
+        </form>
+    </div>
+
+    <div class="card-container">
         <th:block th:each="it : ${list}">
-            <tr>
-                <td th:text="${it.itemId}"></td>
-                <td th:text="${it.itemName}"></td>
-                <td th:text="${it.itemCost}"></td>
-                <td th:text="${it.itemCategory}"></td>
-                <td><img th:src="@{'/image/' + ${it.itemImageName}}" alt="아이템 이미지"></td>
-                <td><a th:href="@{/Item/ItemUpdate(itemId=${it.itemId}, dfimage=${it.itemImageName})}">✏️</a></td>
-                <td>
+            <div class="item-card">
+                <img th:src="@{'/image/' + ${it.itemImageName}}" alt="아이템 이미지">
+                <div class="item-name" th:text="${it.itemName}"></div>
+                <div class="item-details">
+                    <span th:text="${it.itemCost} + ' 포도알'"></span> | <span th:text="${it.itemCategory}"></span>
+                </div>
+                <div class="card-actions">
+                    <a th:href="@{/Item/ItemUpdate(itemId=${it.itemId}, dfimage=${it.itemImageName})}" class="text-btn edit-btn">수정 ✏️</a>
                     <form th:action="@{'/Item/ItemDelete'}" method="post" style="display:inline;">
                         <input type="hidden" name="delete" th:value="${it.itemId}">
                         <input type="hidden" name="dfimage" th:value="${it.itemImage}">
                         <button type="submit" class="text-btn">판매 종료❌</button>
                     </form>
-                </td>
-            </tr>
+                </div>
+            </div>
         </th:block>
-        </tbody>
-    </table>
-
-    <div class="text-right">
-        <form th:action="@{'/Item/ItemStopped'}" method="post" style="display:inline;">
-            <button type="submit" class="btn">판매 종료 아이템 보기</button>
-        </form>
     </div>
 
     <div class="pagination">

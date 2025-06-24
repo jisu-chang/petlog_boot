@@ -59,6 +59,10 @@ public class UserDTO {
     String userRole;
     int grapeCount;
 
+    //프로필 프레임 용
+    String equippedFrameImageName;
+    String equippedFrameName;
+
     public UserDTO(UserEntity userEntity) {
     }
 

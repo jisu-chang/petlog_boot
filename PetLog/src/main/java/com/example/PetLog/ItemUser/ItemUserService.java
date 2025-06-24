@@ -8,4 +8,6 @@ import java.util.List;
 @Service
 public interface ItemUserService {
     List<ItemDTO> findFrameItemsByUserId(Long userId);
+
+    void frame_wearing(Long userId, Long itemId);
 }

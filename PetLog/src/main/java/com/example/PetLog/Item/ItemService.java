@@ -19,4 +19,5 @@ public interface ItemService {
     void changeStatus(Long itemId);
 
     void changeStatusSell(Long itemId);
+
 }
