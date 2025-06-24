@@ -27,9 +27,6 @@ import java.util.List;
 public class SnackEntity {
     @Id
     @Column (name = "snack_id")
-//    @SequenceGenerator(
-//            name = "snack_seq",sequenceName = "snack_seq",
-//            allocationSize = 1, initialValue = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "snack_seq")
     Long snackId;
     @Column (name = "snack_title")
@@ -45,7 +42,7 @@ public class SnackEntity {
     @Column (name = "snack_readcnt")
     int snackReadcnt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     UserEntity user;
     // 댓글과의 관계 (게시글은 여러 댓글을 가질 수 있음)

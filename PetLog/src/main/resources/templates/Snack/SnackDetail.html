@@ -4,21 +4,24 @@
 <head>
   <meta charset="UTF-8">
   <title>간식 레시피</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       background-color: #fff6f6;
       margin: 0;
       padding: 0;
-      font-family: 'Pretendard', sans-serif;
       color: #333;
+      padding-top: 90px;
     }
     .table-wrapper {
       background-color: white;
-      width: 100%;
+      width: 95%;
       max-width: 1000px;
-      margin: 40px auto 0 auto;
+      margin: 0 auto 40px auto;
       border-radius: 12px;
-      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      padding: 20px;
+      box-sizing: border-box;
     }
     table {
       width: 100%;
@@ -31,24 +34,29 @@
       font-size: 1.6em;
       color: #f48aa5;
       margin-bottom: 20px;
+      font-weight: bold;
     }
     th, td {
-      padding: 14px 12px;
-      font-size: 1em;
+      padding: 10px 8px;
+      font-size: 0.9em;
       border-bottom: 1px solid #eee;
     }
     table tr:last-child td {
       border-bottom: none;
     }
     th {
-      width: 17%;
+      width: 25%;
       background-color: #fff0f4;
       color: #555;
       text-align: center;
+      font-weight: bold;
     }
     td img {
-      max-width: 70px;
+      max-width: 100%;
       height: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 8px;
     }
     .btn-group {
       display: flex;
@@ -56,54 +64,52 @@
       gap: 10px;
       margin-top: 10px;
     }
-    .btn-group input[type="button"] {
+    .btn-group input[type="button"],
+    .btn-group a input[type="button"] {
       background-color: #ffe1e1;
       color: #333;
       border: none;
-      padding: 8px 20px;
+      padding: 8px 18px;
       border-radius: 10px;
       cursor: pointer;
+      font-size: 0.9em;
+      transition: background-color 0.2s;
     }
-    .btn-group input[type="button"]:hover {
+    .btn-group input[type="button"]:hover,
+    .btn-group a input[type="button"]:hover {
       background-color: #ffd2d2;
     }
     .profile-img {
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       object-fit: cover;
       vertical-align: middle;
       margin-right: 6px;
-    }
-    .reply-btn {
-      font-size: 14px;
-      padding: 2px 10px;
-      background-color: #f8c8dc;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      position: absolute;
-      top: 15px;
-      right: 10px;
-    }
-    .reply-btn:hover {
-      background-color: #f4aac9;
+      border: 2px solid #f8c8dc;
     }
     .comment-box {
-      margin-top: 5px;
+      margin-top: 20px;
       background-color: #fff;
       border-radius: 12px;
-      padding: 30px;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .comment-box h3 {
+      text-align: left;
+      font-size: 1.2em;
+      color: #f48aa5;
+      margin-bottom: 15px;
     }
     .comment-form textarea {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       border: 1px solid #ccc;
       border-radius: 8px;
-      resize: none;
+      resize: vertical;
+      min-height: 60px;
       font-size: 14px;
+      box-sizing: border-box;
     }
     .comment-form button {
       margin-top: 10px;
@@ -111,11 +117,122 @@
       color: #333;
       border: none;
       border-radius: 10px;
-      padding: 8px 16px;
+      padding: 7px 14px;
       cursor: pointer;
+      font-size: 0.9em;
+      transition: background-color 0.2s;
+    }
+    .comment-form button:hover {
+      background-color: #ffd2d2;
     }
     .comment-form {
       text-align: right;
+    }
+    .comment {
+      background-color: #fcfcfc;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      padding: 10px 15px;
+      margin-top: 10px;
+      text-align: left;
+      font-size: 0.9em;
+    }
+    .comment strong {
+      color: #555;
+    }
+    .comment p {
+      margin: 0 0 5px 0;
+    }
+    .comment button {
+      background-color: #f8c8dc;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 4px 8px;
+      font-size: 0.8em;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .comment button:hover {
+      background-color: #f4aac9;
+    }
+    .like-button {
+      background-color: transparent;
+      border: 1px solid #f48aa5;
+      border-radius: 20px;
+      padding: 8px 15px;
+      font-size: 1em;
+      cursor: pointer;
+      color: #f48aa5;
+      transition: all 0.2s;
+    }
+    .like-button.liked {
+      background-color: #f48aa5;
+      color: white;
+    }
+    .like-button:hover {
+      opacity: 0.8;
+    }
+
+    @media screen and (max-width: 390px) {
+      body {
+        padding-top: 60px;
+      }
+      .table-wrapper {
+        padding: 15px;
+        margin: 0 auto 30px auto;
+      }
+      caption {
+        font-size: 1.4em;
+        margin-bottom: 15px;
+      }
+      th, td {
+        padding: 8px 5px;
+        font-size: 0.8em;
+      }
+      td img {
+        max-width: 90%;
+      }
+      .btn-group {
+        gap: 8px;
+      }
+      .btn-group input[type="button"],
+      .btn-group a input[type="button"] {
+        padding: 6px 12px;
+        font-size: 0.8em;
+      }
+      .profile-img {
+        width: 28px;
+        height: 28px;
+      }
+      .comment-box {
+        padding: 15px;
+      }
+      .comment-box h3 {
+        font-size: 1.1em;
+        margin-bottom: 10px;
+      }
+      .comment-form textarea {
+        padding: 8px;
+        min-height: 50px;
+        font-size: 13px;
+      }
+      .comment-form button {
+        padding: 6px 12px;
+        font-size: 0.8em;
+      }
+      .comment {
+        padding: 8px 12px;
+        font-size: 0.8em;
+      }
+      .comment button {
+        padding: 3px 6px;
+        font-size: 0.7em;
+      }
+      .like-button {
+        padding: 6px 12px;
+        font-size: 0.9em;
+      }
     }
   </style>
 </head>
@@ -143,7 +260,7 @@
       <th>이미지</th>
       <td>
         <th:block th:if="${dto.snackImagename != null}">
-          <img th:src="@{/image/{img}(img=${dto.snackImagename})}" width="300px"/>
+          <img th:src="@{/image/{img}(img=${dto.snackImagename})}" />
         </th:block>
       </td>
     </tr>
@@ -158,24 +275,19 @@
       <td th:text="${#temporals.format(dto.snackDate, 'yyyy-MM-dd')}"></td>
     </tr>
 
-    <!-- 중략 (위쪽은 네가 올린 그대로 유지) -->
-
     <tr>
       <td colspan="2" style="border-bottom: none;">
         <div class="btn-group" style="margin-bottom: 6px;">
           <input type="button" value="목록" onclick="location.href='/Snack/SnackOut'"/>
-          <th:block th:if="${session.user_id == dto.userId or session.user_role == 'admin'}">
-
+          <th:block th:if="${session.userId == dto.userId or session.userRole == 'admin'}">
             <a th:href="@{'/Snack/SnackUpdate?snackId=' + ${dto.snackId}}">
               <input type="button" value="수정"/>
             </a>
-
             <a th:href="@{'/Snack/SnackDelete?delete=' + ${dto.snackId} + '&dfimage=' + ${dto.snackImagename}}">
               <input type="button" value="삭제"/>
             </a>
           </th:block>
         </div>
-
 
         <form th:action="@{'/snack/' + ${dto.snackId} + '/like'}" method="post" style="text-align:center; margin-top: 10px;">
           <button type="submit" th:classappend="${likedByUser} ? 'like-button liked' : 'like-button'">
@@ -194,11 +306,11 @@
           </form>
 
           <div th:each="comment : ${comments}" class="comment">
-            <p><strong th:text="${comment.userLoginId}">작성자</strong>: <span th:text="${comment.com_com}">내용</span></p>
+            <p><strong><span th:text="${comment.userLoginId}">작성자</span></strong>: <span th:text="${comment.com_com}">내용</span></p>
             <button type="button" onclick="toggleReplyForm([[${comment.com_id}]])">답글</button>
 
             <div th:each="reply : ${comments}" th:if="${reply.parent_id == comment.com_id}" style="margin-left: 20px;">
-              ↳ <strong th:text="${reply.userLoginId}">작성자</strong>: <span th:text="${reply.com_com}">대댓글내용</span>
+              ↳ <strong><span th:text="${reply.userLoginId}">작성자</span></strong>: <span th:text="${reply.com_com}">대댓글내용</span>
             </div>
 
             <form th:id="'reply-form-' + ${comment.com_id}" class="comment-form" th:action="@{/snack/comment}" method="post" style="display: none;">
@@ -215,29 +327,12 @@
   </table>
 </div>
 
-
 <script>
   function toggleReplyForm(id) {
       const form = document.getElementById('reply-form-' + id);
       if (form) form.style.display = form.style.display === 'block' ? 'none' : 'block';
   }
 </script>
-
-  <script>
-    function confirmDelete(button) {
-      const snackId = button.getAttribute('data-id');
-      const imgname = button.getAttribute('data-imgname') || '';
-      if (confirm("정말 삭제하시겠습니까?")) {
-        window.location.href = '/Snack/SnackDelete?delete=' + snackId + '&dfimage=' + imgname;
-      }
-    }
-
-    function goUpdate(button) {
-      const snackId = button.getAttribute('data-id');
-      const imgname = button.getAttribute('data-img');
-      location.href = `/Snack/SnackUpdate?update=${snackId}&dfimage=${imgname}`;
-    }
-  </script>
 
 </body>
 </html>
