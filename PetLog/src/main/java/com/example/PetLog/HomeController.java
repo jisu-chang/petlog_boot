@@ -2,6 +2,8 @@ package com.example.PetLog;
 
 import com.example.PetLog.Pet.PetDTO;
 import com.example.PetLog.Pet.PetService;
+import com.example.PetLog.Quiz.QuizDTO;
+import com.example.PetLog.Quiz.QuizService;
 import com.example.PetLog.User.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,11 +17,8 @@ import java.util.List;
 public class HomeController {
     @Autowired
     PetService petService;
-
-//    @GetMapping(value = "/")
-//    public String home() {
-//        return "main";
-//    }
+    @Autowired
+    QuizService quizService;
 
     @GetMapping(value = "/main")
     public String home1(Model mo, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
@@ -52,4 +51,21 @@ public class HomeController {
         return "main";
     }
 
+    @GetMapping(value = "/main2")
+    public String home2(Model mo, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        if (customUserDetails != null) {
+            boolean isAdmin = customUserDetails.getAuthorities().stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+            mo.addAttribute("user_role", isAdmin ? "admin" : "USER");
+
+            // 사용자 ID 추출
+            Long userId = customUserDetails.getUser().getUserId();
+
+            // 푼 적 없는 퀴즈 중 랜덤 1개 가져오기
+            QuizDTO quiz = quizService.getRandomUnsolvedQuiz(userId);
+            mo.addAttribute("quiz", quiz);
+
+        }
+        return "2main";
+    }
 }

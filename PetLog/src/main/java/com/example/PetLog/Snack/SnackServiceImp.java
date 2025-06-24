@@ -44,7 +44,7 @@ public class SnackServiceImp implements SnackService {
         SnackEntity snackEntity = snackRepository.findById(snackId)
                 .orElseThrow(()->new RuntimeException("간식 레시피를 찾을 수 없습니다: " + snackId));
 
-    String userLoginId = (snackEntity.getUser() !=null) ? snackEntity.getUser().getUserLoginId() : "알 수 없음";
+        String userLoginId = (snackEntity.getUser() !=null) ? snackEntity.getUser().getUserLoginId() : "알 수 없음";
 
         // 3. SnackEntity → SnackDTO 변환
         SnackDTO dto = new SnackDTO();
@@ -86,9 +86,5 @@ public class SnackServiceImp implements SnackService {
         snackRepository.deleteByUser_UserId(userId);
     }
 
-    @Override
-    public SnackEntity getSnackById(Long snackId) {
-        return snackRepository.findById(snackId).orElse(null);
-    }
 
 }

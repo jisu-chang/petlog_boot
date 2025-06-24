@@ -28,8 +28,7 @@ public interface LikesRepository extends JpaRepository<LikesEntity, Long> {
     //좋아요 유무
     boolean existsByPostIdAndUserId(Long postId, Long userId);
 
-    @Query("SELECT CASE WHEN COUNT(l) > 0 THEN true ELSE false END " +
-            "FROM LikesEntity l " +
+    @Query("SELECT COUNT(l) FROM LikesEntity l " +
             "WHERE l.snack.snackId = :snackId AND l.user.userId = :userId AND l.user.userLoginId = :userLoginId")
     boolean existsSnackLike(@Param("snackId") Long snackId,
                             @Param("userId") Long userId,

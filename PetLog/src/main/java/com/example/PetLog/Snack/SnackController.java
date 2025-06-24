@@ -105,18 +105,10 @@ public class SnackController {
             return "redirect:/Snack/SnackOut"; // 또는 에러 페이지
         } //snackId 못 찾으면 여기로 redirect
 
-        // 좋아요 처리
-        int likeCount = likesService.getSnackLikeCount(snackId); // 스낵 게시글의 좋아요 수
-        boolean likedByUser = likesService.isLikedByUserOnSnack(snackId, userId, userLoginId); // 사용자가 해당 스낵에 좋아요 눌렀는지 확인
 
-        // 댓글 목록 가져오기
-        List<CommentsEntity> comments = commentsService.getSnackComments(snackId);
 
         System.out.println("snackDTO = " + snackDTO);
         mo.addAttribute("dto", snackDTO);
-        mo.addAttribute("likeCount", likeCount);
-        mo.addAttribute("likedByUser", likedByUser);
-        mo.addAttribute("comments", comments);
 
         return "Snack/SnackDetail";
     }
@@ -187,53 +179,5 @@ public class SnackController {
         return "redirect:/Snack/SnackOut";
     }
 
-    // 스낵 상세 페이지
-    @GetMapping("/snack/{snackId}")
-    public String viewSnack(@PathVariable Long snackId, HttpSession session, Model mo) {
-        Long userId = (Long) session.getAttribute("userId");
-        String userLoginId = (String) session.getAttribute("userLoginId");
 
-        SnackEntity snack = snackService.getSnackById(snackId);
-
-        boolean likedByUser = likesService.isLikedByUserOnSnack(snackId, userId, userLoginId);
-
-        int likeCount = likesService.getSnackLikeCount(snackId);
-        List<CommentsEntity> comments = commentsService.getCommentsForSnack(snackId);
-
-        mo.addAttribute("dto", snack);
-        mo.addAttribute("likedByUser", likedByUser);
-        mo.addAttribute("likeCount", likeCount);
-        mo.addAttribute("comments", comments);
-
-        return "snack/SnackDetail";
-    }
-
-    // 스낵 좋아요 누르기
-    @PostMapping("/snack/{snackId}/like")
-    public String likeOnSnack(@PathVariable Long snackId, HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
-        String userLoginId = (String) session.getAttribute("userLoginId");
-
-        if (userId == null || userLoginId == null) {
-            return "redirect:/login";
-        }
-
-        likesService.likeOnSnack(snackId, userId, userLoginId);
-        return "redirect:/snack/" + snackId;
-    }
-
-    // 스낵 댓글 저장
-    @PostMapping("/snack/comment")
-    public String saveSnackComment(@ModelAttribute("commentsDTO") CommentsDTO commentsDTO,
-                                   RedirectAttributes redirectAttributes) {
-
-        commentsService.saveComment(commentsDTO); // 내부에서 snackId로 저장됨
-
-        if (commentsDTO.getSnack_id() != null) {
-            redirectAttributes.addAttribute("snackId", commentsDTO.getSnack_id());
-            return "redirect:/snack/" + commentsDTO.getSnack_id();
-        } else {
-            return "redirect:/snack"; // fallback
-        }
-    }
 }

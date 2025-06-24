@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>메인 대시보드</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+          margin: 0;
+          padding: 0;
+          background-color: #f4f7f6;
+          color: #333;
+          padding-top: 90px;
+        }
+        .center-logo-container {
+          text-align: center;
+          padding: 0;
+          margin: 0;
+          line-height: 0;
+        }
+        .center-logo-container img {
+          max-width: 250px;
+          height: auto;
+          display: block;
+          margin: 0 auto;
+          vertical-align: top;
+        }
+
+        .main-dashboard {
+          display: flex;
+          max-width: 1600px;
+          margin: 20px auto;
+          gap: 20px;
+          padding: 0 20px;
+          flex-wrap: wrap;
+        }
+        .left-sidebar, .right-info {
+          flex: 0 0 250px;
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+        }
+        .main-content {
+          flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+        .sidebar-box, .content-box, .calendar-box, .diary-wrapper-box, .quiz-preview-box, .tab-box, .snack-preview-box {
+          background-color: #fff;
+          border-radius: 12px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+          padding: 25px;
+        }
+        .sidebar-box {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+          padding: 15px 20px;
+          cursor: pointer;
+          transition: background-color 0.2s ease;
+        }
+        .sidebar-box:hover {
+          background-color: #f0f0f0;
+        }
+        .sidebar-icon {
+          font-size: 24px;
+        }
+        .sidebar-label {
+          font-size: 1.1rem;
+          font-weight: bold;
+          color: #555;
+        }
+
+        h2 {
+          font-size: 1.8rem;
+          color: #444;
+          margin-top: 0;
+          margin-bottom: 20px;
+          text-align: center;
+        }
+
+        .profile-cards {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 20px;
+          justify-content: center;
+        }
+        .card {
+          border: 1px solid #eee;
+          border-radius: 10px;
+          padding: 15px;
+          text-align: center;
+          width: 180px;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+          transition: transform 0.2s ease;
+        }
+        .card:hover {
+          transform: translateY(-3px);
+        }
+        .card img {
+          border: 2px solid #f0f0f0;
+        }
+        .no-data-message {
+          text-align: center;
+          color: #777;
+          font-style: italic;
+          padding: 20px;
+        }
+
+        .tab-box {
+          margin-bottom: 20px;
+        }
+        .tab-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 15px;
+        }
+        .tabs {
+          display: flex;
+          border-bottom: 2px solid #eee;
+        }
+        .tab {
+          padding: 10px 15px;
+          cursor: pointer;
+          font-weight: bold;
+          color: #777;
+          border-bottom: 2px solid transparent;
+          transition: all 0.2s ease;
+        }
+        .tab.active {
+          color: #f48aa5;
+          border-color: #f48aa5;
+        }
+        .more-link {
+          text-decoration: none;
+          color: #999;
+          font-size: 0.9rem;
+        }
+        .tab-content .tab-pane {
+          display: none;
+        }
+        .tab-content .tab-pane.active {
+          display: block;
+        }
+        .post-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+        .post-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 10px 0;
+          border-bottom: 1px dashed #eee;
+        }
+        .post-item:last-child {
+          border-bottom: none;
+        }
+        .post-title {
+          font-weight: normal;
+          color: #333;
+          text-decoration: none;
+          flex-grow: 1;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+        .post-meta-right {
+          font-size: 0.85rem;
+          color: #999;
+          margin-left: 10px;
+          flex-shrink: 0;
+        }
+        .comment-count {
+            color: #f48aa5;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        .snack-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 10px 0;
+          border-bottom: 1px dashed #eee;
+        }
+        .snack-item a {
+            color: #333;
+            text-decoration: none;
+            font-weight: normal;
+            flex-grow: 1;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        .snack-meta-right {
+            font-size: 0.85rem;
+            color: #999;
+            margin-left: 10px;
+            flex-shrink: 0;
+        }
+
+        /* 간식 레시피 슬라이더 */
+        .snack-slider-wrapper {
+            position: relative;
+            overflow: hidden;
+            height: 300px;
+            margin-bottom: 15px;
+        }
+        .snack-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease-in-out;
+            opacity: 0;
+            display: none;
+        }
+        .snack-card.active {
+            display: flex;
+            opacity: 1;
+        }
+        .snack-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .snack-info {
+            text-align: center;
+        }
+        .snack-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .snack-writer {
+            font-size: 0.9rem;
+            color: #999;
+            margin-bottom: 10px;
+        }
+        .snack-content {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.4;
+            margin-bottom: 10px;
+            max-height: 4.2em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .snack-more {
+            color: #f48aa5;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .snack-button-box {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .slide-button {
+            background-color: #f48aa5;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+        .slide-button:hover {
+            background-color: #db7093;
+        }
+
+        /* 캘린더 스타일 */
+        .calendar-box {
+            text-align: center;
+        }
+        .calendar-box h2 {
+            font-size: 1.6rem;
+        }
+        .calendar {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 2px;
+            margin-bottom: 20px;
+        }
+        .calendar thead th {
+            background-color: #f3e5f5;
+            color: #444;
+            font-weight: bold;
+            padding: 8px 0;
+            border-radius: 8px;
+        }
+        .calendar tbody td {
+            padding: 5px;
+            height: 50px;
+            vertical-align: top;
+            text-align: right;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            background-color: #fdfdfd;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .calendar tbody td:hover {
+            background-color: #f0f0f0;
+        }
+        .calendar tbody td span {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .calendar tbody td.today {
+            background-color: #fff3c4;
+            border: 1px solid #ffcc80;
+        }
+        .calendar tbody td.event {
+            background-color: #e0f7fa;
+        }
+        .calendar tbody td.sun { color: #f48b94; }
+        .calendar tbody td.sat { color: #8bb3f4; }
+
+        /* 다가올 일정 */
+        .calendar-box h3 {
+            font-size: 1.4rem;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            color: #555;
+        }
+        .schedule-item {
+            background-color: #ffe0ec;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .schedule-header {
+            font-weight: bold;
+            color: #444;
+        }
+        .schedule-date {
+            color: #f06292;
+            font-weight: bold;
+        }
+        .schedule-pet-name {
+            background-color: #d1f4d1;
+            color: #4CAF50;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+        }
+
+        /* 오늘의 일기 & 퀴즈 박스 */
+        .diary-wrapper-box, .quiz-preview-box {
+          margin-top: 20px;
+          text-align: center;
+        }
+        .diary-title {
+          font-size: 1.3rem;
+          font-weight: bold;
+          margin-bottom: 8px;
+          color: #555;
+        }
+        .diary-date, .diary-pet {
+          font-size: 0.9rem;
+          color: #888;
+          margin-bottom: 5px;
+        }
+        .diary-preview {
+          font-size: 1rem;
+          color: #666;
+          margin-top: 15px;
+          margin-bottom: 15px;
+          line-height: 1.5;
+          white-space: pre-wrap;
+        }
+        .diary-link, .quiz-start-button {
+          display: inline-block;
+          background-color: #8dd3c7;
+          color: white;
+          padding: 8px 18px;
+          border-radius: 20px;
+          text-decoration: none;
+          font-weight: bold;
+          margin-top: 10px;
+          transition: background-color 0.3s ease;
+        }
+        .diary-link:hover, .quiz-start-button:hover {
+          background-color: #6ac9bb;
+        }
+        .quiz-question {
+          font-size: 1.1rem;
+          font-weight: bold;
+          margin-bottom: 10px;
+          color: #555;
+        }
+        .quiz-note {
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .center-image-container {
+          text-align: center;
+          margin-top: 100px;
+          display: none;
+        }
+        .center-image-container img {
+          margin: 0 auto;
+          display: block;
+          width: 400px;
+          height: 300px;
+        }
+
+
+        @media (max-width: 1200px) {
+            .main-dashboard {
+                flex-direction: column;
+                align-items: center;
+            }
+            .left-sidebar, .right-info {
+                width: 100%;
+                max-width: 700px;
+            }
+            .main-content {
+                width: 100%;
+                max-width: 1000px;
+            }
+        }
+        @media (max-width: 768px) {
+          .main-dashboard {
+            padding: 0 10px;
+          }
+          .sidebar-box, .content-box, .calendar-box, .diary-wrapper-box, .quiz-preview-box, .tab-box, .snack-preview-box {
+            padding: 15px;
+          }
+          h2 {
+            font-size: 1.5rem;
+          }
+          .profile-cards .card {
+            width: 100%;
+          }
+          .tab, .more-link {
+            font-size: 0.9rem;
+          }
+          .center-logo-container {
+            margin-top: 10px;
+            margin-bottom: 10px;
+          }
+          .center-image-container {
+            margin-top: 50px;
+          }
+        }
+
+        @media screen and (max-width: 390px) {
+            .main-dashboard {
+                margin: 10px auto;
+                padding: 0 5px;
+                gap: 15px;
+            }
+            .sidebar-box, .content-box, .calendar-box, .diary-wrapper-box, .quiz-preview-box, .tab-box, .snack-preview-box {
+                padding: 12px;
+            }
+            h2 {
+                font-size: 1.3rem;
+                margin-bottom: 15px;
+            }
+            .profile-cards {
+                gap: 10px;
+            }
+            .card {
+                width: calc(50% - 15px);
+                padding: 10px;
+            }
+            .card img {
+                width: 80px;
+                height: 80px;
+            }
+            .card > div {
+                font-size: 13px !important;
+            }
+            .tab-header {
+                flex-direction: column;
+                align-items: flex-start;
+                margin-bottom: 10px;
+            }
+            .tabs {
+                width: 100%;
+                justify-content: space-around;
+                margin-bottom: 10px;
+            }
+            .tab {
+                padding: 8px 10px;
+                font-size: 0.8rem;
+            }
+            .more-link {
+                align-self: flex-end;
+                font-size: 0.8rem;
+            }
+            .post-item, .snack-item {
+                padding: 8px 0;
+                font-size: 0.85rem;
+            }
+            .post-meta-right, .snack-meta-right {
+                font-size: 0.75rem;
+            }
+            .comment-count {
+                font-size: 0.75rem;
+            }
+            .snack-slider-wrapper {
+                height: 250px;
+            }
+            .snack-image {
+                width: 90px;
+                height: 90px;
+            }
+            .snack-title {
+                font-size: 1rem;
+            }
+            .snack-writer, .snack-content, .snack-more {
+                font-size: 0.8rem;
+            }
+            .snack-content {
+                max-height: 3.6em;
+            }
+            .slide-button {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+            .calendar-box h2 {
+                font-size: 1.4rem;
+            }
+            .calendar thead th {
+                padding: 6px 0;
+                font-size: 0.8rem;
+            }
+            .calendar tbody td {
+                height: 40px;
+                font-size: 0.8rem;
+            }
+            .calendar tbody td span {
+                margin-bottom: 3px;
+            }
+            .calendar-box h3 {
+                font-size: 1.2rem;
+                margin-top: 15px;
+                margin-bottom: 10px;
+            }
+            .schedule-item {
+                padding: 8px 10px;
+                font-size: 0.8rem;
+            }
+            .schedule-date, .schedule-pet-name, .schedule-header strong {
+                font-size: 0.8rem;
+            }
+            .diary-title {
+                font-size: 1.1rem;
+            }
+            .diary-date, .diary-pet, .quiz-note {
+                font-size: 0.8rem;
+            }
+            .diary-preview {
+                font-size: 0.9rem;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                max-height: 3.9em;
+            }
+            .diary-link, .quiz-start-button {
+                padding: 6px 15px;
+                font-size: 0.85rem;
+            }
+            .quiz-question {
+                font-size: 1rem;
+            }
+            .no-data-message {
+                font-size: 0.85rem;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<script th:if="${alertMessage != null}">
+    alert([[${alertMessage}]]);
+</script>
+
+<a th:href="@{/main2}">메인2</a>
+
+<div th:replace="~{top :: menu}"></div>
+
+<div class="main-dashboard">
+    <section class="main-content">
+        <div class="content-box large" sec:authorize="isAuthenticated()">
+            <h2>🐻 펫 프로필</h2>
+            <p>펫 리스트 개수: <span th:text="${#lists.size(list)}"></span></p>
+            <div class="profile-cards">
+                <th:block th:if="${#lists.isEmpty(list)}"> <p class="no-data-message">📭 등록된 펫 정보가 없습니다.</p>
+                </th:block>
+                <th:block th:unless="${#lists.isEmpty(list)}"> <th:block th:each="dto : ${list}"> <div class="card">
+                    <a th:href="@{/Pet/PetDetail(update1=${dto.petId})}">
+                        <img class="pet-image" th:src="@{/image/{filename}(filename=${dto.petImg})}" width="100px"
+                             style="border-radius: 50%; margin-bottom: 10px;">
+                        <div style="font-size: px; font-weight: bold; text-align: center;" th:text="${dto.petName}"></div>
+                        <div style="font-size: 15px; color: #777;" th:text="|🐻 성별: ${dto.petBog}|"></div>
+                        <div style="font-size: 15px; color: #777;" th:text="|✨ 중성화: ${dto.petNeuter}|"></div>
+                        <div style="font-size: 15px; color: #777;" th:text="|🎂 생일: ${dto.petHbd}|"></div>
+                    </a>
+                </div>
+                </th:block>
+                </th:block>
+            </div>
+        </div>
+        <div class="content-box large" sec:authorize="isAnonymous()">
+            <h2>🐾 펫 프로필</h2>
+            <p class="no-data-message">🔒 로그인 후 펫 프로필을 확인하고 관리할 수 있습니다.</p>
+        </div>
+
+
+        <div class="bottom-section">
+            <div class="tab-box">
+                <div class="tab-header">
+                    <div class="tabs">
+                        <span id="notice-tab" class="tab active" onclick="switchTab('notice')">공지사항</span>
+                        <span id="community-tab" class="tab" onclick="switchTab('community')">커뮤니티</span>
+                        <span id="snack-tab" class="tab" onclick="switchTab('snack')">간식레시피</span>
+                    </div>
+                    <a id="more-link" class="more-link" th:href="@{/NoticeBoard}">더보기 &gt;</a>
+                </div>
+
+                <div class="tab-content">
+                    <div id="notice-content" class="tab-pane active">
+                        <ul class="post-list">
+                            <th:block sec:authorize="isAnonymous()">
+                                <p class="no-data-message">🔒 로그인 후 공지사항을 확인할 수 있습니다.</p>
+                            </th:block>
+                            <th:block sec:authorize="isAuthenticated()">
+                                <th:block th:if="${#lists.isEmpty(bodto)}">
+                                    <p class="no-data-message">📭 등록된 공지사항이 없습니다.</p>
+                                </th:block>
+                                <th:block th:unless="${#lists.isEmpty(bodto)}">
+                                    <th:block th:each="notice : ${bodto}">
+                                        <li class="post-item">
+                                            <a th:href="@{/PostDetail(pnum=${notice.postId})}" class="post-title" th:text="${notice.postTitle}"></a>
+                                            <div class="post-meta-right" th:text="${notice.postDate}"></div>
+                                        </li>
+                                    </th:block>
+                                </th:block>
+                            </th:block>
+                        </ul>
+                    </div>
+
+                    <div id="community-content" class="tab-pane">
+                        <ul class="post-list">
+                            <th:block sec:authorize="isAnonymous()">
+                                <p class="no-data-message">🔒 로그인 후 인기 게시물을 확인할 수 있습니다.</p>
+                            </th:block>
+                            <th:block sec:authorize="isAuthenticated()">
+                                <th:block th:if="${#lists.isEmpty(csdto)}">
+                                    <p class="no-data-message">📭 인기 게시물이 없습니다.</p>
+                                </th:block>
+                                <th:block th:unless="${#lists.isEmpty(csdto)}">
+                                    <th:block th:each="post : ${csdto}">
+                                        <li class="post-item">
+                                            <a th:href="@{/PostDetail(pnum=${post.postId})}" class="post-title">
+                                                <span th:text="${post.postTitle}"></span> <span class="comment-count" th:text="|(${post.commentCount})|"></span>
+                                            </a>
+                                            <div class="post-meta-right" th:text="|작성자[${post.userLoginId}] | 조회수[${post.postReadcnt}]|"></div>
+                                        </li>
+                                    </th:block>
+                                </th:block>
+                            </th:block>
+                        </ul>
+                    </div>
+
+                    <div id="snack-content" class="snack-pane">
+                        <ul class="post-list">
+                            <th:block sec:authorize="isAnonymous()">
+                                <p class="no-data-message">🔒 로그인 후 간식레시피를 확인할 수 있습니다.</p>
+                            </th:block>
+                            <th:block sec:authorize="isAuthenticated()">
+                                <th:block th:if="${#lists.isEmpty(snackList)}">
+                                    <p class="no-data-message">📭 등록 된 게시물이 없습니다.</p>
+                                </th:block>
+                                <th:block th:unless="${#lists.isEmpty(snackList)}">
+                                    <th:block th:each="snack : ${snackList}">
+                                        <li class="snack-item">
+                                            <a th:href="@{/snack_detail(dnum=${snack.snackId})}" th:text="${snack.snackTitle}"></a>
+                                            <div class="snack-meta-right" th:text="|작성자[ ${snack.userLoginId} ]|"></div>
+                                        </li>
+                                    </th:block>
+                                </th:block>
+                            </th:block>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="snack-preview-box">
+                <h2> 🦴 인기 레시피</h2>
+                <div class="snack-slider-wrapper">
+                    <th:block th:each="snack, status : ${topCommentSnacks}">
+                        <div th:classappend="${status.index == 0} ? 'active'" th:id="|comment-snack-${status.index}|" class="snack-card">
+                            <img class="snack-image" th:src="@{/image/{filename}(filename=${snack.snackImage})}" />
+                            <div class="snack-info">
+                                <div class="snack-title" th:text="${snack.snackTitle}"></div>
+                                <div class="snack-writer" th:text="|by ${snack.userLoginId}|"></div>
+                                <p class="snack-content" th:text="${#strings.substring(snack.snackRecipe, 0, 30)} + '...'"></p>
+                                <br>
+                                <a class="snack-more" th:href="@{/snack_detail(dnum=${snack.snackId})}">전체 보기 →</a>
+                            </div>
+                        </div>
+                    </th:block>
+                    <th:block th:if="${#lists.isEmpty(topCommentSnacks)}">
+                        <p class="no-data-message">📭 등록 된 간식 레시피가 없습니다.</p>
+                    </th:block>
+                </div>
+
+                <div class="snack-button-box">
+                    <button class="slide-button" onclick="changeCommentSnack(-1)">←</button>
+                    <button class="slide-button" onclick="changeCommentSnack(1)">→</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <aside class="right-info" sec:authorize="isAuthenticated()">
+        <div class="calendar-wrapper-box">
+            <div class="calendar-box" onclick="location.href='@{/Calendar/CalendarView}'">
+                <h2 class="calendar-title" th:text="|📅 ${year}년 ${month}월|"></h2>
+                <table class="calendar">
+                    <thead>
+                    <tr>
+                        <th class="sun">Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th class="sat">Sat</th>
+                    </tr>
+                    </thead>
+                    <tbody th:utext="${calendarHtml}"></tbody>
+                </table>
+
+                <h3>다가올 일정</h3>
+                <th:block th:if="${#lists.isEmpty(upcomingSchedules)}">
+                    <p>다음 일정이 없습니다.</p>
+                </th:block>
+                <th:block th:unless="${#lists.isEmpty(upcomingSchedules)}">
+                    <th:block th:each="schedule : ${upcomingSchedules}">
+                        <div class="schedule-item">
+                            <div class="schedule-header" style="display: flex; align-items: center; gap: 15px;">
+                                <span class="schedule-date" th:text="${schedule.calDate}"></span>
+                                <th:block th:each="pet : ${petdto}">
+                                    <th:block th:if="${pet.petId == schedule.petId}">
+                                        <span class="schedule-pet-name" th:text="${pet.petName}"></span>
+                                    </th:block>
+                                </th:block>
+                                <strong th:text="${schedule.calTitle}"></strong>
+                            </div>
+                        </div>
+                    </th:block>
+                </th:block>
+            </div>
+        </div>
+
+        <div class="diary-wrapper-box">
+            <h2>📓 오늘의 일기</h2>
+            <th:block th:if="${recentDiary == null}">
+                <p class="no-data-message">📭 작성한 일기가 없습니다. 오늘 일기를 써보세요!</p>
+            </th:block>
+            <th:block th:unless="${recentDiary == null}">
+                <p class="diary-title" th:text="${recentDiary.diaryTitle}"></p>
+                <p class="diary-date" th:text="${#strings.substringBefore(recentDiary.diaryDate, ' ')}"></p>
+                <p class="diary-pet" th:text="|${recentDiary.petName}의 일기|"></p>
+                <p class="diary-preview" th:text="${#strings.substring(recentDiary.diaryContent, 0, 30)} + '...'"></p>
+                <a th:href="@{/Diary/DiaryDetail(diaryId=${recentDiary.diaryId})}" class="diary-link">전체 보기 →</a>
+            </th:block>
+        </div>
+
+        <div class="quiz-preview-box">
+            <h2>🧠 오늘의 멍냥 퀴즈 </h2>
+            <th:block th:if="${quiz == null}">
+                <p class="no-data-message">📭 오늘의 퀴즈가 아직 등록되지 않았습니다.</p>
+            </th:block>
+            <th:block th:unless="${quiz == null}">
+                <p class="quiz-question" th:text="${quiz.quizQuestion}"></p>
+                <p class="quiz-note" style="margin-bottom: 10px;">※ 전체 보기는 퀴즈에서 확인하세요!</p>
+                <a th:href="@{/QuizInput}" class="quiz-start-button">도전하러 가기 →</a>
+            </th:block>
+        </div>
+    </aside>
+
+    <aside class="right-info" sec:authorize="isAnonymous()">
+        <div class="calendar-wrapper-box">
+            <div class="calendar-box">
+                <h2>📆 로그인 후 캘린더를 확인하세요!</h2>
+                <p>로그인 후 달력과 일정 기능을 사용할 수 있습니다.</p>
+            </div>
+        </div>
+        <div class="diary-wrapper-box">
+            <h2>📓 오늘의 일기</h2>
+            <p class="no-data-message">🔒 로그인 후 오늘의 일기를 확인할 수 있습니다.</p>
+        </div>
+        <div class="quiz-preview-box">
+            <h2>🧠 오늘의 멍냥 퀴즈 </h2>
+            <p class="no-data-message">🔒 로그인 후 오늘의 퀴즈를 확인할 수 있습니다.</p>
+        </div>
+    </aside>
+
+</div>
+
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    function switchTab(type) {
+      const noticeTab = document.getElementById('notice-tab');
+      const communityTab = document.getElementById('community-tab');
+      const snackTab = document.getElementById('snack-tab');
+
+      const noticeContent = document.getElementById('notice-content');
+      const communityContent = document.getElementById('community-content');
+      const snackContent = document.getElementById('snack-content');
+
+      const moreLink = document.getElementById('more-link');
+
+      // 모든 탭/내용 초기화
+      noticeTab.classList.remove('active');
+      communityTab.classList.remove('active');
+      if (snackTab) snackTab.classList.remove('active');
+
+      noticeContent.classList.remove('active');
+      communityContent.classList.remove('active');
+      snackContent.classList.remove('active');
+
+      // 선택된 탭만 활성화
+      if (type === 'notice') {
+        noticeTab.classList.add('active');
+        noticeContent.classList.add('active');
+        moreLink.href = /*[[@{/NoticeBoard}]]*/ '/NoticeBoard';
+      } else if (type === 'community') {
+        communityTab.classList.add('active');
+        communityContent.classList.add('active');
+        moreLink.href = /*[[@{/CommunityView}]]*/ '/CommunityView';
+      } else if (type === 'snack') {
+        if (snackTab) snackTab.classList.add('active');
+        snackContent.classList.add('active');
+        moreLink.href = /*[[@{/SnackList}]]*/ '/SnackList';
+      }
+    }
+    /*]]>*/
+</script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    function showSchedule(date) {
+      console.log("Clicked date: " + date);
+    }
+    /*]]>*/
+</script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    let currentIndex = 0;
+    let snackCards;
+
+    function showSnack(index) {
+      snackCards.forEach((card, i) => {
+        if (i === index) {
+          card.style.display = 'flex'; /* display: flex로 변경 */
+          card.style.opacity = 1;
+        } else {
+          card.style.display = 'none';
+          card.style.opacity = 0;
+        }
+      });
+    }
+
+    function changeCommentSnack(step = 1) {
+      currentIndex = (currentIndex + step + snackCards.length) % snackCards.length;
+      showSnack(currentIndex);
+    }
+
+    window.onload = function () {
+      snackCards = document.querySelectorAll('.snack-card');
+      if (snackCards.length > 0) {
+        showSnack(currentIndex);
+        setInterval(() => changeCommentSnack(1), 5000);
+      }
+    };
+    /*]]>*/
+</script>
+</body>
+</html>

@@ -24,5 +24,5 @@ public interface SnackService {
     //지수 추가 - 회원탈퇴
     void deleteByUserId(Long userId);
 
-    SnackEntity getSnackById(Long snackId);
+
 }

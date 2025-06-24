@@ -61,39 +61,8 @@ public class LikesServiceImp implements LikesService{
         return existing != null;
     }
 
-    @Override
-    public boolean hasUserLiked(Long postId, Long userId) {
-        return likesRepository.existsByPostIdAndUserId(postId, userId);
-    }
 
-    @Override
-    public boolean isLikedOnSnack(Long snackId, Long userId, String userLoginId) {
-        return likesRepository.existsBySnackIdAndUserIdAndUserLoginId(snackId, userId, userLoginId);
-    }
 
-    @Override
-    public int getSnackLikeCount(Long snackId) {
-        return likesRepository.countBySnackId(snackId);
-    }
 
-    public void likeOnSnack(Long snackId, Long userId, String userLoginId) {
-        if (!isLikedOnSnack(snackId, userId, userLoginId)) {
-            LikesEntity like = new LikesEntity();
-            like.setSnackId(snackId);
-            like.setUserId(userId);
-            like.setUserLoginId(userLoginId);
-            likesRepository.save(like);
-        }
-    }
-
-    @Override
-    public int getLikeCountBySnackId(long snackId) {
-        return likesRepository.countBySnackId(snackId);
-    }
-
-    @Override
-    public boolean isLikedByUserOnSnack(long snackId, Long userId, String userLoginId) {
-        return likesRepository.existsSnackLike(snackId, userId, userLoginId);
-    }
 }
 
