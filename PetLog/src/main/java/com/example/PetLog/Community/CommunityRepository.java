@@ -25,9 +25,13 @@ public interface CommunityRepository extends JpaRepository<CommunityEntity, Long
 
     @Modifying
     @Transactional
-//    @Query(value = "select le1_0.like_id from likes le1_0 where le1_0.post_id=? and le1_0.user_id=? fetch first 1 row only", nativeQuery = true)
     @Query("UPDATE CommunityEntity c SET c.postReadcnt = :likeCount WHERE c.postId = :postId")
     void updateLikeCount(@Param("postId") Long postId, @Param("likeCount") int likeCount);
 
     List<CommunityEntity> findByPostType(String notice);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE SnackEntity s SET s.snackReadcnt = :likeCount WHERE s.snackId = :snackId")
+    void updateLikeBySnackCount(@Param("snackId") Long snackId, @Param("likeCount") int likeCount);
 }

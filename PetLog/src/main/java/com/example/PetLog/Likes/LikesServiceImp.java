@@ -1,5 +1,7 @@
 package com.example.PetLog.Likes;
 
+import com.example.PetLog.Comments.CommentsRepository;
+import com.example.PetLog.Comments.CommentsService;
 import com.example.PetLog.Community.CommunityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,12 +10,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class LikesServiceImp implements LikesService{
+public class LikesServiceImp implements LikesService {
 
     @Autowired
     LikesRepository likesRepository;
     @Autowired
     CommunityService communityService;
+    @Autowired
+    CommentsRepository commentsRepository;
 
     @Override
     public List<LikesEntity> findByUserId(Long userId) {
@@ -42,7 +46,7 @@ public class LikesServiceImp implements LikesService{
             newLike.setUserId(userId);  // Long 타입으로 처리
             newLike.setUserLoginId(userLoginId);  // 로그인 아이디 설정
             likesRepository.save(newLike);  // 새로운 좋아요 추가
-        }else {
+        } else {
             throw new IllegalArgumentException("User login ID cannot be null or empty");
         }
 
@@ -68,9 +72,30 @@ public class LikesServiceImp implements LikesService{
 
     @Override
     public int getSnackLikeCount(Long snackId) {
-        return likesRepository.countBySnackId(snackId);
+        return likesRepository.countBySnack_SnackId(snackId);
     }
 
+    @Override
+    public void likeOnUserSnackId(Long snackId, Long userId, String userLoginId) {
+        // 이미 좋아요가 존재하는지 확인
+        LikesEntity existingLike = likesRepository.findBySnackIdAndUserIdAndUserLoginId(snackId, userId, userLoginId);
+
+        if (existingLike != null) {
+            // 좋아요가 존재하면 삭제 (좋아요 취소)
+            likesRepository.delete(existingLike);  // 삭제할 때 LikesEntity 사용
+        } else if (userLoginId != null && !userLoginId.isEmpty()) {
+            // 좋아요가 없으면 추가
+            LikesEntity newLike = new LikesEntity();  // 새로운 LikesEntity 생성
+            newLike.setSnackId(snackId);
+            newLike.setUserId(userId);  // Long 타입으로 처리
+            newLike.setUserLoginId(userLoginId);  // 로그인 아이디 설정
+            likesRepository.save(newLike);  // 새로운 좋아요 추가
+        } else {
+            throw new IllegalArgumentException("User login ID cannot be null or empty");
+        }
+        // 게시글의 좋아요 수 갱신
+        communityService.updateLikeCountForSnack(snackId);
+    }
 
 }
 

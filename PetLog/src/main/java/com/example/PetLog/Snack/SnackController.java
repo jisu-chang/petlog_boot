@@ -82,18 +82,28 @@ public class SnackController {
 
     @GetMapping(value = "/Snack/SnackOut")
     public String out(Model mo, Principal pri) {
-
         String loginId = pri.getName();
         Long userId = userService.findUserIdByLoginId(loginId);
 
         List<SnackDTO> list = snackService.out();
-        // 댓글수 / 좋아요수 매핑
+
         Map<Long, Integer> commentCounts = new HashMap<>();
         Map<Long, Integer> likeCounts = new HashMap<>();
 
+        for (SnackDTO snack : list) {
+            Long snackId = snack.getSnackId();
+
+            //좋아요 수 가져오기
+            int likeCount = likesService.getSnackLikeCount(snackId);
+            //댓글 목록 가져오기
+            List<CommentsEntity> comments = commentsService.getSnackComments(snackId);
+
+            likeCounts.put(snackId, likeCount);
+            commentCounts.put(snackId, comments.size());
+        }
         mo.addAttribute("commentCounts", commentCounts);
         mo.addAttribute("likeCounts", likeCounts);
-        mo.addAttribute("list",list);
+        mo.addAttribute("list", list);
         return "Snack/SnackOut";
     }
 
@@ -209,16 +219,16 @@ public class SnackController {
 
     //좋아요
     @PostMapping("/snack/{snackId}/like")
-    public String likeOnSnack(@PathVariable Long postId, HttpSession session) {
+    public String likeOnSnack(@PathVariable Long snackId, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
         String userLoginId = (String) session.getAttribute("userLoginId");
 
         if (userId == null || userLoginId == null) {
             return "redirect:/login";
         }
-        likesService.likeOnUser(postId, userId, userLoginId);
+        likesService.likeOnUserSnackId(snackId, userId, userLoginId);
 
-        return "redirect:/CommunityDetail?postId=" + postId;
+        return "redirect:/Snack/SnackDetail?snackId=" + snackId;
     }
 
     @PostMapping("/snack/comment")

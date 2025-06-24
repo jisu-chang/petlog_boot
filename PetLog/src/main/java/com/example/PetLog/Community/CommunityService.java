@@ -31,4 +31,5 @@ public interface CommunityService {
 
     List<CommunityEntity> getNoticePost();
 
+    void updateLikeCountForSnack(Long snackId);
 }
