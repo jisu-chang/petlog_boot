@@ -1,5 +1,6 @@
 package com.example.PetLog.Snack;
 
+import com.example.PetLog.User.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,10 +27,10 @@ public class SnackDTO {
 
     long userId;
     String userLoginId; //entity x
+    UserEntity user;
 
     public SnackEntity entity() {
         return SnackEntity.builder()
-//                .snackId(snackId)
                 .snackTitle(snackTitle)
                 .snackRecipe(snackRecipe)
                 .snackImage(snackImagename)

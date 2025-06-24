@@ -20,4 +20,5 @@ public interface CommentsRepository extends JpaRepository<CommentsEntity, Long> 
 
     @Query("SELECT c FROM CommentsEntity c WHERE c.snack.snackId = :snackId ORDER BY c.parentId ASC, c.comId ASC")
     List<CommentsEntity> findBySnack_SnackId(@Param("snackId") Long snackId);
+
 }

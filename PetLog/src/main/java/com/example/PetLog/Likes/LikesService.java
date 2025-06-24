@@ -17,4 +17,7 @@ public interface LikesService {
     boolean isLikedByUserOnSnack(Long snackId, Long userId, String userLoginId);
 
     int getSnackLikeCount(Long snackId);
+
+    void likeOnUserSnackId(Long snackId, Long userId, String userLoginId);
+
 }

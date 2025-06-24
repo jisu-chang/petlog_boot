@@ -46,7 +46,7 @@
 
         th, td {
           padding: 12px 8px;
-          font-size: 0.95em;
+          font-size: 1.1em;  /* 기존 0.95em에서 키움 */
           border-bottom: 1px solid #eee;
           text-align: center;
         }
@@ -199,7 +199,7 @@
 
             th, td {
                 padding: 10px 6px;
-                font-size: 0.85em;
+                font-size: 1.2em;
             }
 
             .btn-write {
@@ -257,9 +257,10 @@
                 <td style="text-align: left;" >
                     <a th:href="@{/Snack/SnackDetail(snackId=${rec.snackId})}" th:text="${rec.snackTitle}"></a>
                     <span class="board-meta">
-              <span>🗨️ <span th:text="${rec.commentCount}"></span></span>
-              <span>❤️ <span th:text="${rec.likeCount}"></span></span>
-            </span>
+                      <span class="comments">🗨️<span th:text="${commentCounts[rec.snackId]}"></span></span>
+                      <span class="likes">❤️<span th:text="${likeCounts[rec.snackId]}"></span></span>
+                      <span class="views">👁<span th:text="${rec.snackReadcnt}"></span></span>
+                    </span>
                 </td>
                 <td th:text="${rec.userLoginId}"></td>
             </tr>

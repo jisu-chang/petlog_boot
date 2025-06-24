@@ -80,4 +80,10 @@ public class CommunityServiceImp implements CommunityService{
         return communityRepository.findByPostType("notice");
     }
 
+    @Override
+    public void updateLikeCountForSnack(Long snackId) {
+        int likeCount = likesRepository.countBySnack_SnackId(snackId); //좋아요 수 조회
+        communityRepository.updateLikeBySnackCount(snackId,likeCount); //게시글에서 좋아요 수 업데이트
+    }
+
 }

@@ -45,6 +45,7 @@ public class SnackEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     UserEntity user;
+
     // 댓글과의 관계 (게시글은 여러 댓글을 가질 수 있음)
     @OneToMany(mappedBy = "snack", fetch = FetchType.LAZY)
     List<CommentsEntity> comments;
