@@ -1,5 +1,7 @@
 package com.example.PetLog;
 
+import com.example.PetLog.Pet.PetDTO;
+import com.example.PetLog.Pet.PetService;
 import com.example.PetLog.User.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -7,13 +9,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.List;
+
 @Controller
 public class HomeController {
+    @Autowired
+    PetService petService;
 
-    @GetMapping(value = "/")
-    public String home() {
-        return "main";
-    }
+//    @GetMapping(value = "/")
+//    public String home() {
+//        return "main";
+//    }
 
     @GetMapping(value = "/main")
     public String home1(Model mo, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
@@ -33,6 +39,17 @@ public class HomeController {
             System.out.println("사용자가 로그인되지 않음.");
         }
         return "test";
+    }
+
+    @GetMapping("/")
+    public String showMain(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        if (userDetails != null) {
+            Long userId = userDetails.getUser().getUserId();
+            List<PetDTO> pets = petService.findPetsByUserId(userId);
+            System.out.println("🐶 등록된 펫 수: " + pets.size());
+            model.addAttribute("list", pets);
+        }
+        return "main";
     }
 
 }

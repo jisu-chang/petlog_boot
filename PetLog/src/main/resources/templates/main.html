@@ -595,12 +595,15 @@
     alert([[${alertMessage}]]);
 </script>
 
+<a th:href="@{/main2}">메인2</a>
+
 <div th:replace="~{top :: menu}"></div>
 
 <div class="main-dashboard">
     <section class="main-content">
         <div class="content-box large" sec:authorize="isAuthenticated()">
             <h2>🐻 펫 프로필</h2>
+            <p>펫 리스트 개수: <span th:text="${#lists.size(list)}"></span></p>
             <div class="profile-cards">
                 <th:block th:if="${#lists.isEmpty(list)}"> <p class="no-data-message">📭 등록된 펫 정보가 없습니다.</p>
                 </th:block>
