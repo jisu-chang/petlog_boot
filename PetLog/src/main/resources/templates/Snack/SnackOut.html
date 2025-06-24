@@ -4,36 +4,34 @@
 <head>
     <meta charset="UTF-8">
     <title>레시피 보기</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
         body {
           background-color: #fff6f6;
           margin: 0;
           padding: 0;
-          font-family: 'Pretendard', sans-serif;
           color: #333;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          min-height: 100vh; /* 화면 전체 높이 확보 */
+          padding-top: 90px;
         }
 
         .table-wrapper {
           background-color: white;
-          width: 100%;
+          width: 95%;
           max-width: 1000px;
-          margin: 40px auto 80px auto;
+          margin: 0 auto 40px auto;
           border-radius: 12px;
           box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-          padding: 30px;
+          padding: 20px;
+          box-sizing: border-box;
         }
 
         h2, caption {
           text-align: center;
           color: #f48aa5;
-          font-weight: normal;
+          font-weight: bold;
           font-size: 1.8em;
-          margin-bottom: 30px;
+          margin-bottom: 25px;
         }
 
         table {
@@ -41,14 +39,14 @@
           border-collapse: collapse;
           margin-top: 10px;
           background-color: #fff;
-          box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+          box-shadow: 0 2px 6px rgba(0,0,0,0.05);
           border-radius: 8px;
           overflow: hidden;
         }
 
         th, td {
-          padding: 14px 12px;
-          font-size: 1em;
+          padding: 12px 8px;
+          font-size: 0.95em;
           border-bottom: 1px solid #eee;
           text-align: center;
         }
@@ -70,12 +68,6 @@
           text-decoration: underline;
         }
 
-        td a span {
-          margin-left: 4px;
-          font-size: 1em;
-          color: #888;
-        }
-
         .btn-wrap {
           text-align: right;
           margin-bottom: 20px;
@@ -86,8 +78,8 @@
           color: #444;
           border: none;
           border-radius: 10px;
-          padding: 8px 20px;
-          font-size: 1em;
+          padding: 8px 18px;
+          font-size: 0.9em;
           cursor: pointer;
           transition: background-color 0.3s;
         }
@@ -99,17 +91,16 @@
         form {
           width: 100%;
           max-width: 1000px;
-          margin: 30px auto 0;
+          margin: 20px auto 0;
           text-align: center;
         }
 
         select, input[type="text"], input[type="submit"] {
-          padding: 10px 14px;
-          margin: 8px;
+          padding: 8px 12px;
+          margin: 6px;
           border: 1px solid #ddd;
           border-radius: 8px;
-          font-size: 1em;
-          font-family: 'Pretendard', sans-serif;
+          font-size: 0.9em;
         }
 
         input[type="submit"] {
@@ -126,16 +117,17 @@
         .pagination {
           width: 100%;
           text-align: center;
-          margin: 40px 0;
+          margin: 30px 0;
         }
 
         .pagination a {
-          margin: 0 6px;
-          padding: 6px 12px;
+          margin: 0 4px;
+          padding: 5px 10px;
           color: #888;
           text-decoration: none;
           border-radius: 4px;
           transition: all 0.2s;
+          font-size: 0.9em;
         }
 
         .pagination a.current {
@@ -149,36 +141,94 @@
         }
 
         .btn-write {
-            float: right;
-            margin-bottom: 10px;
             background-color: #ffe1e1;
             color: #333;
             border: none;
-            padding: 8px 20px;
+            padding: 8px 18px;
             border-radius: 10px;
             font-weight: normal;
             cursor: pointer;
             text-decoration: none;
-          }
+            display: inline-block;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
 
-          .btn-write:hover {
+        .btn-write:hover {
             background-color: #ffd2d2;
-          }
-          .board-meta {
-            font-size: 1em;
+        }
+
+        .board-meta {
+            font-size: 0.9em;
             margin-left: 6px;
             display: inline-flex;
             gap: 4px;
             align-items: center;
-          }
+            color: #888;
+        }
 
-          .board-meta span {
+        .board-meta span {
             display: inline-flex;
             align-items: center;
             gap: 2px;
             line-height: 1;
             white-space: nowrap;
-          }
+        }
+
+        .no-recipe {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #c0392b;
+            font-size: 1.1em;
+        }
+
+        @media screen and (max-width: 390px) {
+            body {
+                padding-top: 60px;
+            }
+
+            h2, caption {
+                font-size: 1.6em;
+                margin-bottom: 20px;
+            }
+
+            .table-wrapper {
+                padding: 15px;
+                margin: 0 auto 30px auto;
+            }
+
+            th, td {
+                padding: 10px 6px;
+                font-size: 0.85em;
+            }
+
+            .btn-write {
+                padding: 7px 15px;
+                font-size: 0.8em;
+                margin-bottom: 10px;
+            }
+
+            .board-meta {
+                font-size: 0.8em;
+                margin-left: 4px;
+            }
+
+            .no-recipe {
+                font-size: 1em;
+            }
+
+            select, input[type="text"], input[type="submit"] {
+                padding: 7px 10px;
+                margin: 5px;
+                font-size: 0.8em;
+            }
+
+            .pagination a {
+                margin: 0 3px;
+                padding: 4px 8px;
+                font-size: 0.8em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -191,7 +241,9 @@
     </div>
 
     <div th:if="${not #lists.isEmpty(list)}">
-        <a th:href="@{/Snack/SnackInput}" class="btn-write">레시피 작성</a>
+        <div style="text-align: right;">
+            <a th:href="@{/Snack/SnackInput}" class="btn-write">레시피 작성</a>
+        </div>
 
         <table>
             <thead>
@@ -204,23 +256,15 @@
             <tr th:each="rec : ${list}">
                 <td style="text-align: left;" >
                     <a th:href="@{/Snack/SnackDetail(snackId=${rec.snackId})}" th:text="${rec.snackTitle}"></a>
-                    <span style="margin-left: 8px; color: #888;">
-              🗨️ <span th:text="${rec.commentCount}"></span>
-              ❤️ <span th:text="${rec.likeCount}"></span>
+                    <span class="board-meta">
+              <span>🗨️ <span th:text="${rec.commentCount}"></span></span>
+              <span>❤️ <span th:text="${rec.likeCount}"></span></span>
             </span>
                 </td>
                 <td th:text="${rec.userLoginId}"></td>
             </tr>
             </tbody>
         </table>
-<!--
-        <div class="pagination">
-            <a th:each="i : ${#numbers.sequence(1, pageCount)}"
-               th:href="@{/Snack/SnackOut(page=${i})}"
-               th:classappend="${i == page} ? 'current' : ''"
-               th:text="${i}"></a>
-        </div>
-     -->
     </div>
 </div>
 </body>
