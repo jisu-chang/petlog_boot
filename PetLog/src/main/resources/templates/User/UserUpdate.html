@@ -103,7 +103,7 @@
     <input type="hidden" name="dfname" th:value="${userDTO.profileimgName != null ? userDTO.profileimgName : 'default.png'}">
     <input type="hidden" name="phoneCheckStatus" id="phoneCheckStatus" value="false" />
 
-    <img class="profile-img-only" th:src="@{${userDTO.profileimgName != null ? '/images/' + userDTO.profileimgName : '/images/default.png'}}" alt="Profile Image" />
+    <img class="profile-img-only" th:src="@{${userDTO.profileimgName != null ? '/image/' + userDTO.profileimgName : '/image/default.png'}}" alt="Profile Image" />
 
     <div class="form-group">
       <label for="userLoginId">아이디</label>

@@ -50,7 +50,7 @@ public class UserController {
     @Autowired
     LikesService likesService;
 
-    String path ="C:\\MBC12AI\\git\\petlog_boot\\src\\main\\resources\\static\\image";
+    String path ="C:\\MBC12AI\\git\\petlog_boot\\PetLog\\src\\main\\resources\\static\\image";
 
     //로그인
     @GetMapping(value = "/login")
@@ -202,8 +202,6 @@ public class UserController {
         UserEntity savedUser = userRepository.save(dto.toEntity());
         session.setAttribute("userId", savedUser.getUserId());
         session.setAttribute("userLoginId", savedUser.getUserLoginId());
-        System.out.println("📌 세션 email: " + email);
-        System.out.println("📌 dto.getEmail(): " + dto.getEmail());
         return "redirect:/";
     }
 
@@ -291,47 +289,15 @@ public class UserController {
         return "redirect:/MyPage";
     }
 
-    //마이페이지
-//    @GetMapping("/MyPage")
-//    public String MyPage(Model mo, HttpSession session) {
-//        Long userId = (Long) session.getAttribute("userId");
-//        System.out.println("세션에서 가져온 userId: " + userId);  // userId가 제대로 나오는지 확인
-//
-//        // 로그인되지 않은 경우 로그인 페이지로 리디렉트
-//        if (userId == null) {
-//            System.out.println("세션에 userId가 없습니다. 로그인 페이지로 리디렉션됩니다.");
-//            return "redirect:/login";
-//        }
-//
-//        Optional<UserEntity> user = userRepository.findById(userId);
-//        if (user.isPresent()) {
-//            mo.addAttribute("user", user.get());
-//        }else {
-//            mo.addAttribute("error", "유저 정보를 찾을 수 없습니다.");
-//            return "User/UserError";  // 유저 정보가 없다면 에러 페이지로 이동
-//        }
-//        //프로필 이미지 변경 후 바로 로드되게 하기 위해 추가
-//        long timestamp = System.currentTimeMillis();
-//        mo.addAttribute("timestamp", timestamp);
-//
-//        // UserService를 사용하여 userId로 UserEntity 객체 가져오기
-//        UserEntity userEntity = userService.findById(userId);  // userDTO가 아닌 userId 사용
-//        // UserEntity 객체를 모델에 추가하여 뷰에 전달
-//        mo.addAttribute("list", userEntity);
-//        return "User/UserMyPage";
-//    }
-
     @GetMapping("/MyPage")
     public String MyPage(Model mo, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
-        System.out.println("세션에서 가져온 userId: " + userId);
 
         if (userId == null) {
             System.out.println("세션에 userId가 없습니다. 로그인 페이지로 리디렉션됩니다.");
             return "redirect:/login";
         }
 
-        // 🚨 여기를 수정합니다. userService.getUserProfileWithEquippedFrame을 호출하여 UserDTO를 받습니다.
         UserDTO userProfile = userService.getUserProfileWithEquippedFrame(userId);
 
         if (userProfile == null) {
@@ -341,13 +307,9 @@ public class UserController {
 
         long timestamp = System.currentTimeMillis();
         mo.addAttribute("timestamp", timestamp);
-
-        // 중요: UserDTO 객체를 "list"라는 이름으로 모델에 추가합니다.
-        mo.addAttribute("list", userProfile); // 이제 list는 UserDTO입니다.
+        mo.addAttribute("list", userProfile);
         return "User/UserMyPage";
     }
-
-
 
     //회원정보 수정
     @GetMapping("/UserUpdate")
@@ -364,7 +326,6 @@ public class UserController {
     //회원정보 수정 처리
     @PostMapping("/UserUpdateSave")
     public String userUpdateSave(@Valid @ModelAttribute UserUpdateDTO dto, BindingResult bindingResult,
-                                 @RequestParam("profileimg") MultipartFile mf,
                                  @RequestParam("dfname") String dfname, HttpSession session, Model model) throws IOException {
 
         if (bindingResult.hasErrors()) {
@@ -395,51 +356,51 @@ public class UserController {
         String encryptedPassword = userEntity.getPassword();
 
         // 프로필 이미지 처리
-        String profileImageName = dfname;  // 기본 값은 기존 이미지 파일명
+        MultipartFile mf = dto.getProfileimg();
+        String fname;
+
         if (mf != null && !mf.isEmpty()) {
-            // handleProfileImage 메서드를 사용해 이미지 업로드
-            dto.handleProfileImage(mf); // 업로드 후 파일명 저장
-            profileImageName = dto.getProfileimgName();  // 저장된 파일명 사용
-        }
-
-        // 기존 이미지 삭제 (기존 이미지 파일이 있다면 삭제)
-        if (!dfname.equals("default.png")) {
-            String oldFilePath = "C:/upload/image/" + dfname;  // 기존 이미지 파일 경로
-            File oldFile = new File(oldFilePath);
-            if (oldFile.exists()) {
-                boolean deleted = oldFile.delete(); // 기존 이미지 삭제
-                if (deleted) {
-                    System.out.println("기존 이미지 삭제: " + oldFilePath);
-                } else {
-                    System.out.println("기존 이미지 삭제 실패: " + oldFilePath);
-                }
+            // 기존 이미지 삭제 (기본 이미지는 제외)
+            if (!"default.png".equals(dfname)) {
+                File oldFile = new File(path + "\\" + dfname);
+                if (oldFile.exists()) oldFile.delete();
             }
+
+            // UUID + 확장자 처리
+            String originalFilename = mf.getOriginalFilename();
+            String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            fname = UUID.randomUUID().toString() + extension;
+
+            // 저장
+            mf.transferTo(new File(path + "\\" + fname));
+        } else {
+            fname = dfname; // 새 이미지 없으면 기존 이미지 유지
         }
 
-        // UserEntity 업데이트
+        // DB 및 세션 정보 업데이트
         userEntity.setName(dto.getName());
         userEntity.setPhone(dto.getPhone());
         userEntity.setEmail(dto.getEmail());
-        userEntity.setProfileimg(profileImageName);  // 업데이트된 프로필 이미지 이름
+        userEntity.setProfileimg(fname);
         userEntity.setPassword(encryptedPassword);
 
         try {
-            userService.updateUser(userEntity);  // DB 업데이트
+            userService.updateUser(userEntity);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        // 세션 정보 업데이트
         session.setAttribute("userId", userEntity.getUserId());
         session.setAttribute("userLoginId", userEntity.getUserLoginId());
         session.setAttribute("userRole", userEntity.getUserRole());
         session.setAttribute("name", userEntity.getName());
         session.setAttribute("grapeCount", userEntity.getGrapeCount());
         session.setAttribute("rank", userEntity.getRank());
-        session.setAttribute("profileimg", profileImageName);  // 세션에 새 이미지 경로 설정
+        session.setAttribute("profileimgName", fname);
 
         return "redirect:/MyPage";  // 수정 후 마이페이지로 리디렉션
     }
+
     //회원탈퇴- 활동이력 보이기
     @GetMapping("/UserDelete")
     public String userdelete(HttpSession session, Model mo){

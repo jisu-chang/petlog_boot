@@ -4,141 +4,142 @@
     <meta charset="UTF-8">
     <title>게시글 상세보기</title>
     <style>
-        body {
-            font-family: 'Pretendard', sans-serif;
-            background-color: #fff6f6;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
+body {
+    font-family: 'Pretendard', sans-serif;
+    background-color: #fff6f6;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
 
-        .container {
-            width: 90%;
-            max-width: 1000px;
-            margin: 40px auto;
-            background-color: #fff;
-            padding: 30px 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
+.container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 40px auto;
+    background-color: #fff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
 
-        h2 {
-            color: #f48aa5;
-            text-align: center;
-            font-size: 2em;
-            margin-bottom: 30px;
-        }
+h2 {
+    color: #f48aa5;
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 30px;
+}
 
-        .post-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 30px;
-        }
+.post-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 30px;
+}
 
-       .post-title-wrapper {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 12px;
-          margin-bottom: 30px;
-        }
+.post-title-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 30px;
+}
 
-        .profile-img {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          object-fit: cover;
-        }
-        .top-icons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 14px;
-            margin-bottom: 20px;
-            font-size: 15px;
-        }
+.profile-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+}
 
-        .post-info {
-            display: flex;
-            flex-direction: column;
-            margin-top: 20px;
-        }
+.top-icons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 14px;
+    margin-bottom: 20px;
+    font-size: 15px;
+}
 
-        .post-row {
-            display: flex;
-            border-radius: 0; /* 둥근 모서리 제거 시 */
-            overflow: hidden;
-            margin-bottom: 0; /* 간격 제거 */
-            box-shadow: none; /* 필요 시 그림자 제거 */
-            border-bottom: 1px solid #f2f2f2; /* 구분선 유지할 경우 */
-        }
+.post-info {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
 
-        .post-label {
-            flex: 0 0 20%;
-            background-color: #ffe4ec;
-            color: #444;
-            text-align: center;
-            padding: 18px 10px;
-            font-weight: 600;
-            font-size: clamp(10px, 2vw, 16px); /* 최소 10px, 최대 16px까지 자동 조절 */
-        }
+.post-row {
+    display: flex;
+    border-radius: 0;
+    overflow: hidden;
+    margin-bottom: 0;
+    box-shadow: none;
+    border-bottom: 1px solid #f2f2f2;
+}
 
-        .post-value {
-            flex: 1;
-            background-color: #fff;
-            padding: 18px 20px;
-            line-height: 1.8;
-            word-break: break-word;
-        }
+.post-label {
+    flex: 0 0 20%;
+    background-color: #ffe4ec;
+    color: #444;
+    text-align: center;
+    padding: 18px 10px;
+    font-weight: 600;
+    font-size: clamp(10px, 2vw, 16px);
+}
 
-        .post-content {
-            white-space: pre-wrap;
-            line-height: 1.8;
-        }
+.post-value {
+    flex: 1;
+    background-color: #fff;
+    padding: 18px 20px;
+    line-height: 1.8;
+    word-break: break-word;
+}
 
-        .post-content img {
-            width: 100%;
-            max-width: 500px;
-            margin-top: 20px;
-            border-radius: 8px;
-        }
+.post-content {
+    white-space: pre-wrap;
+    line-height: 1.8;
+}
 
-        .btn-group {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 30px;
-        }
+.post-content img {
+    width: 100%;
+    max-width: 500px;
+    margin-top: 20px;
+    border-radius: 8px;
+}
 
-        .btn-group input[type="button"] {
-            color: #333;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-        }
+.btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 30px;
+}
 
-        .btn-group .list-btn {
-            background-color: #eeeeee;
-        }
+.btn-group input[type="button"] {
+    color: #333;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+}
 
-        .btn-group .edit-delete {
-            background-color: #ffe1e1;
-        }
+.btn-group .list-btn {
+    background-color: #eeeeee;
+}
 
-        .like-button {
-            font-size: 22px;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
+.btn-group .edit-delete {
+    background-color: #ffe1e1;
+}
 
-        .like-button.liked {
-            color: red;
-        }
+.like-button {
+    font-size: 22px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
 
-       /* 댓글 전체 박스 */
+.like-button.liked {
+    color: red;
+}
+
+/* 댓글 전체 박스 */
 .comment-box {
     background-color: #fff;
     padding: 20px;
@@ -146,13 +147,12 @@
     margin-top: 40px;
 }
 
-/* 댓글 제목 */
 .comment-box h3 {
     font-size: 1.4em;
     margin-bottom: 20px;
 }
 
-/* 댓글 작성 textarea */
+/* 댓글 입력 폼 */
 .comment-form textarea {
     width: 100%;
     padding: 12px;
@@ -160,47 +160,32 @@
     border-radius: 8px;
     font-size: 15px;
     resize: vertical;
+    margin-top: 10px;
 }
 
-/* 댓글 작성 버튼 */
 .comment-form button {
-    background-color: #ffe1e1;
-    color: #333;
+    background-color: #fce4ec;
+    color: #c2185b;
     border: none;
     border-radius: 10px;
     padding: 8px 16px;
     cursor: pointer;
-    margin-top: 10px;
     font-size: 14px;
 }
 
-/* 기본 댓글 구조 */
+/* 댓글 1개 */
 .comment {
     border-top: 1px solid #eee;
     padding-top: 18px;
     margin-top: 20px;
+    position: relative;
 }
 
-/* 댓글 헤더: 프로필 + 작성자 + 답글 버튼 한 줄 */
+/* 작성자 줄 */
 .comment-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* 프로필 + 닉네임 */
-.comment-user-info {
     display: flex;
     align-items: center;
     gap: 10px;
-}
-
-/* 프로필 이미지 */
-.profile-img {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    object-fit: cover;
 }
 
 /* 닉네임 */
@@ -211,43 +196,47 @@
 }
 
 /* 댓글 내용 */
-.comment span {
-    display: block;
+.comment > span {
     font-size: 14px;
+    margin-left: 5px;
     color: #333;
-    padding-left: 46px;
-    margin-top: 6px;
+    white-space: pre-wrap;
     word-break: break-word;
-}
-
-/* 대댓글 */
-.reply {
-    margin-left: 46px;
-    font-size: 14px;
-    color: #555;
-    margin-top: 14px;
-    padding-left: 12px;
-    border-left: 2px solid #f4d6dc;
+    margin-top: 6px;
 }
 
 /* 답글 버튼 */
 .reply-button {
+    position: absolute;
+    top: 8px;
+    right: 0;
     background-color: #fce4ec;
     border: none;
     color: #c2185b;
-    border-radius: 8px;
-    padding: 5px 12px;
-    font-size: 13px;
+    border-radius: 10px;
+    padding: 8px 16px;
     cursor: pointer;
 }
 
-/* 대댓글 작성 폼 */
-.comment-form textarea {
-    margin-top: 6px;
+.reply {
+    margin-left: 10px;
+    margin-top: 10px;
+    padding-left: 10px;
+    font-size: 14px;
+    color: #555;
+    position: relative;
 }
 
-.comment-form button {
-    margin-left: 2px;
+.reply .comment-header {
+    margin-bottom: 4px;
+}
+
+.reply > span {
+    margin-left: 5px;
+    font-size: 13px;
+    color: #555;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
     </style>
@@ -258,8 +247,8 @@
  <form th:action="@{/CommunityDelete}" method="post" th:id="'deleteForm-' + ${dto.postId}">
 
     <div class="post-header">
-        <img class="profile-img" th:if="${dto?.user?.profileimg != null}" th:src="@{/images/{img}(img=${dto.user.profileimg})}" alt="Profile Image"/>
-        <img class="profile-img" th:if="${dto?.user?.profileimg == null}" th:src="@{/images/default.png}" alt="Default Image"/>
+        <img class="profile-img" th:if="${dto?.user?.profileimg != null}" th:src="@{/image/{img}(img=${dto.user.profileimg})}" alt="Profile Image"/>
+        <img class="profile-img" th:if="${dto?.user?.profileimg == null}" th:src="@{/image/default.png}" alt="Default Image"/>
         <h2 th:text="${dto.user.userLoginId} + '님의 게시물'"></h2>
     </div>
 
@@ -319,23 +308,23 @@
             <button type="submit">댓글 작성</button>
         </form>
 
-        <div th:each="comment : ${comments}" class="comment">
+        <div th:each="comment : ${comments}" th:if="${comment.depth == 0}" class="comment">
             <div class="comment-header">
-                <img class="profile-img" th:if="${dto?.user?.profileimg != null}" th:src="@{/images/{img}(img=${dto.user.profileimg})}" alt="Profile Image"/>
-                <img class="profile-img" th:if="${dto?.user?.profileimg == null}" th:src="@{/images/default.png}" alt="Default Image"/>
+                <img class="profile-img" th:if="${dto?.user?.profileimg != null}" th:src="@{/image/{img}(img=${dto.user.profileimg})}" alt="Profile Image"/>
+                <img class="profile-img" th:if="${dto?.user?.profileimg == null}" th:src="@{/image/default.png}" alt="Default Image"/>
                 <strong th:text="${comment.userLoginId}">작성자</strong>
             </div>
-                <span th:text="${comment.com_com}">내용</span>
+              🗨️ <span th:text="${comment.com_com}">내용</span>
             <button type="button" class="reply-button" th:onclick="|toggleReplyForm(${comment.com_id})|">답글</button>
 
 
-            <div th:each="reply : ${comments}" th:if="${reply.parent_id == comment.com_id}" style="margin-left: 20px;">
+            <div th:each="reply : ${comments}" th:if="${reply.parent_id == comment.com_id}" class="reply">
                 <div class="comment-header">
-                  <img class="profile-img" th:if="${dto?.user?.profileimg != null}" th:src="@{/images/{img}(img=${dto.user.profileimg})}" alt="Profile Image"/>
-                  <img class="profile-img" th:if="${dto?.user?.profileimg == null}" th:src="@{/images/default.png}" alt="Default Image"/>
+                  <img class="profile-img" th:if="${dto?.user?.profileimg != null}" th:src="@{/image/{img}(img=${dto.user.profileimg})}" alt="Profile Image"/>
+                  <img class="profile-img" th:if="${dto?.user?.profileimg == null}" th:src="@{/image/default.png}" alt="Default Image"/>
                   <strong th:text="${reply.userLoginId}">작성자</strong>
                 </div>
-                <span th:text="${reply.com_com}">대댓글내용</span>
+                🗨️ <span th:text="${reply.com_com}">대댓글내용</span>
             </div>
 
             <form th:id="'reply-form-' + ${comment.com_id}" class="comment-form" th:action="@{/community/comment}" method="post" style="display: none;">

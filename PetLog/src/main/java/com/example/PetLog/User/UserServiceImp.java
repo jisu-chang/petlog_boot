@@ -245,7 +245,6 @@ public class UserServiceImp implements UserService{
                 userDTO.setEquippedFrameName(equippedFrame.getItem().getItemName());
             }
         }
-
         return userDTO;
     }
 

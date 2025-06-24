@@ -30,7 +30,7 @@ public class CommunityController {
     @Autowired
     CommentsService commentsService;
 
-    String path ="C:\\MBC12AI\\git\\petlog_boot\\src\\main\\resources\\static\\image";
+    String path ="C:\\MBC12AI\\git\\petlog_boot\\PetLog\\src\\main\\resources\\static\\image";
 
     // 커뮤니티/공지사항 폼을 type에 따라 다르게 로딩
     @GetMapping("/CommunityIn")
@@ -84,17 +84,19 @@ public class CommunityController {
     @GetMapping(value = "/CommunityOut")
     public String comout(Model mo) {
         List<CommunityEntity> list = communityService.allout();
+        // 최근 게시물 먼저 출력 (postDate 기준 내림차순)
+        list.sort((a, b) -> b.getPostDate().compareTo(a.getPostDate()));
+
         // 탈퇴회원 글 제외
         List<CommunityEntity> filtered = list.stream()
                 .filter(cc -> cc.getUser() != null)
                 .collect(Collectors.toList());
 
-        // 공지사항 출력
+        // 공지사항 / 일반글 분리
         List<CommunityEntity> noticePosts = list.stream()
                 .filter(post -> "notice".equals(post.getPostType()))
                 .collect(Collectors.toList());
 
-        // 일반글 출력
         List<CommunityEntity> normalPosts = list.stream()
                 .filter(post -> "normal".equals(post.getPostType()))
                 .collect(Collectors.toList());
@@ -121,7 +123,7 @@ public class CommunityController {
     @GetMapping(value = "/CommunityDetail")
     public String comdetail(@RequestParam("postId") Long postId, Model mo, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
-        String userLoginId = (String) session.getAttribute("user_login_id");
+        String userLoginId = (String) session.getAttribute("userLoginId");
         String userRole = (String) session.getAttribute("userRole");
 
         // 좋아요 처리
