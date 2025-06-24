@@ -196,7 +196,8 @@
 
     <div class="pet-actions">
       <a th:href="@{/Pet/PetUpdate(petId=${petEntity.petId}, dfimage=${petEntity.petImg})}" class="pet-button">✏️</a>
-      <a th:href="@{/Pet/PetDelete(delete=${petEntity.petId}, dfimage=${petEntity.petImg})}" class="pet-button">🗑️</a>
+      <a th:href="@{/Pet/PetDelete(delete=${petEntity.petId}, dfimage=${petEntity.petImg})}" class="pet-button"
+         onclick="return confirm('정말 펫 정보를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다 😥');">🗑️</a>
     </div>
   </div>
 </div>
