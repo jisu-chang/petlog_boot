@@ -80,6 +80,11 @@ public class CommentsServiceImp implements CommentsService{
         return comments.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    @Override
+    public List<CommentsEntity> getSnackComments(Long snackId) {
+        return commentsRepository.findBySnack_SnackId(snackId);
+    }
+
 
     //Entity -> DTO로 변환
     CommentsDTO toDTO(CommentsEntity comment) {

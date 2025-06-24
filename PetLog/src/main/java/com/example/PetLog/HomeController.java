@@ -1,15 +1,22 @@
 package com.example.PetLog;
 
+import com.example.PetLog.Comments.CommentsEntity;
+import com.example.PetLog.Comments.CommentsService;
+import com.example.PetLog.Likes.LikesService;
 import com.example.PetLog.Pet.PetDTO;
 import com.example.PetLog.Pet.PetService;
 import com.example.PetLog.Quiz.QuizDTO;
 import com.example.PetLog.Quiz.QuizService;
+import com.example.PetLog.Snack.SnackEntity;
+import com.example.PetLog.Snack.SnackService;
 import com.example.PetLog.User.CustomUserDetails;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -17,8 +24,6 @@ import java.util.List;
 public class HomeController {
     @Autowired
     PetService petService;
-    @Autowired
-    QuizService quizService;
 
     @GetMapping(value = "/main")
     public String home1(Model mo, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
@@ -50,5 +55,6 @@ public class HomeController {
         }
         return "main";
     }
+
 
 }

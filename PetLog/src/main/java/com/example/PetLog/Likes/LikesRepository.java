@@ -25,16 +25,10 @@ public interface LikesRepository extends JpaRepository<LikesEntity, Long> {
     // 좋아요 수 카운팅
     int countByPostId(Long postId);
 
-    //좋아요 유무
-    boolean existsByPostIdAndUserId(Long postId, Long userId);
-
-    @Query("SELECT COUNT(l) FROM LikesEntity l " +
-            "WHERE l.snack.snackId = :snackId AND l.user.userId = :userId AND l.user.userLoginId = :userLoginId")
-    boolean existsSnackLike(@Param("snackId") Long snackId,
-                            @Param("userId") Long userId,
-                            @Param("userLoginId") String userLoginId);
-
     int countBySnackId(Long snackId);
 
+    @Query("SELECT CASE WHEN COUNT(l) > 0 THEN true ELSE false END " +
+            "FROM LikesEntity l " +
+            "WHERE l.snackId = :snackId AND l.userId = :userId AND l.userLoginId = :userLoginId")
     boolean existsBySnackIdAndUserIdAndUserLoginId(Long snackId, Long userId, String userLoginId);
 }

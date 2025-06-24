@@ -61,7 +61,15 @@ public class LikesServiceImp implements LikesService{
         return existing != null;
     }
 
+    @Override
+    public boolean isLikedByUserOnSnack(Long snackId, Long userId, String userLoginId) {
+        return likesRepository.existsBySnackIdAndUserIdAndUserLoginId(snackId, userId, userLoginId);
+    }
 
+    @Override
+    public int getSnackLikeCount(Long snackId) {
+        return likesRepository.countBySnackId(snackId);
+    }
 
 
 }

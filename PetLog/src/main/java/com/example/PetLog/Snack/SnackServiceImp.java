@@ -86,5 +86,10 @@ public class SnackServiceImp implements SnackService {
         snackRepository.deleteByUser_UserId(userId);
     }
 
+    @Override
+    public SnackEntity getSnackById(Long snackId) {
+        return snackRepository.findById(snackId).orElse(null);
+    }
+
 
 }

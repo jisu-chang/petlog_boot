@@ -4,6 +4,7 @@ import com.example.PetLog.Comments.CommentsDTO;
 import com.example.PetLog.Comments.CommentsEntity;
 import com.example.PetLog.Comments.CommentsService;
 import com.example.PetLog.Likes.LikesService;
+import com.example.PetLog.Quiz.QuizService;
 import com.example.PetLog.User.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,9 @@ public class SnackController {
     @Autowired
     UserService userService;
     @Autowired
-    LikesService likesService;
-    @Autowired
     CommentsService commentsService;
+    @Autowired
+    LikesService likesService;
 
     String path = System.getProperty("user.dir") + "/src/main/resources/static/image";
 
@@ -56,6 +57,7 @@ public class SnackController {
 //        Long userId = userService.findUserIdByLoginId(loginId);
 
         dto.setUserId(userId);
+        dto.setSnackReadcnt(0);
 
         MultipartFile file = dto.getSnackImage();
         if (file != null && !file.isEmpty()) {
@@ -105,11 +107,19 @@ public class SnackController {
             return "redirect:/Snack/SnackOut"; // 또는 에러 페이지
         } //snackId 못 찾으면 여기로 redirect
 
+        //좋아요 수 가져오기
+        int likeCount = likesService.getSnackLikeCount(snackId);
+        //내가 좋아요 눌렀는지 확인
+        boolean likedByUser = likesService.isLikedByUserOnSnack(snackId, userId, userLoginId);
+        //댓글 목록 가져오기
+        List<CommentsEntity> comments = commentsService.getSnackComments(snackId);
 
-
-        System.out.println("snackDTO = " + snackDTO);
+        mo.addAttribute("sessionUserId", userId);
+        mo.addAttribute("sessionUserLoginId", userLoginId);
         mo.addAttribute("dto", snackDTO);
-
+        mo.addAttribute("likeCount", likeCount);
+        mo.addAttribute("likedByUser", likedByUser);
+        mo.addAttribute("comments", comments);
         return "Snack/SnackDetail";
     }
 
@@ -179,5 +189,57 @@ public class SnackController {
         return "redirect:/Snack/SnackOut";
     }
 
+    @GetMapping("/snack/{snackId}")
+    public String viewSnack(@PathVariable Long snackId, HttpSession session, Model mo) {
+        Long userId = (Long) session.getAttribute("userId");
+        String userLoginId = (String) session.getAttribute("userLoginId");
 
+        SnackEntity snack = snackService.getSnackById(snackId);
+        boolean likedByUser = likesService.isLikedByUserOnSnack(snackId, userId, userLoginId);
+        int likeCount = likesService.getSnackLikeCount(snackId);
+        List<CommentsEntity> comments = commentsService.getSnackComments(snackId);
+
+        mo.addAttribute("dto", snack);
+        mo.addAttribute("likedByUser", likedByUser);
+        mo.addAttribute("likeCount", likeCount);
+        mo.addAttribute("comments", comments);
+
+        return "Snack/SnackDetail";
+    }
+
+    //좋아요
+    @PostMapping("/snack/{snackId}/like")
+    public String likeOnSnack(@PathVariable Long postId, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        String userLoginId = (String) session.getAttribute("userLoginId");
+
+        if (userId == null || userLoginId == null) {
+            return "redirect:/login";
+        }
+        likesService.likeOnUser(postId, userId, userLoginId);
+
+        return "redirect:/CommunityDetail?postId=" + postId;
+    }
+
+    @PostMapping("/snack/comment")
+    public String saveComment(@ModelAttribute("commentsDTO") CommentsDTO commentsDTO,
+                              RedirectAttributes redirectAttributes, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        String userLoginId = (String) session.getAttribute("userLoginId");
+
+        if (userId == null || userLoginId == null) {
+            return "redirect:/login";
+        }
+        commentsDTO.setUser_id(userId);
+        commentsDTO.setUserLoginId(userLoginId);
+        commentsService.saveComment(commentsDTO);
+
+        // 값이 null이 아닌 경우에만 파라미터 추가
+        if (commentsDTO.getSnack_id() != null) {
+            redirectAttributes.addAttribute("snackId", commentsDTO.getSnack_id());
+            return "redirect:/Snack/SnackDetail";
+        } else {
+            return "redirect:/Snack";
+        }
+    }
 }

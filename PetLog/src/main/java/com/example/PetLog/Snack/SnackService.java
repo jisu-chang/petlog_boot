@@ -25,4 +25,5 @@ public interface SnackService {
     void deleteByUserId(Long userId);
 
 
+    SnackEntity getSnackById(Long snackId);
 }

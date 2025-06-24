@@ -306,16 +306,16 @@
           </form>
 
           <div th:each="comment : ${comments}" class="comment">
-            <p><strong><span th:text="${comment.userLoginId}">작성자</span></strong>: <span th:text="${comment.com_com}">내용</span></p>
-            <button type="button" onclick="toggleReplyForm([[${comment.com_id}]])">답글</button>
+            <p><strong><span th:text="${comment.user.userLoginId}">작성자</span></strong>: <span th:text="${comment.comCom}">내용</span></p>
+            <button type="button" onclick="toggleReplyForm([[${comment.comId}]])">답글</button>
 
-            <div th:each="reply : ${comments}" th:if="${reply.parent_id == comment.com_id}" style="margin-left: 20px;">
-              ↳ <strong><span th:text="${reply.userLoginId}">작성자</span></strong>: <span th:text="${reply.com_com}">대댓글내용</span>
+            <div th:each="reply : ${comments}" th:if="${reply.parentId == comment.comId}" style="margin-left: 20px;">
+              ↳ <strong><span th:text="${reply.user.userLoginId}">작성자</span></strong>: <span th:text="${reply.comCom}">대댓글내용</span>
             </div>
 
-            <form th:id="'reply-form-' + ${comment.com_id}" class="comment-form" th:action="@{/snack/comment}" method="post" style="display: none;">
+            <form th:id="'reply-form-' + ${comment.comId}" class="comment-form" th:action="@{/snack/comment}" method="post" style="display: none;">
               <input type="hidden" name="snack_id" th:value="${dto.snackId}" />
-              <input type="hidden" name="parent_id" th:value="${comment.com_id}" />
+              <input type="hidden" name="parent_id" th:value="${comment.comId}" />
               <input type="hidden" name="depth" value="1" />
               <textarea name="com_com" rows="2" placeholder="답글을 입력하세요" required></textarea>
               <button type="submit">작성</button>

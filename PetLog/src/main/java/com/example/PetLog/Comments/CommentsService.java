@@ -12,5 +12,5 @@ public interface CommentsService {
 
     List<CommentsDTO> getCommentsByPostId(Long postId);
 
-
+    List<CommentsEntity> getSnackComments(Long snackId);
 }

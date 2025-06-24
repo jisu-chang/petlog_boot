@@ -19,15 +19,15 @@ import java.util.List;
 @Builder
 @Table(name = "snack")
 @SequenceGenerator(
-        name = "snack_seq",
+        name = "snack_id",
         sequenceName = "snack_seq",
         allocationSize = 1,
         initialValue = 1
 )
 public class SnackEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "snack_id")
     @Column (name = "snack_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "snack_seq")
     Long snackId;
     @Column (name = "snack_title")
     String snackTitle;
