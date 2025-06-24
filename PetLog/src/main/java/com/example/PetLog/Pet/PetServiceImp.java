@@ -42,7 +42,11 @@ public class PetServiceImp implements PetService {
             PetDTO dto = new PetDTO();
             dto.setPetId(pet.getPetId());
             dto.setPetName(pet.getPetName());
-            // 필요 시 추가 필드 설정
+            dto.setPetBog(pet.getPetBog());
+            dto.setPetNeuter(pet.getPetNeuter());
+            dto.setPetHbd(pet.getPetHbd());
+            dto.setPetImgName(pet.getPetImg());
+
             petDTOList.add(dto);
         }
         return petDTOList;

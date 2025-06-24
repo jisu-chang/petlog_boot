@@ -8,6 +8,11 @@ import com.example.PetLog.Pet.PetService;
 import com.example.PetLog.Quiz.QuizDTO;
 import com.example.PetLog.Quiz.QuizService;
 import com.example.PetLog.Snack.SnackEntity;
+import com.example.PetLog.Community.CommunityDTO;
+import com.example.PetLog.Community.CommunityService;
+import com.example.PetLog.Pet.PetDTO;
+import com.example.PetLog.Pet.PetService;
+import com.example.PetLog.Snack.SnackDTO;
 import com.example.PetLog.Snack.SnackService;
 import com.example.PetLog.User.CustomUserDetails;
 import jakarta.servlet.http.HttpSession;
@@ -24,6 +29,10 @@ import java.util.List;
 public class HomeController {
     @Autowired
     PetService petService;
+    @Autowired
+    CommunityService communityService;
+    @Autowired
+    SnackService snackService;
 
     @GetMapping(value = "/main")
     public String home1(Model mo, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
@@ -32,7 +41,7 @@ public class HomeController {
                     .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
             mo.addAttribute("user_role", isAdmin ? "admin" : "USER");
         }
-        return "main";
+        return "main3";
     }
 
     @GetMapping("/test")
@@ -50,10 +59,10 @@ public class HomeController {
         if (userDetails != null) {
             Long userId = userDetails.getUser().getUserId();
             List<PetDTO> pets = petService.findPetsByUserId(userId);
-            System.out.println("🐶 등록된 펫 수: " + pets.size());
+
             model.addAttribute("list", pets);
         }
-        return "main";
+        return "main3";
     }
 
 
