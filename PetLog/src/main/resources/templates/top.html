@@ -354,14 +354,34 @@
 
   <div class="bottom-nav">
     <!-- 로그인 상태일 때 -->
-    <a sec:authorize="isAuthenticated()" th:href="@{/MyPage}">👤<span>마이페이지</span></a>
-    <a sec:authorize="isAuthenticated()" th:href="@{/Pet/PetOut}">🐾<span>마이 펫</span></a>
-    <a sec:authorize="isAuthenticated()" th:href="@{/Point/GrapeBar}">🍇<span> 포도 <span th:text="${session.grapeCount}"></span>알</span></a>
-    <a sec:authorize="isAuthenticated()" th:href="@{/ItemUser/ItemBought}">💼<span>내 아이템</span></a>
+    <a sec:authorize="isAuthenticated()" th:href="@{/MyPage}">
+      <img src="/image/회원정보.png" alt="마이페이지" style="width:24px; height:24px; vertical-align: middle;" />
+      <span>마이페이지</span>
+    </a>
+    <a sec:authorize="isAuthenticated()" th:href="@{/Pet/PetOut}">
+      <img src="/image/펫관리.png" alt="마이펫" style="width:24px; height:24px; vertical-align: middle;" />
+      <span>마이펫</span>
+    </a>
+    <a sec:authorize="isAuthenticated()" th:href="@{/Point/GrapeBar}">
+      <img src="/image/포도알.png" alt="포도알" style="width:24px; height:24px; vertical-align: middle;" />
+      <span>포도알<span th:text="${session.grapeCount}"></span>알</span>
+    </a>
+    <a sec:authorize="isAuthenticated()" th:href="@{/ItemUser/ItemBought}">
+      <img src="/image/아이템.png" alt="내 아이템" style="width:24px; height:24px; vertical-align: middle;" />
+      <span>내 아이템</span>
+    </a>
+
 
     <!-- 로그아웃 상태일 때 -->
-    <a sec:authorize="isAnonymous()" th:href="@{/login}">🔓<span>로그인</span></a>
-    <a sec:authorize="isAnonymous()" th:href="@{/signUp}">👤<span>회원가입</span></a>
+    <a sec:authorize="isAnonymous()" th:href="@{/login}">
+      <img src="/image/로그인.png" alt="로그인" style="width:20px; height:20px; vertical-align: middle;" />
+      <span>로그인</span>
+    </a>
+    <a sec:authorize="isAnonymous()" th:href="@{/signUp}">
+      <img src="/image/가입.png" alt="회원가입" style="width:20px; height:20px; vertical-align: middle;" />
+      <span>회원가입</span>
+    </a>
+
   </div>
 
   <script>
