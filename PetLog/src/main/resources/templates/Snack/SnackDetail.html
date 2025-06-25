@@ -214,7 +214,8 @@
 <div class="table-wrapper">
   <table>
     <caption>
-      <img th:src="@{/image/{img}(img=${profileimg})}" class="profile-img" />
+      <img class="profile-img" th:if="${dto.user.profileimg != null}" th:src="@{/image/{img}(img=${dto.user.profileimg})}" alt="Profile Image"/>
+      <img class="profile-img" th:if="${dto.user.profileimg == null}" th:src="@{/image/default.png}" alt="Default Image"/>
       <span th:text="${dto.userLoginId} + '님의 간식 레시피 🦴'"></span>
 
       <div class="top-icons">
@@ -223,7 +224,6 @@
         <span>❤️ <span th:text="${likeCount}"></span></span>
       </div>
     </caption>
-
     <tr><td colspan="2" style="height: 1px; border-bottom: 1px solid #eee;"></td></tr>
 
     <tr>

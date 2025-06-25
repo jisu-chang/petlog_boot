@@ -56,7 +56,7 @@ public class SnackServiceImp implements SnackService {
         dto.setSnackReadcnt(snackEntity.getSnackReadcnt());
         dto.setUserId(snackEntity.getUserId());
         dto.setUserLoginId(userLoginId);
-
+        dto.setUser(snackEntity.getUser());
         return dto;
     }
 

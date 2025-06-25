@@ -37,7 +37,7 @@ public class SnackEntity {
     String snackImage;
     @Column (name = "snack_date")
     LocalDate snackDate;
-    @Column (name = "user_id")
+    @Column (name = "user_id", nullable = false)
     Long userId;
     @Column (name = "snack_readcnt")
     int snackReadcnt;

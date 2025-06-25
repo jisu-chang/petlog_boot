@@ -117,6 +117,7 @@ public class SnackController {
             return "redirect:/Snack/SnackOut"; // 또는 에러 페이지
         } //snackId 못 찾으면 여기로 redirect
 
+
         //좋아요 수 가져오기
         int likeCount = likesService.getSnackLikeCount(snackId);
         //내가 좋아요 눌렀는지 확인
