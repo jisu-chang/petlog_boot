@@ -225,7 +225,7 @@
 
             <!-- 삭제 버튼 -->
             <div th:if="${dto.qnaAnswer != null}">
-                <button onclick="alert('답변이 달린 글은 삭제할 수 없습니다.'); return false;">🗑 삭제</button>
+                <button onclick="alert('답변이 달린 글은 삭제할 수 없습니다.'); return false;">🗑️ 삭제</button>
             </div>
             <div th:if="${dto.qnaAnswer == null}">
                 <button th:onclick="|if(confirm('삭제하시겠습니까?')) location.href='@{/QnADelete(qnaId=${dto.qnaId})}'|">🗑 삭제</button>

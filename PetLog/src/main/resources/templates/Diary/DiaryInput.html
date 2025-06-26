@@ -183,6 +183,25 @@
     </div>
   </form>
 </div>
+
+<script th:inline="javascript">
+  // URL에서 특정 파라미터 값을 가져오는 함수
+  function getUrlParameter(name) {
+      name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+      var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+      var results = regex.exec(location.search);
+      return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+  };
+
+  // 페이지 로드 시 실행
+  window.onload = function() {
+      var successParam = getUrlParameter('success');
+      if (successParam === 'grape') {
+          alert('다이어리 작성 완료! 포도알 1개가 적립되었습니다🍇');
+      }
+  };
+</script>
+
 </body>
 
 </html>

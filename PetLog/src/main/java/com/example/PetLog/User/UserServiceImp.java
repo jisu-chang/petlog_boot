@@ -254,4 +254,9 @@ public class UserServiceImp implements UserService{
         return userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("해당 유저가 존재하지 않습니다.")); //null 처리 예외
     }
 
+    @Override
+    public Optional<UserEntity> findUserByLoginId(String loginId) {
+        return userRepository.findByUserLoginId(loginId);
+    }
+
 }

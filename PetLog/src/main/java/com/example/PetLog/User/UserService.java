@@ -3,6 +3,7 @@ package com.example.PetLog.User;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import java.util.Optional;
 
 public interface UserService {
 
@@ -13,6 +14,9 @@ public interface UserService {
 
     //diary에서 추가
     Long findUserIdByLoginId(String loginId);
+
+    //메뉴바 포도알 업데이트
+    Optional<UserEntity> findUserByLoginId(String loginId);
 
     void save(UserDTO dto);
 
