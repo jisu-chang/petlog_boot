@@ -37,6 +37,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         if (userOpt.isPresent()) {
             // 기존 유저 → 로그인 처리
             UserEntity user = userOpt.get();
+            session.setAttribute("loginUser", user);
             session.setAttribute("userId", user.getUserId());
             session.setAttribute("userLoginId", user.getUserLoginId());
             session.setAttribute("userRole", user.getUserRole());

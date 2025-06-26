@@ -37,17 +37,35 @@ public class HomeController {
     UserService userService;
 
     @GetMapping(value = "/main")
-    public String home1(Model mo, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public String home1(Model model, @AuthenticationPrincipal CustomUserDetails userDetails, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         if (customUserDetails != null) {
             boolean isAdmin = customUserDetails.getAuthorities().stream()
                     .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-            mo.addAttribute("user_role", isAdmin ? "admin" : "USER");
+            model.addAttribute("user_role", isAdmin ? "admin" : "USER");
         }
+        List<PetDTO> pets = new ArrayList<>();
+        UserEntity user = null;
+
+        if (userDetails != null) {
+            Long userId = userDetails.getUser().getUserId();
+            pets = petService.findPetsByUserId(userId);
+            user = userService.findByuserId(userId);
+        }
+
+        model.addAttribute("list", pets); // 무조건 list는 들어감 (빈 리스트라도)
+        model.addAttribute("user", user);
+
         return "main4";
     }
 
     @GetMapping("/")
-    public String showMain(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public String showMain(Model model, @AuthenticationPrincipal CustomUserDetails userDetails, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        if (customUserDetails != null) {
+            boolean isAdmin = customUserDetails.getAuthorities().stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+            model.addAttribute("user_role", isAdmin ? "admin" : "USER");
+        }
+
         List<PetDTO> pets = new ArrayList<>();
         UserEntity user = null;
 
