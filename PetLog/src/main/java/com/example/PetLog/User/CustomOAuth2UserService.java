@@ -32,35 +32,28 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String nickname = (String) properties.get("nickname");
         String profileImage = (String) properties.get("profile_image");
 
-        // 카카오에서 제공하는 사용자 고유 ID를 userLoginId로 사용합니다.
         String kakaoUniqueId = String.valueOf(oauthUser.getName());
 
-        // 사용자를 'email' 기준으로 조회합니다. (이전에 findByEmail에서 에러가 났었으므로)
-        // Email은 유일하다고 가정합니다.
         Optional<UserEntity> optionalUser = userRepository.findByEmail(email);
         UserEntity userEntity;
 
         if (optionalUser.isPresent()) {
             userEntity = optionalUser.get();
-            // 기존 사용자: 정보 업데이트 (닉네임, 프로필 이미지, 이메일 업데이트)
-            // userLoginId는 카카오 고유 ID로 이미 설정되어 있으므로, 업데이트하지 않습니다.
-            userEntity.setName(nickname);        // NAME 필드에 카카오 닉네임 저장
+            userEntity.setName(nickname);
             userEntity.setProfileimg(profileImage);
-            // userEntity.setEmail(email);          // EMAIL은 그대로 둡니다. (카카오 계정의 이메일)
-            userRepository.save(userEntity);
+            userEntity.setEmail(email);
+            userRepository.save(userEntity); // 기존 유저는 업데이트 후 저장
         } else {
-            // 새 사용자: UserEntity 생성 및 저장
             userEntity = new UserEntity();
-            userEntity.setUserLoginId(kakaoUniqueId); // USER_LOGIN_ID에 카카오 고유 ID 저장
-            userEntity.setEmail(email);                // EMAIL 필드에 카카오 이메일 저장
-            userEntity.setName(nickname);              // NAME 필드에 카카오 닉네임 저장
+            userEntity.setUserLoginId(kakaoUniqueId); // 카카오 고유 ID
+            userEntity.setEmail(email);
+            userEntity.setName(nickname);
             userEntity.setProfileimg(profileImage);
             userEntity.setUserRole("USER");
             userEntity.setGrapeCount(0);
             userEntity.setRank("일반회원");
-            // 소셜 로그인으로 가입했음을 나타내는 필드를 추가하면, OAuth2SuccessHandler에서 신규 유저 구분이 더 명확해집니다.
-            // 예시: userEntity.setLoginProvider("KAKAO"); (UserEntity에 loginProvider 필드가 있다면)
-            userRepository.save(userEntity);
+            // 신규 유저는 여기서 userRepository.save(userEntity); 를 호출하지 않습니다.
+            // 저장은 signUpKakao 페이지에서 추가 정보 입력 후 진행됩니다.
         }
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
