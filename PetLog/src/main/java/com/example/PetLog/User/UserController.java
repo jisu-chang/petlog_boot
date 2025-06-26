@@ -134,8 +134,19 @@ public class UserController {
         String fname = ff != null ? ff.substring(ff.lastIndexOf(".")) : "";  // 파일 확장자 추출
         String nfname = UUID.randomUUID().toString() + fname;  // UUID로 고유한 파일명 만들기
 
-        // UUID로 파일 저장
-        mf.transferTo(new File(path + "\\" + nfname));
+        File uploadDirectory = new File(path);
+        if (!uploadDirectory.exists()) {
+            uploadDirectory.mkdirs(); // 디렉토리가 없으면 생성 (상위 디렉토리도 함께 생성)
+        }
+
+        try {
+            mf.transferTo(new File(path + File.separator + nfname));
+        } catch (IOException e) {
+            // 이미지 저장 실패 시 사용자에게 오류 메시지 전달
+            mo.addAttribute("error", "프로필 이미지 저장 중 오류가 발생했습니다.");
+
+            return "User/UserSignUp";
+        }
 
         // 새로운 파일명을 DTO에 설정
         userDTO.setProfileimgName(nfname);
