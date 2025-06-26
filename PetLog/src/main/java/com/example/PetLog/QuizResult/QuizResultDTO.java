@@ -17,7 +17,6 @@ public class QuizResultDTO {
     Long quizId;
     int getGrape;
     String userAnswer;
-
     UserEntity user;
 
     // QuizEntity 대신 필요한 필드들을 직접 DTO에 추가
@@ -39,6 +38,4 @@ public class QuizResultDTO {
         this.userId = entity.getUserId();
         this.user = entity.getUser();
     }
-
-
 }

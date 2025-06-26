@@ -52,8 +52,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             userEntity.setUserRole("USER");
             userEntity.setGrapeCount(0);
             userEntity.setRank("일반회원");
-            // 신규 유저는 여기서 userRepository.save(userEntity); 를 호출하지 않습니다.
-            // 저장은 signUpKakao 페이지에서 추가 정보 입력 후 진행됩니다.
         }
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
