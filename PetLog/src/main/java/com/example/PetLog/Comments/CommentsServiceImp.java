@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,14 +78,11 @@ public class CommentsServiceImp implements CommentsService{
     @Override
     public List<CommentsDTO> getCommentsByPostId(Long postId) {
         List<CommentsEntity> comments = commentsRepository.findCommentsByPostId(postId);
-        return comments.stream().map(this::toDTO).collect(Collectors.toList());
+        return comments.stream()
+                .filter(Objects::nonNull) // comments 리스트 자체에 null CommentsEntity가 있다면 필터링
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
-
-    @Override
-    public List<CommentsEntity> getSnackComments(Long snackId) {
-        return commentsRepository.findBySnack_SnackId(snackId);
-    }
-
 
     //Entity -> DTO로 변환
     CommentsDTO toDTO(CommentsEntity comment) {
@@ -93,18 +91,24 @@ public class CommentsServiceImp implements CommentsService{
         dto.setCom_com(comment.getComCom());
         dto.setParent_id(comment.getParentId());
         dto.setDepth(comment.getDepth());
+
+        dto.setUser(comment.getUser());
         dto.setUserLoginId(comment.getUser().getUserLoginId());
+
         // Snack이 null인 경우를 처리
         if (comment.getSnack() != null) {
             dto.setSnack_id(comment.getSnack().getSnackId()); // getSnackId 호출 전에 null 체크
-        } else {
-            dto.setSnack_id(null); // Snack이 없을 경우 null 처리
         }
         //작성자 로그인 아이디 담기
         if (comment.getUser() != null) {
-            dto.setUserLoginId(comment.getUser().getUserLoginId());
+            dto.setUser(comment.getUser()); // UserEntity 객체 자체를 DTO에 담기
         }
         return dto;
+    }
+
+    @Override
+    public List<CommentsEntity> getSnackComments(Long snackId) {
+        return commentsRepository.findBySnack_SnackId(snackId);
     }
 
 }

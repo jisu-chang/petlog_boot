@@ -9,9 +9,11 @@ import java.util.Map;
 public class CustomOAuth2User implements OAuth2User {
 
     private final Map<String, Object> attributes;
+    private final UserEntity user;
 
-    public CustomOAuth2User(Map<String, Object> attributes) {
+    public CustomOAuth2User(Map<String, Object> attributes, UserEntity user) {
         this.attributes = attributes;
+        this.user = user;
     }
 
     public String getEmail() {
@@ -22,6 +24,19 @@ public class CustomOAuth2User implements OAuth2User {
     public String getProfileImage() {
         Map<String, Object> properties = (Map<String, Object>) attributes.get("properties");
         return properties != null ? (String) properties.get("profile_image") : null;
+    }
+
+    public UserEntity getUser() {
+        return user;
+    }
+
+    //userId 바로 꺼내기용
+    public Long getUserId() {
+        return user.getUserId();
+    }
+
+    public String getUserRole() {
+        return user.getUserRole();
     }
 
     @Override
@@ -39,4 +54,6 @@ public class CustomOAuth2User implements OAuth2User {
         Map<String, Object> properties = (Map<String, Object>) attributes.get("properties");
         return properties != null ? (String) properties.get("nickname") : null;
     }
+
+
 }

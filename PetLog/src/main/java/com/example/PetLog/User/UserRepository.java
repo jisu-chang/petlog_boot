@@ -1,8 +1,5 @@
 package com.example.PetLog.User;
 
-import aj.org.objectweb.asm.commons.Remapper;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-    UserEntity findByUserLoginId(String userLoginId);
+    Optional<UserEntity> findByUserLoginId(String userLoginId);
 
 //    @Query("SELECT u FROM UserEntity u WHERE u.email = :email")
 //    Optional<UserEntity> findOptionalByEmail(@Param("email") String email);

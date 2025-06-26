@@ -225,6 +225,30 @@
          flex-direction: column;
          align-items: center;
        }
+      .side-menu {
+        display: flex;
+        flex-direction: column;
+         justify-content: space-between; /* 상단: 메뉴, 하단: 로그아웃 */
+      }
+.logout-section {
+  padding: 20px 0;
+  text-align: center;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.logout-section a {
+  color: #007f7f;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.logout-section a:hover {
+  text-decoration: underline;
+}
+
     </style>
   </head>
 <body>
@@ -242,7 +266,6 @@
   </div>
 
   <div class="overlay" onclick="toggleMenu()"></div>
-
 
   <div class="side-menu" id="sideMenu" style="padding-top: 60px;">
     <div class="close-btn" onclick="toggleMenu()">×</div>
@@ -267,7 +290,7 @@
 
       <li class="menu-toggle-group section-group">
         <div class="toggle-header" onclick="toggleMenuGroup(this)">
-          📖 오늘의 일기 <span class="arrow">▼</span>
+          📖 기록 캘린더 <span class="arrow">▼</span>
         </div>
         <ul>
           <li><a th:href="@{/Diary/DiaryInput}">✏️ 일기 쓰기</a></li>
@@ -278,7 +301,7 @@
 
       <li class="menu-toggle-group section-group">
       <div class="toggle-header" onclick="toggleMenuGroup(this)">
-        🐶 마이펫 <span class="arrow">▼</span>
+        🐶 마이 펫 <span class="arrow">▼</span>
       </div>
         <ul>
           <li><a th:href="@{/Pet/PetInput}">🐾 펫 등록</a></li>
@@ -292,8 +315,8 @@
         </div>
         <ul>
           <li><a th:href="@{/CommunityNotice}">📢 공지사항</a></li>
-          <li><a th:href="@{/CommunityOut}">💬 게시판</a></li>
-          <li><a th:href="@{/Snack/SnackOut}">🦴 레시피 보기</a></li>
+          <li><a th:href="@{/CommunityOut}">💬 자유 게시판</a></li>
+          <li><a th:href="@{/Snack/SnackOut}">🦴 간식 레시피</a></li>
         </ul>
       </li>
 
@@ -331,23 +354,11 @@
           <li><a th:href="@{/QnAOut}">📤 Q&A</a></li>
         </ul>
       </li>
-
-
-      <li class="menu-toggle-group section-group">
-        <div class="toggle-header" onclick="toggleMenuGroup(this)">
-          👤 마이페이지 <span class="arrow">▼</span>
-        </div>
-        <ul>
-          <li sec:authorize="isAuthenticated()">
-            <a href="/MyPage">
-              ℹ️&nbsp;<span th:text="${#authentication.name + '님의 마이페이지'}"></span></a>
-          </li>
-          <li sec:authorize="isAuthenticated()"><a href="/logout">🔐&nbsp;로그아웃</a></li>
-          <li sec:authorize="isAnonymous()"><a href="/login">🔓&nbsp;로그인</a></li>
-          <li sec:authorize="isAnonymous()"><a href="/signUp">👤&nbsp;회원가입</a></li>
-        </ul>
-      </li>
     </ul>
+
+        <div class="logout-section" sec:authorize="isAuthenticated()">
+          <a href="/logout">🔐 로그아웃</a>
+        </div>
   </div>
 </div>
 

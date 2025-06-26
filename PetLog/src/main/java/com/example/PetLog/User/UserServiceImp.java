@@ -57,7 +57,7 @@ public class UserServiceImp implements UserService{
     }
 
     public UserEntity login(String userLoginId, String password) {
-        UserEntity user = userRepository.findByUserLoginId(userLoginId);
+        UserEntity user = userRepository.findByUserLoginId(userLoginId).orElse(null);
 
         if (user != null && user.getPassword().equals(password)) {
             return user;
@@ -130,11 +130,12 @@ public class UserServiceImp implements UserService{
 
     @Override
     public Long findUserIdByLoginId(String loginId) {
-        UserEntity user = userRepository.findByUserLoginId(loginId);
-        if (user != null) {
-            return user.getUserId();
+        Optional<UserEntity> optionalUser = userRepository.findByUserLoginId(loginId);
+        if (optionalUser.isPresent()) {
+            return optionalUser.get().getUserId();
         }
-        return null;  // 로그인 정보 없으면 null 반환하거나 예외 처리
+        return null;
+        // 로그인 정보 없으면 null 반환하거나 예외 처리
     }
 
     @Override

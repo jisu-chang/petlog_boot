@@ -24,14 +24,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String userLoginId) {
+        UserEntity userEntity = userRepository.findByUserLoginId(userLoginId)
+                .orElseThrow(() -> new UsernameNotFoundException("can not find User : " + userLoginId));
 
-        UserEntity userEntity = userRepository.findByUserLoginId(userLoginId);
-
-
-        if (userEntity != null) {
-            return new CustomUserDetails(userEntity);
-        }else {
-            throw new UsernameNotFoundException("can not find User : " + userLoginId);
-        }
+        return new CustomUserDetails(userEntity);
     }
 }
