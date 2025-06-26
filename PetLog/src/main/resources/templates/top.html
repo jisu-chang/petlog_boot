@@ -2,412 +2,280 @@
 <div xmlns:th="http://www.thymeleaf.org" th:fragment="menu"
      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <style>
-      .content-wrapper {
-         box-sizing: border-box;
+      .top-wrapper {
+        height: 60px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: #b2f2e9;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
       }
-       .top-wrapper {
-          height: 60px; /* 또는 원하는 높이 */
-          position: fixed;               /* 고정 위치 */
-          top: 0;                        /* 화면 상단에 붙이기 */
-          left: 0;
-          width: 100%;
-          background-color: #b2f2e9;
-          min-height: 60px;
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-          z-index: 1000;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 0 20px;
-       }
-
-       .logo-center {
-          display: flex;
-          justify-content: center;
-          flex: 1; /* 공간 분배 */
-        }
-
-        .logo-center img {
-          height: 100px;
-          max-width: 100%;
-          object-fit: contain;
-        }
-
-        .logo-wrapper {
-          display: flex;
-          justify-content: center; /* 수평 가운데 */
-          margin-bottom: 5px;      /* 아래 여백 */
-        }
-
-        .logo-wrapper img {
-          width: 100px;             /* 원하는 너비 */
-          height: auto;             /* 비율 유지 */
-        }
-       .menu-toggle {
-         font-size: 26px;
-         cursor: pointer;
-         color: #007f7f;
-         border: none;
-         background: none;
-       }
-
-       .back-btn {
-         font-size: 20px;
-         color: #007f7f;
-         cursor: pointer;
-         background: none;
-         border: none;
-       }
-
-       .overlay {
-         display: none;
-         position: fixed;
-         top: 0;
-         left: 0;
-         width: 100%;
-         height: 100%;
-         background: rgba(0, 0, 0, 0.4);
-         z-index: 998;
-       }
-
-       .side-menu {
-         position: fixed;
-         top: 0;
-         right: -280px;
-         width: 280px;
-         height: 100%;
-         background-color: #e6fcf5;
-         color: #333;
-         z-index: 1003;
-         transition: right 0.3s ease;
-         padding: 20px;
-         overflow-y: auto;
-         box-shadow: -2px 0 6px rgba(0, 0, 0, 0.1);
-       }
-
-       .side-menu.open {
-         right: 0;
-       }
-
-       .side-menu .close-btn {
-         font-size: 25px;
-         color: #555;
-         position: absolute;
-         top: 15px;
-         left: 20px;
-         cursor: pointer;
-       }
-
-       .side-menu h2 {
-         color: #007f7f;
-         margin-top: 30px;
-         margin-bottom: 20px;
-       }
-
-       .side-menu ul {
-         list-style: none;
-         padding: 0;
-       }
-
-       .side-menu li {
-         padding: 10px 0;
-       }
-
-       .side-menu a {
-         color: #007f7f;
-         text-decoration: none;
-         display: block;
-         font-weight: 600;
-       }
-
-       /* ✅ hover는 a 태그에만 적용, span에는 적용 안됨 */
-       .side-menu a:hover {
-         background-color: #e6fcf5;
-       }
-
-       /* ✅ 상위 토글 span 배경색 */
-       .side-menu li > span {
-         background-color: #e6fcf5;
-         padding: 6px 10px;
-         border-radius: 6px;
-         font-weight: bold;
-         display: inline-block;
-         margin-bottom: 5px;
-         color: #007f7f;
-       }
-
-       /* ✅ 하위 메뉴 배경 흰색 */
-       .side-menu li > ul {
-         padding-left: 15px;
-         background-color: #e6fcf5;
-         border-radius: 5px;
-         margin-top: 5px;
-         margin-bottom: 5px;
-       }
-
-       .side-menu li > ul > li {
-         font-size: 14px;
-         padding: 4px 0;
-       }
-
-      /* 🔹 구분선 있는 큰 그룹 */
-       .side-menu .section-group {
-         border-bottom: 2px solid #e0e0e0;
-         padding-bottom: 10px;
-         margin-bottom: 10px;
-       }
-
-       /* 🔹 토글 제목 */
-       .menu-toggle-group > .toggle-header {
-         font-size: 16px;
-         font-weight: 700;
-         background-color: #e6fcf5;
-         padding: 8px 10px;
-         border-radius: 6px;
-         color: #007f7f;
-         cursor: pointer;
-         display: flex;
-         justify-content: space-between;
-         align-items: center;
-       }
-
-       /* 🔹 화살표 아이콘 (오른쪽 정렬) */
-       .menu-toggle-group .arrow {
-         font-size: 16px;
-       }
-
-       /* 🔹 하위 메뉴 (기본 숨김) */
-       .menu-toggle-group ul {
-         display: none;
-         background-color: #ffffff;
-         border-radius: 5px;
-         margin-top: 6px;
-         padding: 8px 20px; /* ← 들여쓰기 더 깊게 */
-       }
-
-       /* 🔹 하위 메뉴 항목 */
-       .menu-toggle-group ul li {
-         font-size: 14px;
-         padding: 6px 0;
-         border-bottom: 1px solid #f0f0f0;
-       }
-
-       .menu-toggle-group ul li:last-child {
-         border-bottom: none;
-       }
-
-       .bottom-nav {
-         position: fixed;
-         bottom: 0;
-         left: 50%;
-         transform: translateX(-50%);
-         width: 100%;
-         background-color: #b2f2e9;
-         display: flex;
-         justify-content: space-around;
-         align-items: center;
-         height: 60px;
-         z-index: 1001;
-       }
-
-       .bottom-nav a {
-         text-align: center;
-         color: #007f7f;
-         font-weight: bold;
-         text-decoration: none;
-         font-size: 14px;
-         display: flex;
-         flex-direction: column;
-         align-items: center;
-       }
-      .side-menu {
+      .top-logo-center {
+        display: flex;
+        justify-content: center;
+        flex: 1;
+      }
+      .top-logo-center img {
+        height: 80px;
+        object-fit: contain;
+      }
+      .top-menu-toggle,
+      .top-back-btn {
+        font-size: 24px;
+        cursor: pointer;
+        background: none;
+        border: none;
+        color: #007f7f;
+      }
+      .top-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 998;
+      }
+      .top-side-menu {
+        position: fixed;
+        top: 0;
+        right: -280px;
+        width: 280px;
+        height: 100%;
+        background-color: #e6fcf5;
+        z-index: 1003;
+        transition: right 0.3s ease;
         display: flex;
         flex-direction: column;
-         justify-content: space-between; /* 상단: 메뉴, 하단: 로그아웃 */
+        box-shadow: -2px 0 6px rgba(0, 0, 0, 0.1);
       }
-.logout-section {
-  padding: 20px 0;
-  text-align: center;
-  font-size: 15px;
-  font-weight: bold;
-}
-
-.logout-section a {
-  color: #007f7f;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.logout-section a:hover {
-  text-decoration: underline;
-}
-
+      .top-side-menu.open {
+        right: 0;
+      }
+      .top-close-btn {
+        position: absolute;
+        top: 15px;
+        left: 20px;
+        font-size: 25px;
+        color: #555;
+        cursor: pointer;
+      }
+      .top-side-header {
+        height: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #e6fcf5;
+        padding-top: 40px;
+      }
+      .top-side-header img {
+        height: 120px;
+        object-fit: contain;
+      }
+      .top-side-menu-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+      }
+      .top-side-menu-body ul {
+        list-style: none;
+        text-align: left !important;
+        padding: 0;
+        margin: 0;
+      }
+      .top-side-menu-body li {
+        padding: 10px 0;
+        text-align: left !important;
+      }
+      .top-side-menu-body a {
+        color: #007f7f;
+        text-align: left !important;
+        text-decoration: none;
+        font-weight: 600;
+        display: block;
+      }
+      .top-side-menu-body a:hover {
+        background-color: #d3f9f5;
+        border-radius: 4px;
+      }
+      .top-menu-toggle-group > .top-toggle-header {
+        font-size: 16px;
+        font-weight: 700;
+        background-color: #e6fcf5;
+        padding: 8px 10px;
+        border-radius: 6px;
+        color: #007f7f;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .top-menu-toggle-group .top-arrow {
+        font-size: 16px;
+      }
+      .top-menu-toggle-group ul {
+        display: none;
+        background-color: #e6fcf5;
+        margin-top: 6px;
+        border-radius: 5px;
+        padding: 8px 20px;
+      }
+      .top-menu-toggle-group ul li {
+        font-size: 14px;
+        padding: 6px 0;
+        border-bottom: 1px solid #f0f0f0;
+      }
+      .top-menu-toggle-group ul li:last-child {
+        border-bottom: none;
+      }
+      .top-logout-section {
+        padding: 20px 0;
+        text-align: center;
+        font-size: 15px;
+        font-weight: bold;
+        border-top: 1px solid #ccc;
+        background-color: #e6fcf5;
+      }
+      .top-logout-section a {
+        color: #007f7f;
+        text-decoration: none;
+      }
     </style>
   </head>
-<body>
-<div class="content-wrapper">
-  <div class="top-wrapper">
-    <button class="back-btn" onclick="history.back()"> ⬅ </button>
 
-    <div class="logo-center">
+  <body>
+  <div class="top-wrapper">
+    <button class="top-back-btn" onclick="history.back()">⬅</button>
+    <div class="top-logo-center">
       <a th:href="@{/}">
-        <img th:src="@{/image/logo11.png}" alt="Petlog" style="height: 80px;">
+        <img th:src="@{/image/logo11.png}" alt="Petlog">
       </a>
     </div>
-
-    <button class="menu-toggle" onclick="toggleMenu()">&#9776;</button>
+    <button class="top-menu-toggle" onclick="toggleMenu()">☰</button>
   </div>
 
-  <div class="overlay" onclick="toggleMenu()"></div>
+  <div class="top-overlay" onclick="toggleMenu()"></div>
 
-  <div class="side-menu" id="sideMenu" style="padding-top: 60px;">
-    <div class="close-btn" onclick="toggleMenu()">×</div>
-      <div class="logo-wrapper">
-        <img src="./image/logo11.png" alt="Petlog">
-      </div>
-    <ul>
-      <li><a th:href="@{/main}">🏠 홈</a></li>
+  <div class="top-side-menu" id="topSideMenu">
+    <div class="top-close-btn" onclick="toggleMenu()">×</div>
+    <div class="top-side-header">
+      <img th:src="@{/image/logo11.png}" alt="Petlog">
+    </div>
 
-      <li th:if="${session.userRole == 'admin'}" class="menu-toggle-group section-group">
-        <div class="toggle-header" onclick="toggleMenuGroup(this)">
-          👑 관리자 <span class="arrow">▼</span>
-        </div>
-        <ul>
-          <li><a th:href="@{/CommunityIn(type='notice')}">📢 공지사항 작성하기</a></li>
-          <li><a th:href="@{/Item/ItemInput}">🎁 아이템 등록</a></li>
-          <li><a th:href="@{/Item/ItemOut}">🎁 아이템 목록</a></li>
-          <li><a th:href="@{/QuizInput}">🧠 퀴즈 관리</a></li>
-          <li><a th:href="@{/Point/GrapeAdmin}">🍇 포도알 관리</a></li>
-        </ul>
-      </li>
+    <div class="top-side-menu-body">
+      <ul>
+        <li><a th:href="@{/main}">🏠 홈</a></li>
 
-      <li class="menu-toggle-group section-group">
-        <div class="toggle-header" onclick="toggleMenuGroup(this)">
-          📖 기록 캘린더 <span class="arrow">▼</span>
-        </div>
-        <ul>
-          <li><a th:href="@{/Diary/DiaryInput}">✏️ 일기 쓰기</a></li>
-          <li><a th:href="@{/Diary/DiaryOut}">📖 일기 보기</a></li>
-          <li><a th:href="@{/Calendar/CalendarInput}">📆 일정 추가</a></li>
-        </ul>
-      </li>
-
-      <li class="menu-toggle-group section-group">
-      <div class="toggle-header" onclick="toggleMenuGroup(this)">
-        🐶 마이 펫 <span class="arrow">▼</span>
-      </div>
-        <ul>
-          <li><a th:href="@{/Pet/PetInput}">🐾 펫 등록</a></li>
-          <li><a th:href="@{/Pet/PetOut}">😻 펫 보기</a></li>
-        </ul>
-      </li>
-
-      <li class="menu-toggle-group section-group">
-        <div class="toggle-header" onclick="toggleMenuGroup(this)">
-          📚 커뮤니티 <span class="arrow">▼</span>
-        </div>
-        <ul>
-          <li><a th:href="@{/CommunityNotice}">📢 공지사항</a></li>
-          <li><a th:href="@{/CommunityOut}">💬 자유 게시판</a></li>
-          <li><a th:href="@{/Snack/SnackOut}">🦴 간식 레시피</a></li>
-        </ul>
-      </li>
-
-      <li class="menu-toggle-group section-group">
-          <div class="toggle-header" onclick="toggleMenuGroup(this)">
-            🧠 멍냥 퀴즈방 <span class="arrow">▼</span>
+        <li th:if="${session.userRole == 'admin'}" class="top-menu-toggle-group">
+          <div class="top-toggle-header" onclick="toggleMenuGroup(this)">
+            👑 관리자 <span class="top-arrow">▼</span>
           </div>
-        <ul>
-          <li><a th:href="@{/UserQuiz}">💡 오늘의 멍냥🎲</a></li>
-          <li th:if="${session.userRole == 'admin'}">
-            <a th:href="@{/QuizOut}">🎯 퀴즈 목록 리스트</a>
-          </li>
-          <li th:if="${session.userRole == 'USER'}">
-            <a th:href="@{/UserQuizOut}">🎯 멍냥 리스트</a>
-          </li>
-        </ul>
-      </li>
+          <ul>
+            <li><a th:href="@{/CommunityIn(type='notice')}">📢 공지사항 작성하기</a></li>
+            <li><a th:href="@{/Item/ItemInput}">🎁 아이템 등록</a></li>
+            <li><a th:href="@{/Item/ItemOut}">🎁 아이템 목록</a></li>
+            <li><a th:href="@{/QuizInput}">🧠 퀴즈 관리</a></li>
+            <li><a th:href="@{/Point/GrapeAdmin}">🍇 포도알 관리</a></li>
+          </ul>
+        </li>
 
-      <li class="menu-toggle-group section-group">
-        <div class="toggle-header" onclick="toggleMenuGroup(this)">
-          🎁 아이템 상점 <span class="arrow">▼</span>
-        </div>
-        <ul>
-          <li><a th:href="@{/ItemUser/ItemOutUser}">✨ 아이템 사러가기</a></li>
-          <li><a th:href="@{/ItemUser/ItemBought}">👩 내 아이템</a></li>
-          <li><a th:href="@{/Point/GrapeBar}">🍇 내 포도</a></li>
-        </ul>
-      </li>
+        <li class="top-menu-toggle-group">
+          <div class="top-toggle-header" onclick="toggleMenuGroup(this)">
+            📖 기록 캘린더 <span class="top-arrow">▼</span>
+          </div>
+          <ul>
+            <li><a th:href="@{/Diary/DiaryInput}">✏️ 일기 쓰기</a></li>
+            <li><a th:href="@{/Diary/DiaryOut}">📖 일기 보기</a></li>
+            <li><a th:href="@{/Calendar/CalendarInput}">📆 일정 추가</a></li>
+          </ul>
+        </li>
 
-      <li class="menu-toggle-group section-group">
-        <div class="toggle-header" onclick="toggleMenuGroup(this)">
-          📤 Q&A <span class="arrow">▼</span>
-        </div>
-        <ul>
-          <li><a th:href="@{/QnAOut}">📤 Q&A</a></li>
-        </ul>
-      </li>
-    </ul>
+        <li class="top-menu-toggle-group">
+          <div class="top-toggle-header" onclick="toggleMenuGroup(this)">
+            🐶 마이 펫 <span class="top-arrow">▼</span>
+          </div>
+          <ul>
+            <li><a th:href="@{/Pet/PetInput}">🐾 펫 등록</a></li>
+            <li><a th:href="@{/Pet/PetOut}">😻 펫 보기</a></li>
+          </ul>
+        </li>
 
-        <div class="logout-section" sec:authorize="isAuthenticated()">
-          <a href="/logout">🔐 로그아웃</a>
-        </div>
-  </div>
-</div>
+        <li class="top-menu-toggle-group">
+          <div class="top-toggle-header" onclick="toggleMenuGroup(this)">
+            📚 커뮤니티 <span class="top-arrow">▼</span>
+          </div>
+          <ul>
+            <li><a th:href="@{/CommunityNotice}">📢 공지사항</a></li>
+            <li><a th:href="@{/CommunityOut}">💬 자유 게시판</a></li>
+            <li><a th:href="@{/Snack/SnackOut}">🦴 간식 레시피</a></li>
+          </ul>
+        </li>
 
-  <div class="bottom-nav">
-    <!-- 로그인 상태일 때 -->
-    <a sec:authorize="isAuthenticated()" th:href="@{/MyPage}">
-      <img src="/image/회원정보.png" alt="마이페이지" style="width:24px; height:24px; vertical-align: middle;" />
-      <span>마이페이지</span>
-    </a>
-    <a sec:authorize="isAuthenticated()" th:href="@{/Pet/PetOut}">
-      <img src="/image/펫관리.png" alt="마이펫" style="width:24px; height:24px; vertical-align: middle;" />
-      <span>마이펫</span>
-    </a>
-    <a sec:authorize="isAuthenticated()" th:href="@{/Point/GrapeBar}">
-      <img src="/image/포도알.png" alt="포도알" style="width:24px; height:24px; vertical-align: middle;" />
-      <span>포도알<span th:text="${session.grapeCount}"></span>알</span>
-    </a>
-    <a sec:authorize="isAuthenticated()" th:href="@{/ItemUser/ItemBought}">
-      <img src="/image/아이템.png" alt="내 아이템" style="width:24px; height:24px; vertical-align: middle;" />
-      <span>내 아이템</span>
-    </a>
+        <li class="top-menu-toggle-group">
+          <div class="top-toggle-header" onclick="toggleMenuGroup(this)">
+            🧠 멍냥 퀴즈방 <span class="top-arrow">▼</span>
+          </div>
+          <ul>
+            <li><a th:href="@{/UserQuiz}">💡 오늘의 멍냥🎲</a></li>
+            <li th:if="${session.userRole == 'admin'}">
+              <a th:href="@{/QuizOut}">🎯 퀴즈 목록 리스트</a>
+            </li>
+            <li th:if="${session.userRole == 'USER'}">
+              <a th:href="@{/UserQuizOut}">🎯 멍냥 리스트</a>
+            </li>
+          </ul>
+        </li>
 
+        <li class="top-menu-toggle-group">
+          <div class="top-toggle-header" onclick="toggleMenuGroup(this)">
+            🎁 아이템 상점 <span class="top-arrow">▼</span>
+          </div>
+          <ul>
+            <li><a th:href="@{/ItemUser/ItemOutUser}">✨ 아이템 사러가기</a></li>
+            <li><a th:href="@{/ItemUser/ItemBought}">👩 내 아이템</a></li>
+            <li><a th:href="@{/Point/GrapeBar}">🍇 내 포도</a></li>
+          </ul>
+        </li>
 
-    <!-- 로그아웃 상태일 때 -->
-    <a sec:authorize="isAnonymous()" th:href="@{/login}">
-      <img src="/image/로그인.png" alt="로그인" style="width:20px; height:20px; vertical-align: middle;" />
-      <span>로그인</span>
-    </a>
-    <a sec:authorize="isAnonymous()" th:href="@{/signUp}">
-      <img src="/image/가입.png" alt="회원가입" style="width:20px; height:20px; vertical-align: middle;" />
-      <span>회원가입</span>
-    </a>
+        <li class="top-menu-toggle-group">
+          <div class="top-toggle-header" onclick="toggleMenuGroup(this)">
+            📤 Q&A <span class="top-arrow">▼</span>
+          </div>
+          <ul>
+            <li><a th:href="@{/QnAOut}">📤 Q&A</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
 
+    <div class="top-logout-section" sec:authorize="isAuthenticated()">
+      <a href="/logout">🔐 로그아웃</a>
+    </div>
   </div>
 
   <script>
     function toggleMenu() {
-      const menu = document.getElementById("sideMenu");
-      const overlay = document.querySelector(".overlay");
+      const menu = document.getElementById("topSideMenu");
+      const overlay = document.querySelector(".top-overlay");
       menu.classList.toggle("open");
       overlay.style.display = menu.classList.contains("open") ? "block" : "none";
     }
-  </script>
 
-  <script>
     function toggleMenuGroup(header) {
       const group = header.nextElementSibling;
-      const arrow = header.querySelector(".arrow");
-
+      const arrow = header.querySelector(".top-arrow");
       if (group.style.display === "block") {
         group.style.display = "none";
         arrow.textContent = "▼";
@@ -417,6 +285,5 @@
       }
     }
   </script>
-
-</body>
+  </body>
 </div>
