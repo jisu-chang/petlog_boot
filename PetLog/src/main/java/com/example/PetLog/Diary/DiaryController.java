@@ -4,9 +4,9 @@ import com.example.PetLog.Pet.PetDTO;
 import com.example.PetLog.Pet.PetEntity;
 import com.example.PetLog.Pet.PetRepository;
 import com.example.PetLog.Pet.PetService;
-import com.example.PetLog.User.UserEntity;
+import com.example.PetLog.User.UserEntity; // UserEntity 임포트 추가 (UserService에서 UserEntity 반환 시 필요)
 import com.example.PetLog.User.UserService;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession; // HttpSession 임포트 추가
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -62,31 +62,32 @@ public class DiaryController {
         if (userId == null || userLoginId == null) {
             return "redirect:/login";
         }
-        // 2. DTO에 userId 세팅
+
         dto.setUserId(userId);
 
         MultipartFile file = dto.getDiaryImage();
         if (file != null && !file.isEmpty()) {
             String filename = file.getOriginalFilename();
 
-            // 저장 경로: 현재 프로젝트 위치 + static/image
             String path = System.getProperty("user.dir") + "/src/main/resources/static/image";
             File dir = new File(path);
             if (!dir.exists()) {
                 dir.mkdirs(); // 폴더 없으면 생성
             }
 
-            // 실제 저장
             file.transferTo(new File(dir, filename));
-            dto.setDiaryImageName(filename); // DTO에 파일명 저장
+            dto.setDiaryImageName(filename);
         }
 
-        // 5. Entity로 변환 후 저장
         DiaryEntity diaryEntity = dto.entity();
         diaryService.save(diaryEntity);
 
-        // 6. 리다이렉트
-        return "redirect:/Diary/DiaryInput";
+        userService.findUserByLoginId(userId).ifPresent(updatedUser -> {
+            session.setAttribute("grapeCount", updatedUser.getGrapeCount()); // 세션에 최신 grapeCount 저장
+            System.out.println("세션의 포도알 개수 업데이트: " + updatedUser.getGrapeCount()); // 콘솔 로그로 확인
+        });
+
+        return "redirect:/Diary/DiaryInput?success=grape";
     }
 
     @GetMapping(value = "/Diary/DiaryOut")

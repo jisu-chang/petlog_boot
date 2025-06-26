@@ -3,21 +3,29 @@ package com.example.PetLog.Diary;
 import com.example.PetLog.Pet.PetDTO;
 import com.example.PetLog.Pet.PetEntity;
 import com.example.PetLog.Pet.PetRepository;
+import com.example.PetLog.User.UserEntity;
+import com.example.PetLog.User.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class DiaryServiceImp implements DiaryService {
 
-@Autowired
 DiaryRepository diaryRepository;
-
-@Autowired
 PetRepository petRepository;
+UserRepository userRepository;
+
+    public DiaryServiceImp(DiaryRepository diaryRepository, PetRepository petRepository, UserRepository userRepository) {
+        this.diaryRepository = diaryRepository;
+        this.petRepository = petRepository;
+        this.userRepository = userRepository;
+    }
 
 @Override
 public List<PetDTO> petByUser() {
@@ -25,8 +33,27 @@ public List<PetDTO> petByUser() {
 }
 
 @Override
+@Transactional
 public void save(DiaryEntity diaryEntity) {
     diaryRepository.save(diaryEntity);
+
+    Long userId = diaryEntity.getUserId();
+
+    Optional<UserEntity> userOptional = userRepository.findById(userId);
+
+    if (userOptional.isPresent()) {
+        UserEntity user = userOptional.get();
+        // 포도알 1개 적립
+        user.setGrapeCount(user.getGrapeCount() + 1);
+        // 갱신된 사용자 정보 저장
+        userRepository.save(user);
+
+        System.out.println("다이어리 작성 완료! 사용자 " + user.getUserLoginId() + "에게 포도알 1개가 적립되었습니다. 현재 포인트: " + user.getGrapeCount());
+    } else {
+
+        System.err.println("오류: 사용자 ID " + userId + "를 찾을 수 없어 포인트를 적립할 수 없습니다.");
+    }
+
 }
 
 @Override

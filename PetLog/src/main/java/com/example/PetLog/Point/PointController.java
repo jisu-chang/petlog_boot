@@ -45,11 +45,6 @@ public class PointController {
 
     @GetMapping("/Point/GrapeAdmin")
     public String showGrapeAdminPage(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
-//        String userRole = (String) session.getAttribute("user_role");
-//        if (!"admin".equalsIgnoreCase(userRole)) {
-//            redirectAttributes.addFlashAttribute("alert", "관리자만 접근 가능합니다.");
-//            return "redirect:/"; // 홈 또는 접근 차단 페이지로 리디렉트
-//       }
 
         List<UserEntity> list = userRepository.findAll();
         model.addAttribute("list", list);
@@ -89,7 +84,6 @@ public class PointController {
         return "Point/GrapeAdmin";
     }
 
-    // 🔝 포도알 랭킹 보기 (관리자 전용)
     @GetMapping("/Point/GrapeRank")
     public String showGrapeRanking(HttpSession session, Model model) {
 
