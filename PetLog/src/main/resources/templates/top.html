@@ -236,7 +236,7 @@
       <ul>
         <li><a th:href="@{/main}">🏠 홈</a></li>
 
-        <li th:if="${session.userRole == 'admin'}" class="top-menu-toggle-group">
+        <li sec:authorize="hasRole('ROLE_ADMIN')" class="top-menu-toggle-group">
           <div class="top-toggle-header" onclick="toggleMenuGroup(this)">
             👑 관리자 <span class="top-arrow">▼</span>
           </div>
