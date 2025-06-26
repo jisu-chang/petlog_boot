@@ -152,6 +152,42 @@
         color: #007f7f;
         text-decoration: none;
       }
+       /* 🔹 하위 메뉴 항목 */
+       .menu-toggle-group ul li {
+         font-size: 14px;
+         padding: 6px 0;
+         border-bottom: 1px solid #f0f0f0;
+       }
+
+       .menu-toggle-group ul li:last-child {
+         border-bottom: none;
+       }
+
+       .bottom-nav {
+         position: fixed;
+         bottom: 0;
+         left: 50%;
+         transform: translateX(-50%);
+         width: 100%;
+         background-color: #b2f2e9;
+         display: flex;
+         justify-content: space-around;
+         align-items: center;
+         height: 60px;
+         z-index: 1001;
+       }
+
+       .bottom-nav a {
+         text-align: center;
+         color: #007f7f;
+         font-weight: bold;
+         text-decoration: none;
+         font-size: 14px;
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+       }
+
     </style>
   </head>
 
@@ -262,6 +298,39 @@
 
     <div class="top-logout-section" sec:authorize="isAuthenticated()">
       <a href="/logout">🔐 로그아웃</a>
+    </div>
+  </div>
+
+    <div class="bottom-nav">
+      <!-- 로그인 상태일 때 -->
+      <a sec:authorize="isAuthenticated()" th:href="@{/MyPage}">
+        <img src="/image/회원정보.png" alt="마이페이지" style="width:24px; height:24px; vertical-align: middle;" />
+        <span>마이페이지</span>
+      </a>
+      <a sec:authorize="isAuthenticated()" th:href="@{/Pet/PetOut}">
+        <img src="/image/펫관리.png" alt="마이펫" style="width:24px; height:24px; vertical-align: middle;" />
+        <span>마이펫</span>
+      </a>
+      <a sec:authorize="isAuthenticated()" th:href="@{/Point/GrapeBar}">
+        <img src="/image/포도알.png" alt="포도알" style="width:24px; height:24px; vertical-align: middle;" />
+        <span>포도알<span th:text="${session.grapeCount}"></span>알</span>
+      </a>
+      <a sec:authorize="isAuthenticated()" th:href="@{/ItemUser/ItemBought}">
+        <img src="/image/아이템.png" alt="내 아이템" style="width:24px; height:24px; vertical-align: middle;" />
+        <span>내 아이템</span>
+      </a>
+
+
+      <!-- 로그아웃 상태일 때 -->
+      <a sec:authorize="isAnonymous()" th:href="@{/login}">
+        <img src="/image/로그인.png" alt="로그인" style="width:20px; height:20px; vertical-align: middle;" />
+        <span>로그인</span>
+      </a>
+      <a sec:authorize="isAnonymous()" th:href="@{/signUp}">
+        <img src="/image/가입.png" alt="회원가입" style="width:20px; height:20px; vertical-align: middle;" />
+        <span>회원가입</span>
+      </a>
+
     </div>
   </div>
 
