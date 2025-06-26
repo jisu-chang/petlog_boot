@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public interface DiaryRepository extends JpaRepository<DiaryEntity,Long> {
     List<DiaryEntity> findAllByUser_UserId(Long userId);
 
     //지수 추가 - 회원탈퇴
+    @Transactional
     void deleteByUser_UserId(Long userId);
 
     @Query("SELECT d FROM DiaryEntity d " +

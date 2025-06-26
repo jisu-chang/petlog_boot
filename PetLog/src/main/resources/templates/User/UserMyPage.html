@@ -140,16 +140,18 @@
     <h3><span class="nickname" th:text="${list.name}"></span>님의 회원정보</h3>
 
     <div class="profile-frame-container">
-      <img th:if="${session.loginType == 'kakao'}"
-           th:src="${list.profileimgName != null ? list.profileimgName : '/image/default.png'}" alt="카카오 프로필 이미지"
+      <img th:src="${list.profileimgName != null
+                    ? (#strings.startsWith(list.profileimgName, 'http') or #strings.startsWith(list.profileimgName, 'https')
+                       ? list.profileimgName
+                       : '/image/' + list.profileimgName)
+                    : '/image/default.png'}"
+           alt="프로필 이미지"
            th:classappend="${list.equippedFrameImageName == null or list.equippedFrameImageName.isEmpty()} ? 'with-border'"
            class="profile-img" />
 
-      <img th:unless="${session.loginType == 'kakao'}"
-           th:src="${list.profileimgName != null ? '/image/' + list.profileimgName : '/image/default.png'}"
-           class="profile-img"
-           alt="프로필 이미지"
-           th:classappend="${list.equippedFrameImageName == null or list.equippedFrameImageName.isEmpty()} ? ' with-border'" />
+      <img th:if="${list.equippedFrameImageName != null and !list.equippedFrameImageName.isEmpty()}"
+           th:src="@{/image/{fileName}(fileName=${list.equippedFrameImageName})}" alt="착용 중인 프레임"
+           class="frame-img" />
 
       <img th:if="${list.equippedFrameImageName != null and !list.equippedFrameImageName.isEmpty()}"
            th:src="@{/image/{fileName}(fileName=${list.equippedFrameImageName})}" alt="착용 중인 프레임"
