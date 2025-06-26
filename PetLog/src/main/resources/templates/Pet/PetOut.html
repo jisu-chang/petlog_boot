@@ -12,7 +12,15 @@
       padding: 0;
       color: #333;
       text-align: center;
-      padding-top: 90px;
+      padding-top: 70px;
+      min-height: 100vh; /* 화면 전체 높이 확보 */
+    }
+
+    .table-wrapper {
+      width: 100%;
+      max-width: 400px;
+      margin: 10px auto 80px auto;
+      padding: 30px;
     }
 
     header h2 {
@@ -180,17 +188,25 @@
             border-radius: 10px;
         }
     }
+    .button-container{
+      text-align: right;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 
 <body>
+<div class="table-wrapper">
 <header><h2>My pet</h2></header><br>
+
+<div class="button-container">
+  <form th:action="@{/Pet/PetInput}" method="get">
+    <input type="submit" value="펫 등록하러 가기" class="register-pet-button">
+  </form>
+</div>
 
 <div th:if="${#lists.isEmpty(list)}">
   <p class="no-pet-message">등록된 펫이 없습니다. 펫을 등록해주세요 🐾</p>
-  <form th:action="@{/pet_input}" method="get" style="margin-top: 20px;">
-    <input type="submit" value="펫 등록하러 가기" class="register-pet-button">
-  </form>
 </div>
 
 <div class="profile-container" th:if="${not #lists.isEmpty(list)}">
@@ -204,6 +220,7 @@
     </div>
     <a th:href="@{/Pet/PetDetail(petId=${pet.petId})}" class="pet-button">펫 프로필 보기</a>
   </div>
+</div>
 </div>
 </body>
 </html>
