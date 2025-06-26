@@ -15,21 +15,21 @@
     }
 
     .post-header {
-        display: flex;
+        display: flex;   
         align-items: center;
         justify-content: center;
         gap: 12px;
         margin-bottom: 20px;
     }
-      .post-header h2 {
-          font-size: 18px; /* 글씨 크기 줄임 */
-          font-weight: normal;
-          margin: 0;
-          color: #f48aa5;
-        }
+    .post-header h2 {
+      font-size: 18px; /* 글씨 크기 줄임 */
+      font-weight: normal;
+      margin: 0;
+      color: #f48aa5;
+    }
 
     .container {
-      max-width: 1000px;
+      max-width: 1000px; 
       margin: 60px auto;
       background: #fff;
       padding: 60px 80px;
@@ -184,11 +184,6 @@
             <input type="hidden" name="dfname" th:value="${dto.postImage}" />
             <input type="file" id="post_image" name="postImage" accept="image/*" onchange="insertImage()" multiple>
         </div>
-
-<!--        <div class="form-group">-->
-<!--            <label for="postContent">내용</label>-->
-<!--            <textarea id="postContent" name="postContent" th:text="${dto.postContent}"></textarea>-->
-<!--        </div>-->
 
         <div class="form-actions">
             <input type="submit" value="💾 수정">
