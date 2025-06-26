@@ -188,12 +188,34 @@
          align-items: center;
        }
 
+      .top-back-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+}
+
+.top-back-btn img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
     </style>
   </head>
 
   <body>
   <div class="top-wrapper">
-    <button class="top-back-btn" onclick="history.back()">⬅</button>
+
+    <button class="top-back-btn" onclick="history.back()">
+      <img src="/image/뒤로가기.png" alt="뒤로가기">
+    </button>
+
     <div class="top-logo-center">
       <a th:href="@{/}">
         <img th:src="@{/image/logo11.png}" alt="Petlog">
@@ -332,7 +354,6 @@
       </a>
 
     </div>
-  </div>
 
   <script>
     function toggleMenu() {
