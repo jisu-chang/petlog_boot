@@ -39,10 +39,13 @@ public class DiaryController {
     String path = System.getProperty("user.dir") + "/src/main/resources/static/image";
 
     @GetMapping (value = "/Diary/DiaryInput")
-    public String in(Model mo, HttpSession hs, Principal principal) {
+    public String in(Model mo, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        String userLoginId = (String) session.getAttribute("userLoginId");
 
-        String loginId = principal.getName();
-        Long userId = userService.findUserIdByLoginId(loginId);
+        if (userId == null || userLoginId == null) {
+            return "redirect:/login";
+        }
 
         List<PetDTO> list = petService.findPetsByUserId(userId);
         mo.addAttribute("list",list);
@@ -52,11 +55,13 @@ public class DiaryController {
     }
 
     @PostMapping("/DiarySave")
-    public String saveDiary(DiaryDTO dto, Principal principal) throws IOException {
-        // 1. 로그인 아이디로 userId 조회
-        String loginId = principal.getName();
-        Long userId = userService.findUserIdByLoginId(loginId);
+    public String saveDiary(DiaryDTO dto,HttpSession session) throws IOException {
+        Long userId = (Long) session.getAttribute("userId");
+        String userLoginId = (String) session.getAttribute("userLoginId");
 
+        if (userId == null || userLoginId == null) {
+            return "redirect:/login";
+        }
         // 2. DTO에 userId 세팅
         dto.setUserId(userId);
 
@@ -85,10 +90,13 @@ public class DiaryController {
     }
 
     @GetMapping(value = "/Diary/DiaryOut")
-    public String out(Model mo, Principal principal) {
+    public String out(Model mo, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        String userLoginId = (String) session.getAttribute("userLoginId");
 
-        String loginId = principal.getName();
-        Long userId = userService.findUserIdByLoginId(loginId);
+        if (userId == null || userLoginId == null) {
+            return "redirect:/login";
+        }
 
         List<DiaryDTO> diaryList = diaryService.findDiaryByUserId(userId);
 
@@ -110,8 +118,13 @@ public class DiaryController {
     }
 
     @GetMapping(value = "/Diary/DiaryUpdate")
-    public String up(@RequestParam("diaryId") Long diaryId, Model mo, Principal principal) {
-        if (principal == null) return "redirect:/login";
+    public String up(@RequestParam("diaryId") Long diaryId, Model mo, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        String userLoginId = (String) session.getAttribute("userLoginId");
+
+        if (userId == null || userLoginId == null) {
+            return "redirect:/login";
+        }
 
         DiaryEntity diaryEntity = diaryService.detailEntity(diaryId);
         PetEntity petEntity = petRepository.findById(diaryEntity.getPetId()).orElseThrow();
