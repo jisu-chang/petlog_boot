@@ -103,17 +103,20 @@
     <input type="hidden" name="dfname" th:value="${userDTO.profileimgName != null ? userDTO.profileimgName : 'default.png'}">
     <input type="hidden" name="phoneCheckStatus" id="phoneCheckStatus" value="false" />
 
-    <img class="profile-img-only" th:src="@{${userDTO.profileimgName != null ? '/image/' + userDTO.profileimgName : '/image/default.png'}}" alt="Profile Image" />
+    <!-- 일반 유저용 이미지 (내부 저장된 파일) -->
+    <img class="profile-img-only" th:if="${session.loginType != 'kakao'}" th:src="@{${userDTO.profileimgName != null ? '/image/' + userDTO.profileimgName : '/image/default.png'}}" alt="Profile Image" />
 
+    <!-- 카카오 로그인 유저용 이미지 (외부 URL) -->
+    <img class="profile-img-only" th:if="${session.loginType == 'kakao'}" th:src="${userDTO.profileimgName != null and #strings.contains(userDTO.profileimgName, 'http') ? userDTO.profileimgName : '/image/default.png'}" alt="Profile Image" />
     <div class="form-group">
       <label for="userLoginId">아이디</label>
-      <input type="text" id="userLoginId" name="userLoginId" th:value="${userDTO.userLoginId}" readonly />
+      <input type="text" id="userLoginId" name="userLoginId" th:value="${userDTO.userLoginId}" required />
       <p th:if="${#fields.hasErrors('userLoginId')}" th:errors="*{userLoginId}"></p>
     </div>
 
     <div class="form-group">
       <label for="name">이름</label>
-      <input type="text" id="name" th:value="${userDTO.name}" th:field="*{name}" required />
+      <input type="text" id="name" th:value="${userDTO.name}" th:field="*{name}" />
       <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
     </div>
 
