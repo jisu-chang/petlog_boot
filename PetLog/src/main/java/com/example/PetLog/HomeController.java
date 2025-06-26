@@ -37,45 +37,60 @@ public class HomeController {
     UserService userService;
 
     @GetMapping(value = "/main")
-    public String home1(Model model, @AuthenticationPrincipal CustomUserDetails userDetails, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public String home1(Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails, HttpSession session) {
+
+        Long userId = null;
+        String userRole = null;
+
+        // 일반 로그인 시
         if (customUserDetails != null) {
-            boolean isAdmin = customUserDetails.getAuthorities().stream()
-                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-            model.addAttribute("user_role", isAdmin ? "admin" : "USER");
+            userId = customUserDetails.getUser().getUserId();
+            userRole = customUserDetails.getUser().getUserRole();
+        } else {
+            // 카카오 로그인 시
+            userId = (Long) session.getAttribute("userId");
+            userRole = (String) session.getAttribute("userRole");
         }
+
         List<PetDTO> pets = new ArrayList<>();
         UserEntity user = null;
 
-        if (userDetails != null) {
-            Long userId = userDetails.getUser().getUserId();
+        if (userId != null) {
             pets = petService.findPetsByUserId(userId);
             user = userService.findByuserId(userId);
+            model.addAttribute("user_role", userRole);
         }
 
-        model.addAttribute("list", pets); // 무조건 list는 들어감 (빈 리스트라도)
+        model.addAttribute("list", pets);
         model.addAttribute("user", user);
-
         return "main4";
     }
 
     @GetMapping("/")
-    public String showMain(Model model, @AuthenticationPrincipal CustomUserDetails userDetails, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public String showMain(Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails, HttpSession session) {
+        Long userId = null;
+        String userRole = null;
+
+        // 일반 로그인 시
         if (customUserDetails != null) {
-            boolean isAdmin = customUserDetails.getAuthorities().stream()
-                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-            model.addAttribute("user_role", isAdmin ? "admin" : "USER");
+            userId = customUserDetails.getUser().getUserId();
+            userRole = customUserDetails.getUser().getUserRole();
+        } else {
+            // 카카오 로그인 시
+            userId = (Long) session.getAttribute("userId");
+            userRole = (String) session.getAttribute("userRole");
         }
 
         List<PetDTO> pets = new ArrayList<>();
         UserEntity user = null;
 
-        if (userDetails != null) {
-            Long userId = userDetails.getUser().getUserId();
+        if (userId != null) {
             pets = petService.findPetsByUserId(userId);
             user = userService.findByuserId(userId);
+            model.addAttribute("user_role", userRole);
         }
 
-        model.addAttribute("list", pets); // 무조건 list는 들어감 (빈 리스트라도)
+        model.addAttribute("list", pets);
         model.addAttribute("user", user);
         return "main4";
     }

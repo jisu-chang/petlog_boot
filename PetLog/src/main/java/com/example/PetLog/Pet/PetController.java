@@ -26,11 +26,11 @@ public class PetController {
 
     @GetMapping("/Pet/PetInput")
     public String input(@ModelAttribute PetDTO petDTO, HttpSession session) {
-        UserEntity loginUser = (UserEntity) session.getAttribute("loginUser");
+        String userRole = (String) session.getAttribute("userRole");
+        Long userId = (Long) session.getAttribute("userId");
 
-        if (loginUser == null) return "redirect:/login";
-
-        petDTO.setUserId(loginUser.getUserId());
+        if (userId == null) return "redirect:/login";
+        petDTO.setUserId(userId);
         return "Pet/PetInput";
     }
 
@@ -39,9 +39,11 @@ public class PetController {
                        @RequestParam("petImg") MultipartFile mf,
                        HttpSession session) throws IOException {
 
-        UserEntity loginUser = (UserEntity) session.getAttribute("loginUser");
-        if (loginUser == null) return "redirect:/login";
-        petDTO.setUserId(loginUser.getUserId());
+        String userRole = (String) session.getAttribute("userRole");
+        Long userId = (Long) session.getAttribute("userId");
+
+        if (userId == null) return "redirect:/login";
+        petDTO.setUserId(userId);
 
         File dir = new File(path);
         if (!dir.exists()) dir.mkdirs();
@@ -79,9 +81,13 @@ public class PetController {
     }
 
     @GetMapping("/Pet/PetUpdate")
-    public String update(@RequestParam("petId") Long petId, Model model, HttpSession session) {
-        UserEntity loginUser = (UserEntity) session.getAttribute("loginUser");
-        if (loginUser == null) return "redirect:/login";
+    public String update(@RequestParam("petId") Long petId, PetDTO petDTO, Model model, HttpSession session) {
+        String userRole = (String) session.getAttribute("userRole");
+        Long userId = (Long) session.getAttribute("userId");
+
+        if (userId == null) return "redirect:/login";
+        petDTO.setUserId(userId);
+
 
         PetEntity petEntity = petService.detail(petId);
         PetDTO dto = new PetDTO();
@@ -103,9 +109,12 @@ public class PetController {
                              @RequestParam("himage") String himage,
                              HttpSession session) throws IOException {
 
-        UserEntity loginUser = (UserEntity) session.getAttribute("loginUser");
-        if (loginUser == null) return "redirect:/login";
-        petDTO.setUserId(loginUser.getUserId());
+        String userRole = (String) session.getAttribute("userRole");
+        Long userId = (Long) session.getAttribute("userId");
+
+        if (userId == null) return "redirect:/login";
+        petDTO.setUserId(userId);
+
 
         MultipartFile mf = petDTO.getPetImg();
         File dir = new File(path);
@@ -127,13 +136,16 @@ public class PetController {
 
     @GetMapping("/Pet/PetDelete")
     public String deleteAndConfirm(@RequestParam("delete") Long petId,
+                                   PetDTO petDTO,
                                    @RequestParam("dfimage") String imageName,
                                    HttpSession session) {
 
-        UserEntity loginUser = (UserEntity) session.getAttribute("loginUser");
-        if (loginUser == null) {
-            return "redirect:/login";
-        }
+        String userRole = (String) session.getAttribute("userRole");
+        Long userId = (Long) session.getAttribute("userId");
+
+        if (userId == null) return "redirect:/login";
+        petDTO.setUserId(userId);
+
 
         petService.delete(petId);
 
