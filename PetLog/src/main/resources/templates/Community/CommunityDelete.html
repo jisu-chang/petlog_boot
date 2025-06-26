@@ -153,10 +153,6 @@
         </th:block>
 
         <div class="post-header">
-            <!-- 프로필 이미지가 있는 경우 -->
-            <img class="profile-img" th:if="${dto?.user?.profileimg != null}" th:src="@{/images/{img}(img=${dto.user.profileimg})}" alt="Profile Image"/>
-            <!-- 프로필 이미지가 없는 경우 기본 이미지로 -->
-            <img class="profile-img" th:if="${dto?.user?.profileimg == null}" th:src="@{/images/default.png}" alt="Default Image"/>
             <h2><span th:text="${dto.user.userLoginId} + '님의 삭제 게시물'"></span></h2>
         </div>
 

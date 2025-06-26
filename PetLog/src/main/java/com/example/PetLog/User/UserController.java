@@ -389,6 +389,8 @@ public class UserController {
         }
 
         // DB 및 세션 정보 업데이트
+        userEntity.setUserLoginId(dto.getUserLoginId());
+        userEntity.setProfileimg(dto.getProfileimgName());
         userEntity.setName(dto.getName());
         userEntity.setPhone(dto.getPhone());
         userEntity.setEmail(dto.getEmail());

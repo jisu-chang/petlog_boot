@@ -47,7 +47,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             getRedirectStrategy().sendRedirect(request, response, "/");
         } else {
             // 신규 유저 → 회원가입 창으로 이동
-            // CustomOAuth2UserService에서 아직 DB에 저장하지 않았으므로 여기로 들어옵니다.
+            // CustomOAuth2UserService에서 아직 DB에 저장하지 않았으므로 여기로 돌아옴
             session.setAttribute("kakao_email", email);
             session.setAttribute("kakao_name", name);
             session.setAttribute("kakao_profile", profileImg);

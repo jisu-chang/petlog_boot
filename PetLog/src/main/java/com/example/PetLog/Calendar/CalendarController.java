@@ -36,16 +36,15 @@ public class CalendarController {
     public String cal(@RequestParam(value = "pet_id", required = false) Long petId,
                       @RequestParam(value = "year", required = false) Integer year,
                       @RequestParam(value = "month", required = false) Integer month,
-                      Principal principal,
+                      HttpSession session,
                       Model mo) {
 
-        if (principal == null) {
+        Long userId = (Long) session.getAttribute("userId");
+        String userLoginId = (String) session.getAttribute("userLoginId");
+
+        if (userId == null || userLoginId == null) {
             return "redirect:/login";
         }
-
-        String loginId = principal.getName();
-        Long userId = userService.findUserIdByLoginId(loginId);
-
         List<PetDTO> petList = calendarService.getPets(userId);
         mo.addAttribute("petlist", petList);
 
@@ -135,13 +134,13 @@ public class CalendarController {
     }
 
     @GetMapping(value = "/Calendar/CalendarInput")
-    public String cal2(Principal principal, Model model) {
+    public String cal2(Model model, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        String userLoginId = (String) session.getAttribute("userLoginId");
 
-        if (principal == null) {
-            return "redirect:/login"; // 로그인되지 않은 경우 로그인 페이지로 리다이렉트
+        if (userId == null || userLoginId == null) {
+            return "redirect:/login";
         }
-        String loginId = principal.getName();
-        Long userId = userService.findUserIdByLoginId(loginId);
 
         List<PetEntity> petlist = petService.findByUserId(userId); // 반드시 로그인한 사용자의 펫 리스트
         model.addAttribute("petlist", petlist);
@@ -199,14 +198,15 @@ public class CalendarController {
 
     @GetMapping(value = "/Calendar/CalendarDetail")
     public String detail(@RequestParam("calId") Long calId,
-                         Principal principal,
+                         HttpSession session,
                          Model model) {
 
-        if (principal == null) {
-            return "redirect:/login?error=login_required"; // 로그인되지 않은 경우 로그인 페이지로 리다이렉트
+        Long userId = (Long) session.getAttribute("userId");
+        String userLoginId = (String) session.getAttribute("userLoginId");
+
+        if (userId == null || userLoginId == null) {
+            return "redirect:/login";
         }
-        String loginId = principal.getName(); // 현재 로그인된 사용자의 ID(Principal name) 가져오기
-        Long userId = userService.findUserIdByLoginId(loginId); // loginId로 userId 조회 (UserService 필요)
 
         CalendarDTO cdto = calendarService.calendar_detail(calId);
 
@@ -234,15 +234,15 @@ public class CalendarController {
                                  @RequestParam(value = "year", required = false) Integer year,
                                  @RequestParam(value = "month", required = false) Integer month,
                                  @RequestParam(value = "pet_id", required = false) Long petIdFromRequest,
-                                 Principal principal,
+                                 HttpSession session,
                                  Model model) {
 
-        if (principal == null) {
-            return "redirect:/login?error=login_required";
-        }
-        String loginId = principal.getName();
-        Long userId = userService.findUserIdByLoginId(loginId);
+        Long userId = (Long) session.getAttribute("userId");
+        String userLoginId = (String) session.getAttribute("userLoginId");
 
+        if (userId == null || userLoginId == null) {
+            return "redirect:/login";
+        }
         CalendarDTO cdto = calendarService.calendar_detail(calId);
 
         if (cdto == null || !cdto.getUserId().equals(userId)) {
@@ -277,12 +277,13 @@ public class CalendarController {
     public String updateScheduleSave(@ModelAttribute CalendarDTO calendarDTO,
                                      @RequestParam("year") Integer year,
                                      @RequestParam("month") Integer month,
-                                     Principal principal) {
-        if (principal == null) {
-            return "redirect:/login?error=login_required";
+                                     HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        String userLoginId = (String) session.getAttribute("userLoginId");
+
+        if (userId == null || userLoginId == null) {
+            return "redirect:/login";
         }
-        String loginId = principal.getName();
-        Long userId = userService.findUserIdByLoginId(loginId);
 
         calendarDTO.setUserId(userId);
 
@@ -331,13 +332,14 @@ public class CalendarController {
                                  @RequestParam(value = "year", required = false) Integer year,
                                  @RequestParam(value = "month", required = false) Integer month,
                                  @RequestParam(value = "petId", required = false) Long petId,
-                                 Principal principal) {
+                                 HttpSession session) {
 
-        if (principal == null) {
-            return "redirect:/login?error=login_required";
+        Long userId = (Long) session.getAttribute("userId");
+        String userLoginId = (String) session.getAttribute("userLoginId");
+
+        if (userId == null || userLoginId == null) {
+            return "redirect:/login";
         }
-        String loginId = principal.getName();
-        Long userId = userService.findUserIdByLoginId(loginId);
 
         CalendarDTO cdto = calendarService.calendar_detail(calId);
         if (cdto == null || !cdto.getUserId().equals(userId)) {
