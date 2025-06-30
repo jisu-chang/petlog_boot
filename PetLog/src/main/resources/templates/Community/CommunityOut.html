@@ -188,6 +188,10 @@
       </thead>
 
       <tbody>
+      <tr th:if="${#lists.isEmpty(list)}">
+        <td colspan="5">등록 된 게시글이 없습니다.</td>
+      </tr>
+
       <tr th:each="cc:${normalPosts}">
         <td style="text-align: left;">
           <a th:href="@{/CommunityDetail(postId=${cc.postId})}" style="color: #333; text-decoration: none;">

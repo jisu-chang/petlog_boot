@@ -104,6 +104,11 @@
 <body>
 <h2 class="title">🎈멍냥 리스트</h2>
 <div class="quiz-list">
+
+  <div th:if="${#lists.isEmpty(dtoList)}" style="text-align:center; padding: 40px; color: #999;">
+    등록된 퀴즈가 없습니다.
+  </div>
+
   <div class="quiz-card" th:each="dto : ${dtoList}">
     <div th:each="quiz : ${quizList}" th:if="${quiz.quizId == dto.quizId}">
       <div class="quiz-header">

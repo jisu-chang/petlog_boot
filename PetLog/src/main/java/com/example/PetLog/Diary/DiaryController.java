@@ -82,7 +82,7 @@ public class DiaryController {
         DiaryEntity diaryEntity = dto.entity();
         diaryService.save(diaryEntity);
 
-        userService.findUserByLoginId(userId).ifPresent(updatedUser -> {
+        userService.findUserByLoginId(userId.toString()).ifPresent(updatedUser -> {
             session.setAttribute("grapeCount", updatedUser.getGrapeCount()); // 세션에 최신 grapeCount 저장
             System.out.println("세션의 포도알 개수 업데이트: " + updatedUser.getGrapeCount()); // 콘솔 로그로 확인
         });

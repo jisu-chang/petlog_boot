@@ -172,6 +172,12 @@
     </thead>
 
     <tbody>
+
+    <tr th:if="${#lists.isEmpty(list)}">
+        <td colspan="5">등록 된 공지사항이 없습니다.</td>
+    </tr>
+
+
     <tr th:each="cc:${noticePosts}">
         <td th:text="${cc.postId}"></td>
         <td style="text-align: left;">

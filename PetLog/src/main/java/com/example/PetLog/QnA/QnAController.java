@@ -139,4 +139,12 @@ public class QnAController {
         return "redirect:/QnADetail?qnaId=" + qnaId;
     }
 
+    @GetMapping("/UserQnAOut")
+    public String userqnaout(Model mo, HttpSession session){
+        Long userId = (Long) session.getAttribute("userId");
+
+        List<QnAEntity> list = qnaService.findByUserId(userId);
+        mo.addAttribute("list", list);
+        return "QnA/UserQnAOut";
+    }
 }

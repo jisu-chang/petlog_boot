@@ -139,6 +139,11 @@
     </div>
 
     <div class="quiz-list">
+
+      <div th:if="${#lists.isEmpty(dtoList)}" style="text-align:center; padding: 40px; color: #999;">
+        등록된 퀴즈가 없습니다.
+      </div>
+
       <div class="quiz-card" th:each="dto : ${dto}">
         <div class="quiz-header">
           <span>No. <span th:text="${dto.quizId}"></span></span>

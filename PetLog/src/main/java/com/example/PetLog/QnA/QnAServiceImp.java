@@ -45,4 +45,9 @@ public class QnAServiceImp implements QnAService{
         qnARepository.deleteById(qnaId);
     }
 
+    @Override
+    public List<QnAEntity> findByUserId(Long userId) {
+        return qnARepository.findByUserId(userId);
+    }
+
 }

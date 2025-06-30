@@ -130,9 +130,8 @@
     </tr>
     </thead>
     <tbody>
-
     <tr th:if="${#lists.isEmpty(list)}">
-      <td colspan="5">작성 된 Q&A가 없습니다.</td>
+      <td colspan="5">작성한 Q&A가 없습니다.</td>
     </tr>
 
     <tr th:each="dto : ${list}">
