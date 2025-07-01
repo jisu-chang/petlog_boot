@@ -34,7 +34,7 @@ public class SnackController {
     @Autowired
     LikesService likesService;
 
-    String path = System.getProperty("user.dir") + "/uploads/snack";
+    String path = "C:/petlog-uploads/snack";
 
     @GetMapping(value = "/Snack/SnackInput")
     public String input(Model mo, HttpSession hs, Principal principal) {

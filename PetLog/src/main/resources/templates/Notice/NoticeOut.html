@@ -155,6 +155,78 @@
       .btn-write:hover {
         background-color: #ffd2d2;
       }
+     .search-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin: 30px 0;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    max-width: 100%;
+  }
+
+  .search-form select {
+    width: 90px;
+    min-width: 70px;
+    flex-shrink: 0;
+    height: 40px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+    font-family: 'Pretendard', sans-serif;
+    padding: 8px;
+  }
+
+  .search-form input[type="text"] {
+    flex-grow: 1;
+    min-width: 0;
+    height: 40px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 1em;
+    font-family: 'Pretendard', sans-serif;
+  }
+
+  .search-form input[type="submit"] {
+    width: 70px;
+    height: 40px;
+    background-color: #e5f7f3;
+    color: #555;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    flex-shrink: 0;
+  }
+
+  .search-form input[type="submit"]:hover {
+    background-color: #c9ebe2;
+  }
+
+  /* 모바일 대응 */
+  @media (max-width: 480px) {
+    .search-form {
+      flex-wrap: nowrap;
+      flex-direction: row;
+      gap: 1px;
+      padding: 0 3px;
+    }
+
+    .search-form select {
+      width: 70px;
+    }
+
+    .search-form input[type="text"] {
+      flex-grow: 1;
+    }
+
+    .search-form input[type="submit"] {
+      width: 60px;
+    }
+  }
 </style>
 
 <body>
@@ -163,7 +235,7 @@
     <a th:href="@{/CommunityIn(type='notice')}" class="btn-write" sec:authorize="hasRole('ADMIN')">게시글 작성</a>
 
     <!-- 검색 -->
-    <form th:action="@{/search}" method="get">
+    <form th:action="@{/search}" method="get" class="search-form">
         <input type="hidden" name="board" value="notice" />
         <select name="postType">
             <option value="title">제목</option>

@@ -34,7 +34,7 @@ public class CommunityController {
     @Autowired
     UserService userService;
 
-    String path = System.getProperty("user.dir") + "/uploads/community";
+    String path = "C:/petlog-uploads/community";
 
     // 커뮤니티/공지사항 폼을 type에 따라 다르게 로딩
     @GetMapping("/CommunityIn")
@@ -65,7 +65,6 @@ public class CommunityController {
                 communityDTO.setPostType("normal");
             }
         }
-        String path = System.getProperty("user.dir") + "/uploads/community";
 
         // 업로드 폴더 없으면 자동 생성
         File uploadDir = new File(path);
@@ -195,7 +194,6 @@ public class CommunityController {
         communityDTO.setPostReadcnt(readcnt);
 
         // 저장 경로
-//        String path = System.getProperty("user.dir") + "/uploads/community";
         File uploadDir = new File(path);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
@@ -325,7 +323,6 @@ public class CommunityController {
         communityDTO.setPostReadcnt(readcnt);
 
         // 저장 경로
-        String path = System.getProperty("user.dir") + "/uploads/community";
         File uploadDir = new File(path);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();

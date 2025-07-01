@@ -50,7 +50,7 @@ public class UserController {
     @Autowired
     LikesService likesService;
 
-    String path = System.getProperty("user.dir") + "/uploads/profile";
+    String path = "C:/petlog-uploads/profile";
 
     //로그인
     @GetMapping(value = "/login")
@@ -367,7 +367,6 @@ public class UserController {
         String encryptedPassword = userEntity.getPassword();
 
         // 프로필 이미지 처리
-        String path = System.getProperty("user.dir") + "/uploads/profile";
         File uploadDir = new File(path);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs(); // 폴더 없으면 생성

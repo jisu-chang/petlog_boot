@@ -9,21 +9,23 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // 커뮤니티 이미지 (community)
+       String basePath = "file:/C:/petlog-uploads/";
+
+        // community 이미지
         registry.addResourceHandler("/communityimg/**")
-                .addResourceLocations("file:" + System.getProperty("user.dir") + "/uploads/community");
+                .addResourceLocations(basePath + "community/");
 
-        // 프로필 이미지 (profile)
+        // profile 이미지
         registry.addResourceHandler("/profileimg/**")
-                .addResourceLocations("file:" + System.getProperty("user.dir") + "/uploads/profile/");
+                .addResourceLocations(basePath + "profile/");
 
-        // 간식 이미지
+        // snack 이미지
         registry.addResourceHandler("/snackimg/**")
-                .addResourceLocations("file:" + System.getProperty("user.dir") + "/uploads/snack/");
+                .addResourceLocations(basePath + "snack/");
 
-        // 펫 이미지
+        // pet 이미지
         registry.addResourceHandler("/petimg/**")
-                .addResourceLocations("file:" + System.getProperty("user.dir") + "/uploads/petprofile/");
+                .addResourceLocations(basePath + "petprofile/");
 
     }
 }
