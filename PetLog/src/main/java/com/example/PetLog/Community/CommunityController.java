@@ -262,6 +262,29 @@ public class CommunityController {
         return "redirect:/CommunityOut";
     }
 
+    @GetMapping("/search")
+    public String search(@RequestParam String keyword, @RequestParam String postType, @RequestParam String board, Model model) {
+
+        if (board.equals("notice")) {
+            List<CommunityEntity> noticeResults = communityService.searchNotice(keyword, postType);
+            model.addAttribute("noticePosts", noticeResults);
+            return "Notice/NoticeOut"; // 공지사항 페이지로 이동
+        } else {
+            List<CommunityEntity> communityResults = communityService.searchCommunity(keyword, postType);
+
+            // 댓글 수, 좋아요 수도 함께 가져오기
+            Map<Long, Integer> commentCounts = communityService.getCommentCountsByList(communityResults);
+            Map<Long, Integer> likeCounts = communityService.getLikeCountsByList(communityResults);
+
+            // 이름으로 전달
+            model.addAttribute("normalPosts", communityResults);
+            model.addAttribute("commentCounts", commentCounts);
+            model.addAttribute("likeCounts", likeCounts);
+
+            return "Community/CommunityOut"; // 커뮤니티 페이지로 이동
+        }
+    }
+
     // 공지사항 출력
     @GetMapping(value = "/CommunityNotice")
     public String NoticeView(Model mo) {

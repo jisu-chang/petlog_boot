@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CommunityServiceImp implements CommunityService{
@@ -92,6 +94,42 @@ public class CommunityServiceImp implements CommunityService{
     public void updateLikeCountForSnack(Long snackId) {
         int likeCount = likesRepository.countBySnack_SnackId(snackId); //좋아요 수 조회
         communityRepository.updateLikeBySnackCount(snackId,likeCount); //게시글에서 좋아요 수 업데이트
+    }
+
+    @Override
+    public List<CommunityEntity> searchCommunity(String keyword, String postType) {
+        if (postType.equals("title")) {
+            return communityRepository.findByPostTitleContainingAndPostType(keyword, "normal");
+        } else {
+            return communityRepository.findByPostContentContainingAndPostType(keyword, "normal");
+        }
+    }
+
+    @Override
+    public List<CommunityEntity> searchNotice(String keyword, String postType) {
+        if (postType.equals("title")) {
+            return communityRepository.findByPostTitleContainingAndPostType(keyword, "notice");
+        } else {
+            return communityRepository.findByPostContentContainingAndPostType(keyword, "notice");
+        }
+    }
+
+    public Map<Long, Integer> getCommentCountsByList(List<CommunityEntity> posts) {
+        Map<Long, Integer> map = new HashMap<>();
+        for (CommunityEntity post : posts) {
+            int count = commentsRepository.countByCommunity_PostId(post.getPostId());
+            map.put(post.getPostId(), count);
+        }
+        return map;
+    }
+
+    public Map<Long, Integer> getLikeCountsByList(List<CommunityEntity> posts) {
+        Map<Long, Integer> map = new HashMap<>();
+        for (CommunityEntity post : posts) {
+            int count = likesRepository.countByPostId(post.getPostId());
+            map.put(post.getPostId(), count);
+        }
+        return map;
     }
 
 }

@@ -34,4 +34,12 @@ public interface CommunityRepository extends JpaRepository<CommunityEntity, Long
     @Transactional
     @Query("UPDATE SnackEntity s SET s.snackReadcnt = :likeCount WHERE s.snackId = :snackId")
     void updateLikeBySnackCount(@Param("snackId") Long snackId, @Param("likeCount") int likeCount);
+
+
+    // 제목+타입으로 검색 (공지/커뮤니티 구분용)
+    List<CommunityEntity> findByPostTitleContainingAndPostType(String keyword, String postType);
+
+    // 내용+타입으로 검색
+    List<CommunityEntity> findByPostContentContainingAndPostType(String keyword, String postType);
+
 }

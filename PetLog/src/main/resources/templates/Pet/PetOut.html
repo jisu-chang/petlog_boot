@@ -211,7 +211,7 @@
 
 <div class="profile-container" th:if="${not #lists.isEmpty(list)}">
   <div class="pet-profile" th:each="pet : ${list}">
-    <img th:src="@{'/image/' + ${pet.petImg}}" alt="Pet Image">
+    <img th:src="@{'/petimg/' + ${pet.petImg}}" alt="Pet Image">
     <div class="pet-name" th:text="${pet.petName}">펫 이름</div>
     <div class="pet-info">
       <span th:text="'🧸 성별 ' + ${pet.petBog}">성별</span>

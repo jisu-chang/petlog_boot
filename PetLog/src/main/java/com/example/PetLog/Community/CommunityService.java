@@ -3,6 +3,7 @@ package com.example.PetLog.Community;
 import com.example.PetLog.Comments.CommentsEntity;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CommunityService {
 
@@ -32,4 +33,12 @@ public interface CommunityService {
     List<CommunityEntity> getNoticePost();
 
     void updateLikeCountForSnack(Long snackId);
+
+    List<CommunityEntity> searchNotice(String keyword, String postType);
+
+    List<CommunityEntity> searchCommunity(String keyword, String postType);
+
+    Map<Long, Integer> getCommentCountsByList(List<CommunityEntity> communityResults);
+
+    Map<Long, Integer> getLikeCountsByList(List<CommunityEntity> communityResults);
 }

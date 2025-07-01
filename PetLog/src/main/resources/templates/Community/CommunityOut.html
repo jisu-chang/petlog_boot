@@ -172,12 +172,89 @@
         align-items: center;
         white-space: nowrap;
       }
+.search-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap;
+    margin: 20px 0;
+    flex-shrink: 0;
+    flex-grow: 1;
+    max-width: 100%;
+  }
+
+  .search-form select,
+  .search-form input[type="text"],
+  .search-form input[type="submit"] {
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+    font-family: 'Pretendard', sans-serif;
+    box-sizing: border-box;
+    height: 40px;
+  }
+
+  .search-form select {
+    width: 90px;
+  }
+
+  .search-form input[type="text"] {
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .search-form input[type="submit"] {
+    background-color: #e5f7f3;
+    color: #555;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 70px;
+  }
+
+  .search-form input[type="submit"]:hover {
+    background-color: #c9ebe2;
+  }
+
+  @media (max-width: 500px) {
+    .search-form {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .search-form select,
+    .search-form input[type="text"],
+    .search-form input[type="submit"] {
+      width: 100%;
+      flex: 1 1 auto;
+      margin-bottom: 10px;
+    }
+
+    .search-form input[type="submit"] {
+      margin-bottom: 0;
+    }
+  }
+  }
       </style>
 
 <body>
 <div class="table-wrapper">
   <h2 style="text-align:center; color:#f48aa5; font-weight:normal;">📝 자유게시판</h2>
     <a th:href="CommunityIn" class="btn-write">게시글 작성</a>
+
+  <!-- 검색 -->
+  <form th:action="@{/search}" method="get">
+    <input type="hidden" name="board" value="normal"/>
+    <select name="postType">
+      <option value="title">제목</option>
+      <option value="content">내용</option>
+    </select>
+    <input type="text" name="keyword" placeholder="검색어 입력" />
+    <input type="submit" value="검색" />
+  </form>
 
     <table>
       <thead>
@@ -188,8 +265,8 @@
       </thead>
 
       <tbody>
-      <tr th:if="${#lists.isEmpty(list)}">
-        <td colspan="5">등록 된 게시글이 없습니다.</td>
+      <tr th:if="${#lists.isEmpty(normalPosts)}">
+        <td colspan="2">등록 된 게시글이 없습니다.</td>
       </tr>
 
       <tr th:each="cc:${normalPosts}">

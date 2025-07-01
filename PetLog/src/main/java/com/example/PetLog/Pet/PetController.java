@@ -22,7 +22,7 @@ public class PetController {
     @Autowired
     UserService userService;
 
-    String path = new File("src/main/resources/static/image").getAbsolutePath();
+    String path = System.getProperty("user.dir") + "/uploads/petprofile";
 
     @GetMapping("/Pet/PetInput")
     public String input(@ModelAttribute PetDTO petDTO, HttpSession session) {
