@@ -2,6 +2,7 @@ package com.example.PetLog.QuizResult;
 
 import com.example.PetLog.Quiz.QuizDTO;
 import com.example.PetLog.Quiz.QuizService;
+import com.example.PetLog.User.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,8 @@ public class QuizResultController {
     QuizResultService quizResultService;
     @Autowired
     QuizService quizService;
+    @Autowired
+    UserService userService;
 
 
     //퀴즈 결과 저장
@@ -31,8 +34,26 @@ public class QuizResultController {
         resultDTO.setUserId(userId);
         resultDTO.setUserAnswer(quizAnswer); // DB 저장은 아님, DTO만
 
+        // <<<<<<< 이 부분 추가 >>>>>>>
+        boolean isCorrect = quizService.checkAnswer(resultDTO.getQuizId(), quizAnswer);
+
+        // 2. QuizResultDTO에 결과 점수 설정 (1: 정답, 0: 오답)
+        resultDTO.setResultScore(isCorrect ? 1 : 0);
+        // <<<<<<< 추가 끝 >>>>>>>
+
         try {
             quizResultService.saveResult(resultDTO, quizAnswer);
+
+            // <<<<<<< 이 부분 추가 >>>>>>>
+            if (isCorrect) {
+                userService.addGrapes(userId, 3);
+
+                userService.findUserById(userId).ifPresent(updatedUser -> {
+                    session.setAttribute("grapeCount", updatedUser.getGrapeCount());
+                    System.out.println("퀴즈 정답! 포도알 적립: " + updatedUser.getGrapeCount());
+                });
+            }
+            // <<<<<<< 추가 끝 >>>>>>>
 
             // userAnswerMap을 안전하게 가져오고, 없으면 새로 만듦
             Map<Long, String> userAnswerMap = (Map<Long, String>) session.getAttribute("userAnswerMap");

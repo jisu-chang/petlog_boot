@@ -2,6 +2,7 @@ package com.example.PetLog.User;
 
 import jakarta.mail.internet.MimeMessage;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -254,9 +255,32 @@ public class UserServiceImp implements UserService{
         return userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("해당 유저가 존재하지 않습니다.")); //null 처리 예외
     }
 
+
     @Override
     public Optional<UserEntity> findUserByLoginId(String loginId) {
         return userRepository.findByUserLoginId(loginId);
     }
 
+    @Override
+    @Transactional
+    public void addGrapes(Long userId, int i) { //quiz 포도알 +3
+        Optional<UserEntity> optionalUser = userRepository.findById(userId);
+
+        if (optionalUser.isPresent()) {
+            UserEntity user = optionalUser.get();
+
+            int currentGrapes = user.getGrapeCount();
+            user.setGrapeCount(currentGrapes + i);
+
+            userRepository.save(user);
+
+            userRepository.flush();
+        }
+    }
+
+    @Override
+    public Optional<UserEntity> findUserById(Long userId) {
+        // userRepository.findById는 이미 Optional<UserEntity>를 반환합니다.
+        return userRepository.findById(userId);
+    }
 }

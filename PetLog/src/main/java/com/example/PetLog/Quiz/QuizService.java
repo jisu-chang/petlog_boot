@@ -21,4 +21,6 @@ public interface QuizService {
     QuizDTO getQuizById(Long quizId);
 
     List<QuizDTO> getQuizListByIds(List<Long> quizIds);
+
+    boolean checkAnswer(Long quizId, String quizAnswer);
 }
