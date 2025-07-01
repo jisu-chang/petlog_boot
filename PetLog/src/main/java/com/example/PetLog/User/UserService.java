@@ -45,4 +45,6 @@ public interface UserService {
     void addGrapes(Long userId, int i);
 
     Optional<UserEntity> findUserById(Long userId);
+
+    void addGrapeCount(Long userId, int i); //커뮤니티 포도알 +1
 }

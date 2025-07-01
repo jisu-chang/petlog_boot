@@ -283,4 +283,20 @@ public class UserServiceImp implements UserService{
         // userRepository.findById는 이미 Optional<UserEntity>를 반환합니다.
         return userRepository.findById(userId);
     }
-}
+
+    @Override
+    @Transactional
+    public void addGrapeCount(Long userId, int amount) {
+
+        Optional<UserEntity> userOptional = userRepository.findById(userId);
+
+        if (userOptional.isPresent()) {
+            UserEntity user = userOptional.get();
+            user.setGrapeCount(user.getGrapeCount() + amount);
+            userRepository.save(user);
+
+        } else {
+            System.err.println("오류: 사용자 ID " + userId + "를 찾을 수 없어 포도알을 추가하지 못했습니다.");
+        }
+    }
+    }

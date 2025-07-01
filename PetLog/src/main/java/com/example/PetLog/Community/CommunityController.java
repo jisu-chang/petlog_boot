@@ -3,6 +3,7 @@ package com.example.PetLog.Community;
 import com.example.PetLog.Comments.CommentsDTO;
 import com.example.PetLog.Comments.CommentsService;
 import com.example.PetLog.Likes.LikesService;
+import com.example.PetLog.User.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,8 @@ public class CommunityController {
     LikesService likesService;
     @Autowired
     CommentsService commentsService;
+    @Autowired
+    UserService userService;
 
     String path = System.getProperty("user.dir") + "/uploads/community";
 
@@ -46,7 +49,7 @@ public class CommunityController {
 
     // 게시글 저장
     @PostMapping(value = "/CommunityInSave")
-    public String cominsave(@ModelAttribute CommunityDTO communityDTO, @RequestParam("postType") String postType,HttpSession session) throws IOException {
+    public String cominsave(@ModelAttribute CommunityDTO communityDTO, @RequestParam("postType") String postType,HttpSession session, RedirectAttributes redirectAttributes) throws IOException {
         // 로그인 한 유저 정보 가져옴
         String userRole = (String) session.getAttribute("userRole");
         Long userId = (Long) session.getAttribute("userId");
@@ -84,6 +87,25 @@ public class CommunityController {
         }
         CommunityEntity communityEntity = communityDTO.entity();
         communityService.insertpost(communityEntity);
+
+        // --- 포도알 +1 로직 추가 시작 ---
+        // UserID가 유효할 경우에만 포도알을 증가시킵니다.
+        if (userId != null) {
+            // userService의 addGrapeCount 메서드를 호출하여 해당 사용자의 포도알을 1 증가시킵니다.
+            // 이 메서드는 UserService에 구현되어 있어야 합니다.
+            userService.addGrapeCount(userId, 1);
+            // 필요하다면, 로그를 추가하여 포도알이 증가했음을 확인할 수 있습니다.
+            // log.info("사용자 ID: {} 의 포도알이 1 증가했습니다. (커뮤니티 게시글 작성)", userId);
+        }
+        // --- 포도알 +1 로직 추가 끝 ---
+
+        String redirectUrl;
+        if ("notice".equals(communityDTO.getPostType())) {
+            redirectUrl = "/CommunityNotice";
+        } else {
+            redirectUrl = "/CommunityOut";
+            redirectAttributes.addAttribute("success", "grape"); // URL 파라미터로 'success=grape' 추가
+        }
 
         if ("notice".equals(communityDTO.getPostType())) {
             return "redirect:/CommunityNotice";
