@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -86,5 +87,19 @@ public class QuizServiceImp implements QuizService{
                     return dto;
                 })
                 .toList();
+    }
+
+    @Override
+    public boolean checkAnswer(Long quizId, String selectedAnswer) {
+
+        Optional<QuizEntity> optionalQuiz = quizRepository.findById(quizId);
+
+        return optionalQuiz
+                .map(quiz -> {
+                    String actualAnswer = quiz.getQuizAnswer();
+
+                    return actualAnswer.trim().equalsIgnoreCase(selectedAnswer.trim());
+                })
+                .orElse(false);
     }
 }

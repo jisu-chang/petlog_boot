@@ -41,4 +41,8 @@ public interface UserService {
     UserDTO getUserProfileWithEquippedFrame(Long userId); //프로필 프레임 용
 
     UserEntity findByuserId(Long userId);
+
+    void addGrapes(Long userId, int i);
+
+    Optional<UserEntity> findUserById(Long userId);
 }
