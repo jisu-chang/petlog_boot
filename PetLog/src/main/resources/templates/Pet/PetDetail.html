@@ -184,7 +184,7 @@
   </div>
 
   <div class="profile-container">
-    <img th:src="@{/image/{img}(img=${petEntity.petImg})}" alt="Pet Image">
+    <img th:src="@{/petimg/{img}(img=${petEntity.petImg})}" alt="Pet Image">
     <div class="pet-name">🤍 <span th:text="${petEntity.petName}">펫 이름</span> 🤍</div>
 
     <div class="pet-info">

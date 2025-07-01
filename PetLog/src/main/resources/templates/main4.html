@@ -240,7 +240,7 @@
     <div th:if="${#lists.size(list) == 1}" class="pet-card-single-wrapper">
       <div class="pet-card">
       <a th:href="@{/Pet/PetDetail(petId=${list[0].petId})}">
-        <img class="pet-image" th:src="@{'/image/' + ${list[0].petImgName}}" alt="펫 이미지" />
+        <img class="pet-image" th:src="@{'/petimg/' + ${list[0].petImgName}}" />
         <div style="font-weight: bold;" th:text="${list[0].petName}">펫이름</div>
         <div th:text="'🐻 성별: ' + ${list[0].petBog}">성별</div>
         <div th:text="'✨ 중성화: ' + ${list[0].petNeuter}">중성화</div>
@@ -296,7 +296,7 @@
     return `
       <div class="pet-card">
         <a href="/Pet/PetDetail?petId=${pet.petId}">
-          <img class="pet-image" src="/image/${pet.petImgName}" alt="펫 이미지" />
+          <img class="pet-image" src="/petimg/${pet.petImgName}" alt="펫 이미지" />
           <div style="font-weight: bold;">${pet.petName}</div>
           <div>🐻 성별: ${pet.petBog || '정보 없음'}</div>
           <div>✨ 중성화: ${pet.petNeuter || '정보 없음'}</div>
