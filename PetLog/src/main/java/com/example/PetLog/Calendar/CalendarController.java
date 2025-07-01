@@ -19,6 +19,7 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 public class CalendarController {
@@ -51,6 +52,15 @@ public class CalendarController {
         if (petList.isEmpty()) return "redirect:/Calendar/CalendarInput?error=no_pet";
 
         if (petId == null) petId = petList.get(0).getPetId();
+
+        String selectedPetName = "";
+        for (PetDTO pet : petList) {
+            if (Objects.equals(pet.getPetId(), petId)) {
+                selectedPetName = pet.getPetName();
+                break;
+            }
+        }
+        mo.addAttribute("selectedPetName", selectedPetName);
 
         Calendar cal = Calendar.getInstance();
         if (year != null && month != null) {
@@ -110,7 +120,7 @@ public class CalendarController {
                 for (DiaryDTO d : diaryList) {
                     if (d.getDiaryDate().getDayOfMonth() == count) {
                         html.append("<a href='/Diary/DiaryDetail?diaryId=").append(d.getDiaryId()).append("' class='schedule-item' style='background-color:#e0f7fa;'>")
-                                .append("📓") // 일기장 이모지만 남깁니다.
+                                .append("📓")
                                 .append("</a>");
                     }
                 }
@@ -138,7 +148,7 @@ public class CalendarController {
             return "redirect:/login";
         }
 
-        List<PetEntity> petlist = petService.findByUserId(userId); // 반드시 로그인한 사용자의 펫 리스트
+        List<PetEntity> petlist = petService.findByUserId(userId);
         model.addAttribute("petlist", petlist);
         return "Calendar/CalendarInput";
     }
@@ -147,10 +157,10 @@ public class CalendarController {
     public String cal3(@ModelAttribute CalendarDTO calendarDTO, Principal principal) {
 
         if (principal == null) {
-            return "redirect:/login"; // 로그인되지 않은 경우 로그인 페이지로 리다이렉트
+            return "redirect:/login";
         }
         String loginId = principal.getName();
-        Long userId = userService.findUserIdByLoginId(loginId); // 실제 로그인된 유저 ID
+        Long userId = userService.findUserIdByLoginId(loginId);
 
         calendarDTO.setUserId(userId);
         calendarService.insertSchedule(calendarDTO, userId);
@@ -206,21 +216,21 @@ public class CalendarController {
 
         CalendarDTO cdto = calendarService.calendar_detail(calId);
 
-        if (cdto == null || !cdto.getUserId().equals(userId)) { // ✅ userId 일치 여부도 확인하여 다른 유저의 일정 접근 방지
+        if (cdto == null || !cdto.getUserId().equals(userId)) {
             return "redirect:/Calendar/CalendarView?error=not_found_or_unauthorized";
         }
 
         if (cdto.getPetId() != null) {
-            PetEntity pet = petService.findByPetId(cdto.getPetId()); // petId로 PetEntity 조회
+            PetEntity pet = petService.findByPetId(cdto.getPetId());
             if (pet != null) {
-                cdto.setPetName(pet.getPetName()); // CalendarDTO에 반려동물 이름 설정
+                cdto.setPetName(pet.getPetName());
             }
         }
 
         model.addAttribute("cdto", cdto);
         model.addAttribute("current_year", cdto.getCalDate().getYear());
         model.addAttribute("current_month", cdto.getCalDate().getMonthValue());
-        model.addAttribute("pet_id", cdto.getPetId()); // 현재 펫 선택 유지 (캘린더 뷰로 돌아갈 때 필요)
+        model.addAttribute("pet_id", cdto.getPetId());
 
         return "Calendar/CalendarDetail";
     }
@@ -289,7 +299,7 @@ public class CalendarController {
     }
 
     @GetMapping(value = "/Calendar/CalendarDelete")
-    public String showDeleteConfirmation(@RequestParam("calId") Long calId, // calId는 필수 파라미터
+    public String showDeleteConfirmation(@RequestParam("calId") Long calId,
                                          @RequestParam(value = "year", required = false) Integer year,
                                          @RequestParam(value = "month", required = false) Integer month,
                                          @RequestParam(value = "petId", required = false) Long petId,
@@ -318,7 +328,7 @@ public class CalendarController {
         model.addAttribute("cdto", cdto);
         model.addAttribute("current_year", year != null ? year : cdto.getCalDate().getYear());
         model.addAttribute("current_month", month != null ? month : cdto.getCalDate().getMonthValue());
-        model.addAttribute("pet_id", petId != null ? petId : cdto.getPetId()); // HTML의 hidden input name과 일치
+        model.addAttribute("pet_id", petId != null ? petId : cdto.getPetId());
 
         return "Calendar/CalendarDelete";
     }
@@ -348,7 +358,4 @@ public class CalendarController {
                 + "&month=" + (month != null ? month : cdto.getCalDate().getMonthValue())
                 + "&pet_id=" + (petId != null ? petId : cdto.getPetId());
     }
-
-
 }
-
