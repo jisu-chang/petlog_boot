@@ -212,6 +212,16 @@
           box-shadow: none;
         }
 
+        .pet-calendar-title {
+            color: #6a5acd;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 25px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+
         .modal {
           position: fixed;
           top: 0;
@@ -480,6 +490,11 @@
     <div style="margin-top: 16px;">
         <button type="button" class="schedule-add-btn" onclick="openAddScheduleModal()">➕ 일정 추가</button>
     </div>
+
+    <div th:if="${selectedPetName != null and selectedPetName != ''}" class="pet-calendar-title">
+        💜 <span th:text="${selectedPetName}"></span>의 캘린더 💜
+    </div>
+
 </div>
 
 <div class="month-nav">
