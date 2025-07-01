@@ -1,5 +1,7 @@
 package com.example.PetLog.Snack;
 
+import com.example.PetLog.Comments.CommentsRepository;
+import com.example.PetLog.Likes.LikesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +12,10 @@ public class SnackServiceImp implements SnackService {
 
     @Autowired
     SnackRepository snackRepository;
+    @Autowired
+    LikesRepository likesRepository;
+    @Autowired
+    CommentsRepository commentsRepository;
 
     @Override
     public void save(SnackEntity snackEntity) {
@@ -72,6 +78,11 @@ public class SnackServiceImp implements SnackService {
 
     @Override
     public void delete(Long snackId) {
+        // 댓글 삭제
+        commentsRepository.deleteBysnackId(snackId);
+        // 좋아요 삭제
+        likesRepository.deleteBysnackId(snackId);
+        // 게시글 삭제
         snackRepository.deleteById(snackId);
     }
 

@@ -180,6 +180,7 @@
             font-weight: bold;
             color: #c0392b;
             font-size: 1.1em;
+            text-align: center;
         }
 
         @media screen and (max-width: 390px) {
@@ -233,17 +234,10 @@
 </head>
 <body>
 <div class="table-wrapper">
-    <h2 style="color: #f48aa5">🦴 레시피 보기</h2>
-
-    <div th:if="${#lists.isEmpty(list)}">
-        <p class="no-recipe">작성된 레시피가 없습니다. 🍪</p>
-        <a th:href="@{Snack/SnackInput}" class="btn-write">레시피 작성하러 가기 ✍️</a>
+    <h2 style="color: #f48aa5">🦴 간식 레시피</h2>
+    <div style="text-align: right;">
+        <a th:href="@{/Snack/SnackInput}" class="btn-write">✏️ 레시피 작성</a>
     </div>
-
-    <div th:if="${not #lists.isEmpty(list)}">
-        <div style="text-align: right;">
-            <a th:href="@{/Snack/SnackInput}" class="btn-write">레시피 작성</a>
-        </div>
 
         <table>
             <thead>
@@ -253,6 +247,11 @@
             </tr>
             </thead>
             <tbody>
+
+            <tr th:if="${#lists.isEmpty(list)}">
+                <td colspan="2" class="no-recipe">작성된 레시피가 없습니다. 🍪</td>
+            </tr>
+
             <tr th:each="rec : ${list}">
                 <td style="text-align: left;" >
                     <a th:href="@{/Snack/SnackDetail(snackId=${rec.snackId})}" th:text="${rec.snackTitle}"></a>
