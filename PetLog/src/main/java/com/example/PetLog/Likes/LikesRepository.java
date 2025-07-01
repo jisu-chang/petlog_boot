@@ -40,4 +40,9 @@ public interface LikesRepository extends JpaRepository<LikesEntity, Long> {
     @Transactional
     @Query("DELETE FROM LikesEntity l WHERE l.postId = :postId")
     void deleteByPostId(@Param("postId") Long postId);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM LikesEntity l WHERE l.snackId = :snackId")
+    void deleteBysnackId(@Param("snackId") Long snackId);
 }
