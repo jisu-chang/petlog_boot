@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class SnackController {
     @Autowired
     LikesService likesService;
 
-    String path = System.getProperty("user.dir") + "/src/main/resources/static/image";
+    String path = System.getProperty("user.dir") + "/uploads/snack";
 
     @GetMapping(value = "/Snack/SnackInput")
     public String input(Model mo, HttpSession hs, Principal principal) {
@@ -54,16 +55,21 @@ public class SnackController {
         if (userId == null) {
             return "redirect:/login";  // 로그인 페이지로 리다이렉트
         }
-//        Long userId = userService.findUserIdByLoginId(loginId);
 
         dto.setUserId(userId);
         dto.setSnackReadcnt(0);
+        dto.setSnackDate(LocalDate.now()); // 오늘 날짜
+
+        // 저장 경로
+        File uploadDir = new File(path);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
 
         MultipartFile file = dto.getSnackImage();
         if (file != null && !file.isEmpty()) {
             String filename = file.getOriginalFilename();
 
-            String path = System.getProperty("user.dir") + "/src/main/resources/static/image";
             File dir = new File(path);
             if (!dir.exists()) {
                 dir.mkdirs(); // 폴더 없으면 생성
@@ -158,6 +164,10 @@ public class SnackController {
 
     @PostMapping(value = "/SnackUpdateSave")
     public String us(@ModelAttribute SnackDTO dto,@RequestParam("himage") String himage, HttpSession hs, Principal pri) throws IOException {
+        File uploadDir = new File(path);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
 
         MultipartFile mf = dto.getSnackImage();
         File dir = new File(path);
@@ -170,6 +180,10 @@ public class SnackController {
         } else {
             dto.setSnackImagename(himage);
         }
+
+        // 기존 날짜 불러오기
+        SnackEntity original = snackService.getSnack(dto.getSnackId());
+        dto.setSnackDate(original.getSnackDate());
 
         String loginId = pri.getName();
         Long userId = userService.findUserIdByLoginId(loginId);

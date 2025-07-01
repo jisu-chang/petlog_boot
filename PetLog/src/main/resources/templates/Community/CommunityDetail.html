@@ -36,12 +36,12 @@
             gap: 12px;
             margin-bottom: 30px;
         }
-            .post-header h2 {
-              font-size: 18px; /* 글씨 크기 줄임 */
-              font-weight: normal;
-              margin: 0;
-              color: #f48aa5;
-            }
+        .post-header h2 {
+          font-size: 18px; /* 글씨 크기 줄임 */
+          font-weight: normal;
+          margin: 0;
+          color: #f48aa5;
+        }
 
         .post-title-wrapper {
             display: flex;
@@ -295,7 +295,7 @@
                     <div th:text="${dto.postContent}" style="margin-bottom: 20px;"></div>
                     <img th:if="${dto.postImage != null and !#strings.isEmpty(dto.postImage)}"
                          th:src="@{'/communityimg/' + ${dto.postImage}}"
-                         style="max-width: 100%; border-radius: 8px;" />
+                         style="max-width: 100%; max-height: 400px; height: auto; border-radius: 10px; margin-top: 20px;"/>
                 </div>
             </div>
         </div>
@@ -352,7 +352,7 @@
 
 
             <div th:each="reply : ${comments}" th:if="${reply.parent_id == comment.com_id}" class="reply">
-                <div class="comment-header">
+                <div class="comment-header"> ⤷
                     <!-- 외부 이미지 -->
                     <img class="profile-img"
                          th:if="${reply.user != null and reply.user.profileimg != null and reply.user.profileimg.startsWith('http')}"

@@ -218,7 +218,7 @@
                     <div th:text="${dto.postContent}" style="margin-bottom: 20px;"></div>
                     <img th:if="${dto.postImage != null and !#strings.isEmpty(dto.postImage)}"
                          th:src="@{'/communityimg/' + ${dto.postImage}}"
-                         style="max-width: 100%; border-radius: 8px;" />
+                         style="max-width: 100%; max-height: 400px; height: auto; border-radius: 10px; margin-top: 20px;"/>
                 </div>
             </div>
         </div>

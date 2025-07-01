@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Data
 public class SnackDTO {
 
-    long snackId;
+    Long snackId;
     String snackTitle;
     String snackRecipe;
     MultipartFile snackImage;
@@ -31,6 +31,7 @@ public class SnackDTO {
 
     public SnackEntity entity() {
         return SnackEntity.builder()
+                .snackId(snackId)
                 .snackTitle(snackTitle)
                 .snackRecipe(snackRecipe)
                 .snackImage(snackImagename)

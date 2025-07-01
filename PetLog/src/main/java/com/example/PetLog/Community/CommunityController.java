@@ -195,7 +195,7 @@ public class CommunityController {
         communityDTO.setPostReadcnt(readcnt);
 
         // 저장 경로
-        String path = System.getProperty("user.dir") + "/uploads/community";
+//        String path = System.getProperty("user.dir") + "/uploads/community";
         File uploadDir = new File(path);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();

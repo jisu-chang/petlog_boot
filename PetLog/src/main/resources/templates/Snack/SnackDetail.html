@@ -214,8 +214,20 @@
 <div class="table-wrapper">
   <table>
     <caption>
-      <img class="profile-img" th:if="${dto.user.profileimg != null}" th:src="@{/image/{img}(img=${dto.user.profileimg})}" alt="Profile Image"/>
-      <img class="profile-img" th:if="${dto.user.profileimg == null}" th:src="@{/image/default.png}" alt="Default Image"/>
+      <!-- 카카오 등 외부 이미지 -->
+      <img class="profile-img"
+           th:if="${dto.user != null and dto.user.profileimg != null and dto.user.profileimg.startsWith('http')}"
+           th:src="${dto.user.profileimg}" alt="Profile Image"/>
+
+      <!-- 로컬에서 저장한 프로필 이미지 -->
+      <img class="profile-img"
+           th:if="${dto.user != null and dto.user.profileimg != null and !dto.user.profileimg.startsWith('http')}"
+           th:src="@{'/profileimg/' + ${dto.user.profileimg}}" alt="Local Profile Image"/>
+
+      <!-- 기본 이미지 -->
+      <img class="profile-img"
+           th:if="${dto.user == null or dto.user.profileimg == null}"
+           th:src="@{/profileimg/default.png}" alt="Default Image"/>
       <span th:text="${dto.userLoginId} + '님의 간식 레시피 🦴'"></span>
 
       <div class="top-icons">
@@ -240,11 +252,11 @@
       <td th:text="${#temporals.format(dto.snackDate, 'yyyy-MM-dd')}"></td>
     </tr>
     <tr>
-      <th>레시피 내용</th>
+      <th>내용</th>
       <td>
         <div style="white-space: pre-line;" th:text="${dto.snackRecipe}"></div>
         <th:block th:if="${dto.snackImagename != null}">
-          <img th:src="@{/image/{img}(img=${dto.snackImagename})}" />
+          <img th:src="@{'/snackimg/' + ${dto.snackImagename}}" style="max-width: 100%; max-height: 400px; height: auto; border-radius: 10px; margin-top: 20px;"/>
         </th:block>
       </td>
     </tr>
@@ -284,8 +296,18 @@
 
           <div th:each="comment : ${comments}" th:if="${comment.depth == 0}" class="comment">
             <div class="comment-header">
-              <img class="profile-img" th:if="${dto?.user?.profileimg != null}" th:src="@{/image/{img}(img=${dto.user.profileimg})}" alt="Profile Image"/>
-              <img class="profile-img" th:if="${dto?.user?.profileimg == null}" th:src="@{/image/default.png}" alt="Default Image"/>
+              <!-- 외부 URL 이미지 -->
+              <img class="profile-img"
+                   th:if="${comment.user != null and comment.user.profileimg != null and comment.user.profileimg.startsWith('http')}"
+                   th:src="${comment.user.profileimg}" alt="Profile Image"/>
+              <!-- 로컬 이미지 -->
+              <img class="profile-img"
+                   th:if="${comment.user != null and comment.user.profileimg != null and !comment.user.profileimg.startsWith('http')}"
+                   th:src="@{'/profileimg/' + ${comment.user.profileimg}}" alt="Local Profile Image"/>
+              <!-- 기본 이미지 -->
+              <img class="profile-img"
+                   th:if="${comment.user == null or comment.user.profileimg == null}"
+                   th:src="@{/profileimg/default.png}" alt="Default Image"/>
               <strong th:text="${comment.user.userLoginId}">작성자</strong>
             </div>
             🗨️ <span th:text="${comment.comCom}">내용</span>
@@ -293,9 +315,19 @@
 
 
             <div th:each="reply : ${comments}" th:if="${reply.parentId == comment.comId}" class="reply">
-              <div class="comment-header">
-                <img class="profile-img" th:if="${dto?.user?.profileimg != null}" th:src="@{/image/{img}(img=${dto.user.profileimg})}" alt="Profile Image"/>
-                <img class="profile-img" th:if="${dto?.user?.profileimg == null}" th:src="@{/image/default.png}" alt="Default Image"/>
+              <div class="comment-header"> ⤷
+                <!-- 외부 이미지 -->
+                <img class="profile-img"
+                     th:if="${reply.user != null and reply.user.profileimg != null and reply.user.profileimg.startsWith('http')}"
+                     th:src="${reply.user.profileimg}" alt="Profile Image"/>
+                <!-- 로컬 이미지 -->
+                <img class="profile-img"
+                     th:if="${reply.user != null and reply.user.profileimg != null and !reply.user.profileimg.startsWith('http')}"
+                     th:src="@{'/profileimg/' + ${reply.user.profileimg}}" alt="Local Profile Image"/>
+                <!-- 기본 이미지 -->
+                <img class="profile-img"
+                     th:if="${reply.user == null or reply.user.profileimg == null}"
+                     th:src="@{/profileimg/default.png}" alt="Default Image"/>
                 <strong th:text="${reply.user.userLoginId}">작성자</strong>
               </div>
               🗨️ <span th:text="${reply.comCom}">대댓글내용</span>
