@@ -15,10 +15,12 @@ public class CommunityDTO {
     Long userId;
     String postTitle;
     String postContent;
-    MultipartFile postImage;
+    MultipartFile postImage;  //사용자가 업로드한 파일
+    String postImageName;  //실제 저장 된 파일 이름
     int postReadcnt;
     LocalDate postDate;
     String postType;
+
 
 
     public CommunityEntity entity() {
@@ -30,7 +32,7 @@ public class CommunityDTO {
                 .userId(userId)
                 .postTitle(postTitle)
                 .postContent(postContent)
-                .postImage(imageName) // 이미지 파일명
+                .postImage(postImageName) // 이미지 파일명
                 .postReadcnt(postReadcnt)
                 .postDate(postDate)
                 .postType(this.postType)

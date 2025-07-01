@@ -50,7 +50,7 @@ public class UserController {
     @Autowired
     LikesService likesService;
 
-    String path ="C:\\MBC12AI\\git\\petlog_boot\\PetLog\\src\\main\\resources\\static\\image";
+    String path = System.getProperty("user.dir") + "/uploads/profile";
 
     //로그인
     @GetMapping(value = "/login")
@@ -367,13 +367,20 @@ public class UserController {
         String encryptedPassword = userEntity.getPassword();
 
         // 프로필 이미지 처리
+        String path = System.getProperty("user.dir") + "/uploads/profile";
+        File uploadDir = new File(path);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs(); // 폴더 없으면 생성
+        }
+
+        // 프로필 이미지 처리
         MultipartFile mf = dto.getProfileimg();
         String fname;
 
         if (mf != null && !mf.isEmpty()) {
             // 기존 이미지 삭제 (기본 이미지는 제외)
             if (!"default.png".equals(dfname)) {
-                File oldFile = new File(path + "\\" + dfname);
+                File oldFile = new File(path + File.separator + dfname);
                 if (oldFile.exists()) oldFile.delete();
             }
 
@@ -383,7 +390,7 @@ public class UserController {
             fname = UUID.randomUUID().toString() + extension;
 
             // 저장
-            mf.transferTo(new File(path + "\\" + fname));
+            mf.transferTo(new File(path + File.separator + fname));
         } else {
             fname = dfname; // 새 이미지 없으면 기존 이미지 유지
         }

@@ -153,6 +153,20 @@
         </th:block>
 
         <div class="post-header">
+            <!-- 카카오 등 외부 이미지 -->
+            <img class="profile-img"
+                 th:if="${dto.user != null and dto.user.profileimg != null and dto.user.profileimg.startsWith('http')}"
+                 th:src="${dto.user.profileimg}" alt="Profile Image"/>
+
+            <!-- 로컬에서 저장한 프로필 이미지 -->
+            <img class="profile-img"
+                 th:if="${dto.user != null and dto.user.profileimg != null and !dto.user.profileimg.startsWith('http')}"
+                 th:src="@{'/profileimg/' + ${dto.user.profileimg}}" alt="Local Profile Image"/>
+
+            <!-- 기본 이미지 -->
+            <img class="profile-img"
+                 th:if="${dto.user == null or dto.user.profileimg == null}"
+                 th:src="@{/profileimg/default.png}" alt="Default Image"/>
             <h2><span th:text="${dto.user.userLoginId} + '님의 삭제 게시물'"></span></h2>
         </div>
 
@@ -178,7 +192,9 @@
 
         <!-- form-group 밖에서 이미지 따로 -->
         <div class="image-preview">
-            <img th:src="@{'/image/' + ${dto.postImage}}" alt="첨부 이미지">
+            <img th:if="${dto.postImage != null and !#strings.isEmpty(dto.postImage)}"
+                 th:src="@{'/communityimg/' + ${dto.postImage}}"
+                 style="max-width: 100%; border-radius: 8px;" />
         </div>
 
 
