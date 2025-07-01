@@ -1,6 +1,7 @@
 package com.example.PetLog.Community;
 
 import com.example.PetLog.Comments.CommentsEntity;
+import com.example.PetLog.Comments.CommentsRepository;
 import com.example.PetLog.Likes.LikesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,8 @@ public class CommunityServiceImp implements CommunityService{
     CommunityRepository communityRepository;
     @Autowired
     LikesRepository likesRepository;
+    @Autowired
+    CommentsRepository commentsRepository;
 
     @Override
     public void insertpost(CommunityEntity communityEntity) {
@@ -48,6 +51,11 @@ public class CommunityServiceImp implements CommunityService{
 
     @Override
     public void deletesave(Long postId) {
+        // 1. 댓글 삭제
+        commentsRepository.deleteByPostId(postId);
+        // 2. 좋아요 삭제
+        likesRepository.deleteByPostId(postId);
+        // 3. 게시글 삭제
         communityRepository.deleteById(postId);
     }
 

@@ -252,15 +252,21 @@
     <form th:action="@{/CommunityDelete}" method="post" th:id="'deleteForm-' + ${dto.postId}">
 
         <div class="post-header">
+            <!-- 카카오 등 외부 이미지 -->
             <img class="profile-img"
                  th:if="${dto.user != null and dto.user.profileimg != null and dto.user.profileimg.startsWith('http')}"
                  th:src="${dto.user.profileimg}" alt="Profile Image"/>
+
+            <!-- 로컬에서 저장한 프로필 이미지 -->
             <img class="profile-img"
                  th:if="${dto.user != null and dto.user.profileimg != null and !dto.user.profileimg.startsWith('http')}"
-                 th:src="@{/image/{img}(img=${dto.user.profileimg})}" alt="Local Profile Image"/>
+                 th:src="@{'/profileimg/' + ${dto.user.profileimg}}" alt="Local Profile Image"/>
+
+            <!-- 기본 이미지 -->
             <img class="profile-img"
                  th:if="${dto.user == null or dto.user.profileimg == null}"
-                 th:src="@{/image/default.png}" alt="Default Image"/>
+                 th:src="@{/profileimg/default.png}" alt="Default Image"/>
+
             <h2 th:text="${dto.user != null ? dto.user.userLoginId + '님의 게시물' : '알 수 없는 사용자님의 게시물'}"></h2>
         </div>
 
@@ -288,7 +294,8 @@
                 <div class="post-value">
                     <div th:text="${dto.postContent}" style="margin-bottom: 20px;"></div>
                     <img th:if="${dto.postImage != null and !#strings.isEmpty(dto.postImage)}"
-                         th:src="@{'/image/' + ${dto.postImage}}" style="max-width: 100%; border-radius: 8px;" />
+                         th:src="@{'/communityimg/' + ${dto.postImage}}"
+                         style="max-width: 100%; border-radius: 8px;" />
                 </div>
             </div>
         </div>
@@ -325,15 +332,18 @@
 
         <div th:each="comment : ${comments}" th:if="${comment.depth == 0}" class="comment">
             <div class="comment-header">
+                <!-- 외부 URL 이미지 -->
                 <img class="profile-img"
                      th:if="${comment.user != null and comment.user.profileimg != null and comment.user.profileimg.startsWith('http')}"
                      th:src="${comment.user.profileimg}" alt="Profile Image"/>
+                <!-- 로컬 이미지 -->
                 <img class="profile-img"
                      th:if="${comment.user != null and comment.user.profileimg != null and !comment.user.profileimg.startsWith('http')}"
-                     th:src="@{/image/{img}(img=${comment.user.profileimg})}" alt="Local Profile Image"/>
+                     th:src="@{'/profileimg/' + ${comment.user.profileimg}}" alt="Local Profile Image"/>
+                <!-- 기본 이미지 -->
                 <img class="profile-img"
                      th:if="${comment.user == null or comment.user.profileimg == null}"
-                     th:src="@{/image/default.png}" alt="Default Image"/>
+                     th:src="@{/profileimg/default.png}" alt="Default Image"/>
 
                 <strong th:text="${comment.user != null ? comment.user.userLoginId : '알 수 없음'}">작성자</strong>
             </div>
@@ -343,15 +353,18 @@
 
             <div th:each="reply : ${comments}" th:if="${reply.parent_id == comment.com_id}" class="reply">
                 <div class="comment-header">
+                    <!-- 외부 이미지 -->
                     <img class="profile-img"
                          th:if="${reply.user != null and reply.user.profileimg != null and reply.user.profileimg.startsWith('http')}"
                          th:src="${reply.user.profileimg}" alt="Profile Image"/>
+                    <!-- 로컬 이미지 -->
                     <img class="profile-img"
                          th:if="${reply.user != null and reply.user.profileimg != null and !reply.user.profileimg.startsWith('http')}"
-                         th:src="@{/image/{img}(img=${reply.user.profileimg})}" alt="Local Profile Image"/>
+                         th:src="@{'/profileimg/' + ${reply.user.profileimg}}" alt="Local Profile Image"/>
+                    <!-- 기본 이미지 -->
                     <img class="profile-img"
                          th:if="${reply.user == null or reply.user.profileimg == null}"
-                         th:src="@{/image/default.png}" alt="Default Image"/>
+                         th:src="@{/profileimg/default.png}" alt="Default Image"/>
                     <strong th:text="${reply.user != null ? reply.user.userLoginId : '알 수 없음'}">작성자</strong>
                 </div>
                 🗨️ <span th:text="${reply.com_com}">대댓글내용</span>

@@ -1,6 +1,8 @@
 package com.example.PetLog.Comments;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -21,4 +23,8 @@ public interface CommentsRepository extends JpaRepository<CommentsEntity, Long> 
     @Query("SELECT c FROM CommentsEntity c JOIN FETCH c.user WHERE c.snack.snackId = :snackId ORDER BY c.parentId ASC, c.comId ASC")
     List<CommentsEntity> findBySnack_SnackId(@Param("snackId") Long snackId);
 
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM CommentsEntity c WHERE c.community.postId = :postId")
+    void deleteByPostId( Long postId);
 }

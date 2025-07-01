@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -30,7 +31,7 @@ public class CommunityController {
     @Autowired
     CommentsService commentsService;
 
-    String path ="C:\\MBC12AI\\git\\petlog_boot\\PetLog\\src\\main\\resources\\static\\image";
+    String path = System.getProperty("user.dir") + "/uploads/community";
 
     // 커뮤니티/공지사항 폼을 type에 따라 다르게 로딩
     @GetMapping("/CommunityIn")
@@ -61,12 +62,23 @@ public class CommunityController {
                 communityDTO.setPostType("normal");
             }
         }
+        String path = System.getProperty("user.dir") + "/uploads/community";
+
+        // 업로드 폴더 없으면 자동 생성
+        File uploadDir = new File(path);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
 
         // 이미지 처리
         MultipartFile mf = communityDTO.getPostImage();
         if (mf != null && !mf.isEmpty()) {
-            String fname = mf.getOriginalFilename();
-            mf.transferTo(new File(path + "\\" + fname));
+            // UUID 생성 (파일 이름 고유화)
+            String ff = mf.getOriginalFilename(); // 원본 파일 이름
+            String fname = ff != null ? ff.substring(ff.lastIndexOf(".")) : "";  // 파일 확장자 추출
+            String nfname = UUID.randomUUID().toString() + fname;  // UUID로 고유한 파일명 만들기
+            mf.transferTo(new File(path + "\\" + nfname)); //저장
+            communityDTO.setPostImageName(nfname);
         } else {
             communityDTO.setPostImage(null);
         }
@@ -140,6 +152,7 @@ public class CommunityController {
         mo.addAttribute("sessionUserLoginId", userLoginId);
         mo.addAttribute("sessionUserRole", userRole);
         mo.addAttribute("dto", dto);
+        System.out.println("postImage: " + dto.getPostImage());
         mo.addAttribute("likeCount", likeCount); // 좋아요 수
         mo.addAttribute("likedByUser", likedByUser); // 사용자가 좋아요를 눌렀는지 여부
         mo.addAttribute("comments", comments); // 댓글 추가
@@ -159,12 +172,31 @@ public class CommunityController {
         communityDTO.setUserId(userId);
         communityDTO.setPostReadcnt(readcnt);
 
+        // 저장 경로
+        String path = System.getProperty("user.dir") + "/uploads/community";
+        File uploadDir = new File(path);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
+
+        // 이미지 처리
         MultipartFile mf = communityDTO.getPostImage();
         String saveImageName;
+
         if (mf != null && !mf.isEmpty()) {
-            new File(path + "\\" + dfname).delete(); // 기존 이미지 삭제
-            saveImageName = mf.getOriginalFilename();
-            mf.transferTo(new File(path + "\\" + saveImageName));
+            // 기존 이미지 삭제 (기본 이미지가 아닌 경우만)
+            if (dfname != null && !dfname.equals("default.png")) {
+                File oldFile = new File(path + File.separator + dfname);
+                if (oldFile.exists()) oldFile.delete();
+            }
+
+            // UUID + 확장자 생성
+            String ff = mf.getOriginalFilename();
+            String fname = ff.substring(ff.lastIndexOf("."));
+            saveImageName = UUID.randomUUID().toString() + fname;
+
+            // 저장
+            mf.transferTo(new File(path + File.separator + saveImageName));
         } else {
             saveImageName = dfname; // 새 이미지 없으면 기존 이미지 유지
         }
@@ -247,12 +279,31 @@ public class CommunityController {
         communityDTO.setUserId(userId);
         communityDTO.setPostReadcnt(readcnt);
 
+        // 저장 경로
+        String path = System.getProperty("user.dir") + "/uploads/community";
+        File uploadDir = new File(path);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
+
+        // 이미지 처리
         MultipartFile mf = communityDTO.getPostImage();
         String saveImageName;
+
         if (mf != null && !mf.isEmpty()) {
-            new File(path + "\\" + dfname).delete(); // 기존 이미지 삭제
-            saveImageName = mf.getOriginalFilename();
-            mf.transferTo(new File(path + "\\" + saveImageName));
+            // 기존 이미지 삭제 (기본 이미지가 아닌 경우만)
+            if (dfname != null && !dfname.equals("default.png")) {
+                File oldFile = new File(path + File.separator + dfname);
+                if (oldFile.exists()) oldFile.delete();
+            }
+
+            // UUID + 확장자 생성
+            String ff = mf.getOriginalFilename();
+            String fname = ff.substring(ff.lastIndexOf("."));
+            saveImageName = UUID.randomUUID().toString() + fname;
+
+            // 저장
+            mf.transferTo(new File(path + File.separator + saveImageName));
         } else {
             saveImageName = dfname; // 새 이미지 없으면 기존 이미지 유지
         }
