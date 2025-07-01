@@ -34,4 +34,6 @@ public interface CommentsRepository extends JpaRepository<CommentsEntity, Long> 
     void deleteBysnackId(@Param("snackId") Long snackId);
 
     int countByCommunity_PostId(Long postId);
+
+    Integer countBySnack_SnackId(Long snackId);
 }

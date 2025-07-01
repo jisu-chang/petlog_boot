@@ -10,4 +10,8 @@ public interface SnackRepository extends JpaRepository<SnackEntity,Long> {
     List<SnackEntity> findAllByUser_UserId(Long userId);
 
     void deleteByUser_UserId(Long userId);
+
+    List<SnackEntity> findBySnackTitleContaining(String keyword);
+
+    List<SnackEntity> findBySnackRecipeContaining(String keyword);
 }

@@ -5,6 +5,7 @@ import com.example.PetLog.Likes.LikesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -100,6 +101,44 @@ public class SnackServiceImp implements SnackService {
     @Override
     public SnackEntity getSnackById(Long snackId) {
         return snackRepository.findById(snackId).orElse(null);
+    }
+
+    @Override
+    public List<SnackDTO> searchSnacks(String postType, String keyword) {
+        List<SnackEntity> entities;
+        if ("title".equals(postType)) {
+            entities = snackRepository.findBySnackTitleContaining(keyword);
+        } else if ("content".equals(postType)) {
+            entities = snackRepository.findBySnackRecipeContaining(keyword);
+        } else {
+            entities = new ArrayList<>();
+        }
+
+        return entities.stream().map(entity -> {
+            SnackDTO dto = new SnackDTO();
+            dto.setSnackId(entity.getSnackId());
+            dto.setSnackTitle(entity.getSnackTitle());
+            dto.setSnackRecipe(entity.getSnackRecipe());
+            dto.setSnackImagename(entity.getSnackImage());
+            dto.setSnackDate(entity.getSnackDate());
+            dto.setSnackReadcnt(entity.getSnackReadcnt());
+            dto.setUserId(entity.getUserId());
+
+            if (entity.getUser() != null) {
+                dto.setUserLoginId(entity.getUser().getUserLoginId());
+            }
+            return dto;
+        }).toList();
+    }
+
+    @Override
+    public Integer getCommentCount(Long snackId) {
+        return commentsRepository.countBySnack_SnackId(snackId);
+    }
+
+    @Override
+    public Integer getLikeCount(Long snackId) {
+        return likesRepository.countBySnack_SnackId(snackId);
     }
 
 

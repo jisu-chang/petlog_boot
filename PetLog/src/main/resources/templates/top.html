@@ -336,7 +336,7 @@
       </a>
       <a sec:authorize="isAuthenticated()" th:href="@{/Point/GrapeBar}">
         <img src="/image/포도알.png" alt="포도알" style="width:24px; height:24px; vertical-align: middle;" />
-        <span>포도알<span th:text="${session.grapeCount}"></span>알</span>
+        <span>포도 <span th:text="${session.grapeCount}"></span>알</span>
       </a>
       <a sec:authorize="isAuthenticated()" th:href="@{/ItemUser/ItemBought}">
         <img src="/image/아이템.png" alt="내 아이템" style="width:24px; height:24px; vertical-align: middle;" />

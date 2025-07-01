@@ -26,4 +26,9 @@ public interface SnackService {
 
 
     SnackEntity getSnackById(Long snackId);
+
+    List<SnackDTO> searchSnacks(String postType, String keyword);
+
+    Integer getCommentCount(Long snackId);
+    Integer getLikeCount(Long snackId);
 }

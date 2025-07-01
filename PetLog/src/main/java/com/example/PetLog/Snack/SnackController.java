@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -267,4 +268,26 @@ public class SnackController {
             return "redirect:/Snack";
         }
     }
+    @GetMapping("/snackSearch")
+    public String searchSnacks(@RequestParam("postType") String postType,
+                               @RequestParam("keyword") String keyword,
+                               Model model) {
+        List<SnackDTO> searchResult = snackService.searchSnacks(postType, keyword);
+
+        Map<Long, Integer> commentCounts = new HashMap<>();
+        Map<Long, Integer> likeCounts = new HashMap<>();
+
+        for (SnackDTO snack : searchResult) {
+            Long snackId = snack.getSnackId();
+            commentCounts.put(snackId, snackService.getCommentCount(snackId));
+            likeCounts.put(snackId, snackService.getLikeCount(snackId));
+        }
+
+        model.addAttribute("list", searchResult);
+        model.addAttribute("commentCounts", commentCounts);
+        model.addAttribute("likeCounts", likeCounts);
+
+        return "Snack/SnackOut"; // 검색 결과를 보여줄 뷰
+    }
+
 }
