@@ -138,5 +138,14 @@
     </table>
 </div>
 
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var message = /*[[${message}]]*/ null;
+    if (message != null) {
+        alert(message);
+    }
+    /*]]>*/
+</script>
+
 </body>
 </html>

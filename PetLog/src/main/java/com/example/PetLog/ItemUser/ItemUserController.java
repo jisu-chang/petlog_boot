@@ -51,31 +51,42 @@ public class ItemUserController {
     }
 
     @PostMapping(value = "/ItemUser/ItemBought")
-    public String buyItem(@RequestParam("itemId") Long itemId, HttpSession session) {
+    // RedirectAttributes를 파라미터로 추가
+    public String buyItem(@RequestParam("itemId") Long itemId, HttpSession session, RedirectAttributes redirectAttributes) {
 
         // 1. 세션에서 로그인된 user_id 꺼내기
         Long userId = (Long) session.getAttribute("userId");
 
         // 로그인되지 않은 경우 로그인 페이지로 리디렉트
         if (userId == null) {
+            redirectAttributes.addFlashAttribute("message", "로그인이 필요합니다.");
             return "redirect:/login";
         }
 
         // 2. 아이템 조회
         ItemEntity item = itemRepository.findById(itemId).orElse(null);
         if (item == null) {
-            return "redirect:/ItemUser/ItemOutUser?error=item_not_found";
+            redirectAttributes.addFlashAttribute("message", "아이템을 찾을 수 없습니다.");
+            return "redirect:/ItemUser/ItemOutUser";
         }
 
         // 3. 유저 조회
         UserEntity user = userRepository.findById(userId).orElse(null);
         if (user == null) {
-            return "redirect:/login?error=user_not_found";
+            redirectAttributes.addFlashAttribute("message", "사용자 정보를 찾을 수 없습니다.");
+            return "redirect:/login";
         }
 
         // 4. 포도알 확인
         if (user.getGrapeCount() < item.getItemCost()) {
-            return "redirect:/ItemUser/ItemDetail?itemId=" + itemId + "&error=not_enough_grapes";
+            redirectAttributes.addFlashAttribute("message", "포도알이 부족합니다.");
+            return "redirect:/ItemUser/ItemDetail?itemId=" + itemId; // itemId는 그대로 전달 (현재 아이템 상세 페이지)
+        }
+
+        ItemUserEntity existing = itemUserRepository.findByUserIdAndItem_ItemId(userId, itemId);
+        if (existing != null) {
+            redirectAttributes.addFlashAttribute("message", "이미 구매한 아이템입니다.");
+            return "redirect:/ItemUser/ItemDetail?itemId=" + itemId;
         }
 
         // 5. 포도알 차감
@@ -92,7 +103,9 @@ public class ItemUserController {
                 .build();
         itemUserRepository.save(itemUser);
 
-        return "redirect:/ItemUser/ItemOutUser"; // 내 아이템 페이지로 이동
+        // 구매 성공 시 메시지 추가
+        redirectAttributes.addFlashAttribute("message", item.getItemName() + " 구매가 완료되었습니다!");
+        return "redirect:/ItemUser/ItemBought"; // 내 아이템 페이지로 이동
     }
 
     @GetMapping(value = "/ItemUser/ItemBought")
@@ -107,12 +120,10 @@ public class ItemUserController {
 
         List<ItemUserEntity> myItems = itemUserRepository.findByUserId(userId);
 
-        // ✅ 로그 출력 (forEach는 여기까지만!)
         System.out.println("조회된 내 아이템 개수: " + myItems.size());
         myItems.forEach(iue -> {
         });
 
-        // ✅ DTO 변환은 forEach 바깥에서
         List<ItemUserDTO> dtoList = myItems.stream().map(iue -> {
             ItemEntity item = iue.getItem(); // 연관된 item 객체
 
