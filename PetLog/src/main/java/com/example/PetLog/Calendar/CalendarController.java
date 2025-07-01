@@ -99,12 +99,10 @@ public class CalendarController {
                 }
                 html.append("</span>");
 
-                // --- 여기를 수정합니다. 이모지 외의 모든 텍스트 및 제목 관련 태그를 제거합니다. ---
-
                 for (CalendarDTO e : calList) {
                     if (e.getCalDate().getDayOfMonth() == count) {
                         html.append("<a href='/Calendar/CalendarDetail?calId=").append(e.getCalId()).append("' class='schedule-item' style='background-color:#ffe0ec;'>")
-                                .append("📌") // 핀 이모지만 남깁니다.
+                                .append("📌")
                                 .append("</a>");
                     }
                 }
@@ -116,8 +114,6 @@ public class CalendarController {
                                 .append("</a>");
                     }
                 }
-
-                // --- 여기까지 수정 ---
 
                 html.append("</div></td>");
                 count++;
