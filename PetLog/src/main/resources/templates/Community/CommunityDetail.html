@@ -5,7 +5,6 @@
     <title>게시글 상세보기</title>
     <style>
         body {
-            font-family: 'Pretendard', sans-serif;
             background-color: #fff6f6;
             color: #333;
             margin: 0;
@@ -20,6 +19,7 @@
             padding: 30px 40px;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            text-align: center;
         }
 
         h2 {
@@ -37,7 +37,7 @@
             margin-bottom: 30px;
         }
             .post-header h2 {
-              font-size: 18px; /* 글씨 크기 줄임 */
+              font-size: 18px;
               font-weight: normal;
               margin: 0;
               color: #f48aa5;
@@ -97,11 +97,13 @@
             padding: 18px 20px;
             line-height: 1.8;
             word-break: break-word;
+            text-align: left;
         }
 
         .post-content {
             white-space: pre-wrap;
             line-height: 1.8;
+            text-align: left;
         }
 
         .post-content img {
@@ -119,6 +121,7 @@
         }
 
         .btn-group input[type="button"] {
+            display: inline-block;
             color: #333;
             border: none;
             padding: 8px 20px;
@@ -156,6 +159,7 @@
         .comment-box h3 {
             font-size: 1.4em;
             margin-bottom: 20px;
+            text-align: left;
         }
 
         /* 댓글 입력 폼 */
@@ -167,6 +171,7 @@
             font-size: 15px;
             resize: vertical;
             margin-top: 10px;
+            text-align: left;
         }
 
         .comment-form button {
@@ -185,6 +190,7 @@
             padding-top: 18px;
             margin-top: 20px;
             position: relative;
+            text-align: left;
         }
 
         /* 작성자 줄 */
@@ -231,6 +237,7 @@
             font-size: 14px;
             color: #555;
             position: relative;
+            text-align: left;
         }
 
         .reply .comment-header {
@@ -252,17 +259,14 @@
     <form th:action="@{/CommunityDelete}" method="post" th:id="'deleteForm-' + ${dto.postId}">
 
         <div class="post-header">
-            <!-- 카카오 등 외부 이미지 -->
             <img class="profile-img"
                  th:if="${dto.user != null and dto.user.profileimg != null and dto.user.profileimg.startsWith('http')}"
                  th:src="${dto.user.profileimg}" alt="Profile Image"/>
 
-            <!-- 로컬에서 저장한 프로필 이미지 -->
             <img class="profile-img"
                  th:if="${dto.user != null and dto.user.profileimg != null and !dto.user.profileimg.startsWith('http')}"
                  th:src="@{'/profileimg/' + ${dto.user.profileimg}}" alt="Local Profile Image"/>
 
-            <!-- 기본 이미지 -->
             <img class="profile-img"
                  th:if="${dto.user == null or dto.user.profileimg == null}"
                  th:src="@{/profileimg/default.png}" alt="Default Image"/>
@@ -332,15 +336,12 @@
 
         <div th:each="comment : ${comments}" th:if="${comment.depth == 0}" class="comment">
             <div class="comment-header">
-                <!-- 외부 URL 이미지 -->
                 <img class="profile-img"
                      th:if="${comment.user != null and comment.user.profileimg != null and comment.user.profileimg.startsWith('http')}"
                      th:src="${comment.user.profileimg}" alt="Profile Image"/>
-                <!-- 로컬 이미지 -->
                 <img class="profile-img"
                      th:if="${comment.user != null and comment.user.profileimg != null and !comment.user.profileimg.startsWith('http')}"
                      th:src="@{'/profileimg/' + ${comment.user.profileimg}}" alt="Local Profile Image"/>
-                <!-- 기본 이미지 -->
                 <img class="profile-img"
                      th:if="${comment.user == null or comment.user.profileimg == null}"
                      th:src="@{/profileimg/default.png}" alt="Default Image"/>
@@ -353,15 +354,12 @@
 
             <div th:each="reply : ${comments}" th:if="${reply.parent_id == comment.com_id}" class="reply">
                 <div class="comment-header">
-                    <!-- 외부 이미지 -->
                     <img class="profile-img"
                          th:if="${reply.user != null and reply.user.profileimg != null and reply.user.profileimg.startsWith('http')}"
                          th:src="${reply.user.profileimg}" alt="Profile Image"/>
-                    <!-- 로컬 이미지 -->
                     <img class="profile-img"
                          th:if="${reply.user != null and reply.user.profileimg != null and !reply.user.profileimg.startsWith('http')}"
                          th:src="@{'/profileimg/' + ${reply.user.profileimg}}" alt="Local Profile Image"/>
-                    <!-- 기본 이미지 -->
                     <img class="profile-img"
                          th:if="${reply.user == null or reply.user.profileimg == null}"
                          th:src="@{/profileimg/default.png}" alt="Default Image"/>
