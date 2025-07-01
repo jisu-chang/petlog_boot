@@ -152,10 +152,9 @@
           margin: 20px 0 16px 0;
         }
 
-        /* 메뉴바와 다음 컨테이너 간 간격 조정을 위한 클래스: 마진과 패딩 대폭 증가 */
         .content-container-with-spacing {
-            margin-top: 50px !important; /* 모바일 뷰에서 더 많은 간격 */
-            padding-top: 20px !important; /* 추가 패딩 */
+            margin-top: 50px !important;
+            padding-top: 20px !important;
             text-align: center;
             margin-bottom: 20px;
         }
@@ -466,13 +465,13 @@
 <div class="content-container-with-spacing">
     <h2 th:text="${current_year} + '년 ' + ${current_month} + '월'" class="top-title"></h2>
 
-    <form method="get" th:action="@{/Calendar/CalendarDetail}" style="display: inline-block;">
+    <form method="get" th:action="@{/Calendar/CalendarView}" style="display: inline-block;">
         <label class="pet-label">🐶 반려동물 선택: </label>
         <select name="pet_id" class="pet-select" onchange="this.form.submit()">
             <option th:each="pet : ${petlist}"
                     th:value="${pet.petId}"
                     th:text="${pet.petName}"
-                    th:selected="${param.pet_id} == ${pet.petId}"></option>
+                    th:selected="${param.pet_id} == null ? ${pet.petId == petlist[0].petId} : (${param.pet_id} == ${pet.petId})"></option>
         </select>
         <input type="hidden" name="year" th:value="${current_year}" />
         <input type="hidden" name="month" th:value="${current_month}" />
@@ -503,7 +502,11 @@
         <h3>일정 추가</h3>
         <form th:action="@{/Calendar/CalendarInput}" method="post">
             <label>반려동물
-                <select name="petId" required> <option th:each="pet : ${petlist}" th:value="${pet.petId}" th:text="${pet.petName}"></option>
+                <select name="petId" required>
+                    <option th:each="pet : ${petlist}"
+                            th:value="${pet.petId}"
+                            th:text="${pet.petName}"
+                            th:selected="${pet.petId == pet_id}"></option>
                 </select>
             </label><br>
 
