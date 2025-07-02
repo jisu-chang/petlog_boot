@@ -43,6 +43,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             session.setAttribute("userRole", user.getUserRole());
             session.setAttribute("name", user.getName());
             session.setAttribute("profileimg", user.getProfileimg());
+            session.setAttribute("grapeCount", user.getGrapeCount());
+            session.setAttribute("rank", user.getRank());
             session.setAttribute("loginType", "kakao");
             getRedirectStrategy().sendRedirect(request, response, "/");
         } else {

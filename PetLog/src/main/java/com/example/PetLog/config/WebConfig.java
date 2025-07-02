@@ -27,5 +27,8 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/petimg/**")
                 .addResourceLocations(basePath + "petprofile/");
 
+        // Diary 이미지
+        registry.addResourceHandler("/diaryimg/**")
+                .addResourceLocations(basePath + "diary/");
     }
 }
