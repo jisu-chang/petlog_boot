@@ -1,9 +1,11 @@
 package com.example.PetLog.ItemUser;
 
+import com.example.PetLog.Calendar.CalendarEntity;
 import com.example.PetLog.Item.ItemDTO;
 import com.example.PetLog.Item.ItemEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -41,5 +43,14 @@ public class ItemUserServiceImp implements ItemUserService {
                 System.err.println("오류: 사용자 ID " + userId + "는 아이템 ID " + itemId + "를 소유하고 있지 않습니다.");
             }
         }
+
+    @Override
+    @Transactional
+    public void deleteByUserId(Long userId) {
+        // 해당 유저의 게시글 불러오기
+        List<ItemUserEntity> posts = itemUserRepository.findByUser_UserId(userId);
+        // DB에서 게시글 삭제
+        itemUserRepository.deleteByUser_UserId(userId);
     }
+}
 

@@ -3,6 +3,7 @@ package com.example.PetLog.Snack;
 import com.example.PetLog.Comments.CommentsRepository;
 import com.example.PetLog.Diary.DiaryEntity;
 import com.example.PetLog.Likes.LikesRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
@@ -86,6 +87,7 @@ public class SnackServiceImp implements SnackService {
     }
 
     @Override
+    @Transactional
     public void deleteByUserId(Long userId) {
         // 해당 유저의 게시글 불러오기
         List<SnackEntity> posts = snackRepository.findByUser_UserId(userId);

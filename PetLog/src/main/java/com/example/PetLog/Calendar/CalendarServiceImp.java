@@ -1,5 +1,6 @@
 package com.example.PetLog.Calendar;
 
+import com.example.PetLog.Community.CommunityEntity;
 import com.example.PetLog.Diary.DiaryDTO;
 import com.example.PetLog.Diary.DiaryEntity;
 import com.example.PetLog.Diary.DiaryRepository;
@@ -8,7 +9,9 @@ import com.example.PetLog.Pet.PetEntity;
 import com.example.PetLog.Pet.PetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,6 +82,15 @@ public class CalendarServiceImp implements CalendarService {
     @Override
     public void deleteSchedule(Long calId) {
         calendarRepository.deleteById(calId);
+    }
+
+    @Override
+    @Transactional
+    public void deleteByUserId(Long userId) {
+        // 해당 유저의 게시글 불러오기
+        List<CalendarEntity> posts = calendarRepository.findByUser_UserId(userId);
+        // DB에서 게시글 삭제
+        calendarRepository.deleteByUser_UserId(userId);
     }
 
     @Override

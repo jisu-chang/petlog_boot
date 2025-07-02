@@ -1,10 +1,12 @@
 package com.example.PetLog.QuizResult;
 
+import com.example.PetLog.Calendar.CalendarEntity;
 import com.example.PetLog.Quiz.QuizEntity;
 import com.example.PetLog.Quiz.QuizRepository;
 import com.example.PetLog.Quiz.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +79,15 @@ public class QuizResultServiceImp implements QuizResultService{
             dtoList.add(dto);
         }
         return dtoList;
+    }
+
+    @Override
+    @Transactional
+    public void deleteByUserId(Long userId) {
+        // 해당 유저의 게시글 불러오기
+        List<QuizResultEntity> posts = quizResultRepository.findByUser_UserId(userId);
+        // DB에서 게시글 삭제
+        quizResultRepository.deleteByUserId(userId);
     }
 
     private int calculateUserRank(Long quizId, int resultTime) {

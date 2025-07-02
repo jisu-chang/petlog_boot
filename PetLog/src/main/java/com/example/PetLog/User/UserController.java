@@ -1,13 +1,19 @@
 package com.example.PetLog.User;
 
+import com.example.PetLog.Calendar.CalendarService;
 import com.example.PetLog.Comments.CommentsEntity;
 import com.example.PetLog.Comments.CommentsService;
 import com.example.PetLog.Community.CommunityEntity;
 import com.example.PetLog.Community.CommunityService;
 import com.example.PetLog.Diary.DiaryEntity;
 import com.example.PetLog.Diary.DiaryService;
+import com.example.PetLog.ItemUser.ItemUserService;
 import com.example.PetLog.Likes.LikesEntity;
 import com.example.PetLog.Likes.LikesService;
+import com.example.PetLog.Pet.PetRepository;
+import com.example.PetLog.Pet.PetService;
+import com.example.PetLog.QnA.QnAService;
+import com.example.PetLog.QuizResult.QuizResultService;
 import com.example.PetLog.Snack.SnackEntity;
 import com.example.PetLog.Snack.SnackService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,7 +55,16 @@ public class UserController {
     CommentsService commentsService;
     @Autowired
     LikesService likesService;
-
+    @Autowired
+    PetService petService;
+    @Autowired
+    CalendarService calendarService;
+    @Autowired
+    QuizResultService quizResultService;
+    @Autowired
+    QnAService qnAService;
+    @Autowired
+    ItemUserService itemUserService;
     String path = "C:/petlog-uploads/profile";
 
     //로그인
@@ -462,6 +477,11 @@ public class UserController {
         communityService.deleteByUserId(userId); //게시글 삭제
         diaryService.deleteByUserId(userId); //일기 삭제
         snackService.deleteByUserId(userId); //간식 삭제
+        petService.deleteByUserId(userId); //펫 삭제
+        calendarService.deleteByUserId(userId); //캘린더 일정 삭제
+        quizResultService.deleteByUserId(userId); //퀴즈 결과 삭제
+        qnAService.deleteByUserId(userId); //문의글 삭제
+        itemUserService.deleteByUserId(userId); //아이템 구매내역 삭제
         userService.deleteUser(userId);  //유저 삭제
 
         session.invalidate(); // 세션 종료

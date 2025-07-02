@@ -32,5 +32,9 @@ public interface QuizResultRepository extends JpaRepository<QuizResultEntity, Lo
     List<QuizResultEntity> findByUserId(Long userId);
 
     int countByUserIdAndResultScore(Long userId, int i);
+
+    List<QuizResultEntity> findByUser_UserId(Long userId);
+
+    void deleteByUserId(Long userId);
 }
 

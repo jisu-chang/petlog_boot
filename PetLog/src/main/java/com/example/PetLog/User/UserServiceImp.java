@@ -165,6 +165,7 @@ public class UserServiceImp implements UserService{
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long userId) {
         UserEntity user = userRepository.findById(userId).orElse(null);
 

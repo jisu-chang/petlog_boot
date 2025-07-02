@@ -1,7 +1,9 @@
 package com.example.PetLog.QnA;
 
+import com.example.PetLog.Calendar.CalendarEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -48,6 +50,15 @@ public class QnAServiceImp implements QnAService{
     @Override
     public List<QnAEntity> findByUserId(Long userId) {
         return qnARepository.findByUserId(userId);
+    }
+
+    @Override
+    @Transactional
+    public void deleteByUserId(Long userId) {
+        // 해당 유저의 게시글 불러오기
+        List<QnAEntity> posts = qnARepository.findByUser_UserId(userId);
+        // DB에서 게시글 삭제
+        qnARepository.deleteByUser_UserId(userId);
     }
 
 }

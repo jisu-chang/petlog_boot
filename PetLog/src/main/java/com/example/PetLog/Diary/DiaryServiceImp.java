@@ -121,6 +121,7 @@ public class DiaryServiceImp implements DiaryService {
 
     // 지수 추가 - 회원탈퇴
     @Override
+    @Transactional
     public void deleteByUserId(Long userId) {
         // 해당 유저의 게시글 불러오기
         List<DiaryEntity> posts = diaryRepository.findByUser_UserId(userId);

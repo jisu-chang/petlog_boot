@@ -9,4 +9,8 @@ import java.util.List;
 public interface QnARepository extends JpaRepository<QnAEntity, Long> {
 
     List<QnAEntity> findByUserId(Long userId);
+
+    List<QnAEntity> findByUser_UserId(Long userId);
+
+    void deleteByUser_UserId(Long userId);
 }

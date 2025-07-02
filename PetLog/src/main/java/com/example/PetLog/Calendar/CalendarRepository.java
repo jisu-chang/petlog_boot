@@ -27,4 +27,8 @@ public interface CalendarRepository extends JpaRepository<CalendarEntity, Long> 
     CalendarDTO selectCalendarById(@Param("calId") Long calId);
 
     int countByUserId(Long userId);
+
+    List<CalendarEntity> findByUser_UserId(Long userId);
+
+    void deleteByUser_UserId(Long userId);
 }

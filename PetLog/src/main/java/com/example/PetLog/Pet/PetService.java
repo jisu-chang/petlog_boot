@@ -24,5 +24,7 @@ public interface PetService {
 
     PetEntity findByPetId(Long petId);
 
+    void deleteByUserId(Long userId);
+
     //List<PetDTO> findPetsByUserId(Long userId);
 }

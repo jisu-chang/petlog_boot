@@ -15,4 +15,6 @@ public interface QuizResultService {
     void saveResult(QuizResultDTO dto, String quizAnswer);
 
     List<QuizResultDTO> getUserQuizList(Long userId);
+
+    void deleteByUserId(Long userId);
 }

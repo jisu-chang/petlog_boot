@@ -10,4 +10,6 @@ public interface ItemUserService {
     List<ItemDTO> findFrameItemsByUserId(Long userId);
 
     void frame_wearing(Long userId, Long itemId);
+
+    void deleteByUserId(Long userId);
 }

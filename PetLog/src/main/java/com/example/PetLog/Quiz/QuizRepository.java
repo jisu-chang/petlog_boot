@@ -13,4 +13,5 @@ public interface QuizRepository extends JpaRepository<QuizEntity, Long> {
 
     //유저 퀴즈 목록 출력
     List<QuizEntity> findByQuizIdIn(List<Long> ids);
+
 }

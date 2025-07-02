@@ -29,4 +29,8 @@ public interface ItemUserRepository extends JpaRepository<ItemUserEntity,Long> {
     List<ItemUserEntity> findByUserIdAndUsertemEquipAndItem_ItemCategory(Long userId, String y, String 프레임); //프로필 프레임 용
 
     int countByUserId(Long userId);
+
+    List<ItemUserEntity> findByUser_UserId(Long userId);
+
+    void deleteByUser_UserId(Long userId);
 }
