@@ -29,15 +29,30 @@ public class ItemUserController {
     @Autowired
     ItemService itemService;
 
-    @GetMapping(value = "/ItemUser/ItemOutUser")
-    public String showItemShop(Model model) {
-        // "판매중"인 아이템만 조회
-        List<ItemEntity> items = itemRepository.findByItemStatus("판매중");
-        model.addAttribute("list", items);
+    @GetMapping("/ItemUser/ItemOutUser")
+    public String showItemShop(Model model,
+                               @RequestParam(defaultValue = "1") int page,
+                               @RequestParam(defaultValue = "3") int size) {
+        int start = (page - 1) * size + 1;
+        int end = page * size;
+
+        List<ItemEntity> pagedItems = itemRepository.findByItemStatusWithPaging("판매중", start, end);
+        int totalItems = itemRepository.countByItemStatus("판매중");
+
+        int totalPages = (int) Math.ceil((double) totalItems / size);
+
+        System.out.println("현재 페이지: " + page);
+        System.out.println("총 아이템 수: " + totalItems);
+        System.out.println("총 페이지 수: " + totalPages);
+
+        model.addAttribute("list", pagedItems);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+
         return "ItemUser/ItemOutUser";
     }
 
-    @GetMapping(value = "/ItemUser/ItemDetail")
+        @GetMapping(value = "/ItemUser/ItemDetail")
     public String showItemDetail(@RequestParam("itemId") Long itemId, Model model) {
         ItemEntity item = itemRepository.findById(itemId).orElse(null);
 
