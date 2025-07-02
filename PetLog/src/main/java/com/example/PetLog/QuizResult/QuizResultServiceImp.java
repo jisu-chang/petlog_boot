@@ -117,7 +117,8 @@ public class QuizResultServiceImp implements QuizResultService{
             dto.setUserId(((Number) row[4]).longValue());
             dto.setQuizId(((Number) row[5]).longValue());
             dto.setGetGrape(((Number) row[6]).intValue());
-            dto.setUserLoginId((String) row[7]);
+            dto.setUserAnswer((String) row[7]);
+            dto.setUserLoginId((String) row[8]);
 
             // 순위 설정
             dto.setResultRank(rank++);

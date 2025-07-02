@@ -29,38 +29,32 @@ public class QuizResultController {
                                  @RequestParam("quizAnswer") String quizAnswer,
                                  HttpSession session, Model mo) {
         Long userId = (Long) session.getAttribute("userId");
+        String userLoginId = (String) session.getAttribute("userLoginId");
         if (userId == null) return "redirect:/login";
 
+        boolean isCorrect = quizService.checkAnswer(resultDTO.getQuizId(), quizAnswer);
+
+        resultDTO.setUserLoginId(userLoginId);
         resultDTO.setUserId(userId);
         resultDTO.setUserAnswer(quizAnswer); // DB 저장은 아님, DTO만
 
-        // <<<<<<< 이 부분 추가 >>>>>>>
-        boolean isCorrect = quizService.checkAnswer(resultDTO.getQuizId(), quizAnswer);
-
-        // 2. QuizResultDTO에 결과 점수 설정 (1: 정답, 0: 오답)
+        // QuizResultDTO에 결과 점수 설정 (1: 정답, 0: 오답)
         resultDTO.setResultScore(isCorrect ? 1 : 0);
-        // <<<<<<< 추가 끝 >>>>>>>
 
         try {
             quizResultService.saveResult(resultDTO, quizAnswer);
-
-            // <<<<<<< 이 부분 추가 >>>>>>>
             if (isCorrect) {
                 userService.addGrapes(userId, 3);
-
                 userService.findUserById(userId).ifPresent(updatedUser -> {
                     session.setAttribute("grapeCount", updatedUser.getGrapeCount());
                     System.out.println("퀴즈 정답! 포도알 적립: " + updatedUser.getGrapeCount());
                 });
             }
-            // <<<<<<< 추가 끝 >>>>>>>
-
             // userAnswerMap을 안전하게 가져오고, 없으면 새로 만듦
             Map<Long, String> userAnswerMap = (Map<Long, String>) session.getAttribute("userAnswerMap");
             if (userAnswerMap == null) {
                 userAnswerMap = new java.util.HashMap<>();
             }
-
             // map에 저장
             userAnswerMap.put(resultDTO.getQuizId(), quizAnswer);
             session.setAttribute("userAnswerMap", userAnswerMap);
@@ -78,6 +72,8 @@ public class QuizResultController {
     @GetMapping("/QuizResultPage")
     public String QuizResultPage(HttpSession session, Model model) {
         Long userId = (Long) session.getAttribute("userId");
+        String userLoginId = (String) session.getAttribute("userLoginId");
+
         if (userId == null) {
             return "redirect:/login"; // 로그인 페이지로 리다이렉트
         }
@@ -93,6 +89,7 @@ public class QuizResultController {
 
         String userAnswer = (String) session.getAttribute("userAnswer"); //세션에서 꺼내기
         resultDTO.setUserAnswer(userAnswer); // 다시 DTO에 넣어줌
+        resultDTO.setUserLoginId(userLoginId);
 
         // TOP 10 랭킹
         List<QuizResultDTO> top10 = quizResultService.getTop10ByQuizId(resultDTO.getUserId(), resultDTO.getQuizId());

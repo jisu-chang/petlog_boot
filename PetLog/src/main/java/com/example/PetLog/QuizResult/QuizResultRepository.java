@@ -21,7 +21,6 @@ public interface QuizResultRepository extends JpaRepository<QuizResultEntity, Lo
     JOIN user1 u ON qr.user_id = u.user_id WHERE qr.quiz_id = :quizId AND qr.result_score = 1 ORDER BY qr.result_score DESC, qr.result_time ASC) WHERE ROWNUM <= 10""", nativeQuery = true)
     List<Object[]> findTop10RawDataByQuizId(@Param("quizId") Long quizId);
 
-
     // 중복 저장 방지
     @Query(value = "SELECT count(*) FROM quiz_result1 WHERE user_id = :userId AND quiz_id = :quizId", nativeQuery = true)
     Integer countByUserIdAndQuizId(@Param("userId") Long userId, @Param("quizId") Long quizId);
