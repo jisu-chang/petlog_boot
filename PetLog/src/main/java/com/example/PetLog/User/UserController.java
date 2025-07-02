@@ -213,6 +213,12 @@ public class UserController {
             UserEntity user = existingUser.get();
             session.setAttribute("userId", user.getUserId());
             session.setAttribute("userLoginId", user.getUserLoginId());
+            session.setAttribute("userRole", user.getUserRole());
+            session.setAttribute("name", user.getName());
+            session.setAttribute("grapeCount", user.getGrapeCount());
+            session.setAttribute("rank", user.getRank());
+            session.setAttribute("profileimg", user.getProfileimg());
+            session.setAttribute("loginType", "kakao");  //카카오 로그인 표시
             return "redirect:/";
         }
 
@@ -230,6 +236,10 @@ public class UserController {
         UserEntity savedUser = userRepository.save(dto.toEntity());
         session.setAttribute("userId", savedUser.getUserId());
         session.setAttribute("userLoginId", savedUser.getUserLoginId());
+        session.setAttribute("grapeCount", savedUser.getGrapeCount());
+        session.setAttribute("rank", savedUser.getRank());
+        session.setAttribute("profileimg", savedUser.getProfileimg());
+        session.setAttribute("loginType", "kakao"); // 카카오 로그인 표시
         return "redirect:/";
     }
 
