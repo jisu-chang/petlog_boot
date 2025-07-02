@@ -274,11 +274,20 @@ public class CommunityController {
         }
     }
 
-    // 공지사항 출력
-    @GetMapping(value = "/CommunityNotice")
-    public String NoticeView(Model mo) {
-        List<CommunityEntity> noticePosts = communityService.getNoticePost();
-        mo.addAttribute("noticePosts", noticePosts);
+    @GetMapping("/CommunityNotice")
+    public String noticePaging(@RequestParam(defaultValue = "1") int page, Model model) {
+        int pageSize = 5; // 한 페이지에 5개
+        int startRow = (page - 1) * pageSize + 1;
+        int endRow = page * pageSize;
+
+        List<CommunityEntity> noticePosts = communityService.getNoticePostsPaging(startRow, endRow);
+        int totalPosts = communityService.countNoticePosts();
+        int totalPages = (int) Math.ceil((double) totalPosts / pageSize);
+
+        model.addAttribute("noticePosts", noticePosts);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+
         return "Notice/NoticeOut";
     }
 

@@ -12,7 +12,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh; /* 화면 전체 높이 확보 */
+      min-height: 100vh;
     }
 
     .table-wrapper {
@@ -86,22 +86,6 @@
         background-color: #ffd2d2;
     }
 
-    .board-meta {
-        font-size: 0.9em;
-        margin-left: 6px;
-        display: inline-flex;
-        gap: 4px;
-        align-items: center;
-        color: #888;
-    }
-
-    .board-meta span {
-        display: inline-flex;
-        align-items: center;
-        gap: 2px;
-        white-space: nowrap;
-    }
-
     .no-recipe {
         margin-top: 20px;
         font-weight: bold;
@@ -164,19 +148,13 @@
             font-size: 0.8em;
             margin-bottom: 10px;
         }
-        .board-meta {
-            font-size: 0.8em;
-            margin-left: 4px;
-        }
-        .no-recipe {
-            font-size: 1em;
-        }
         .pagination a {
             margin: 0 3px;
             padding: 4px 8px;
             font-size: 0.8em;
         }
     }
+
     .search-form {
         display: flex;
         justify-content: center;
@@ -188,37 +166,35 @@
         max-width: 100%;
     }
 
-    .search-form select {
-        width: 90px;
-        min-width: 70px;
-        flex-shrink: 0;
+    .search-form select,
+    .search-form input[type="text"],
+    .search-form input[type="submit"] {
         height: 40px;
         border: 1px solid #ddd;
         border-radius: 8px;
         font-size: 1em;
         font-family: 'Pretendard', sans-serif;
+    }
+
+    .search-form select {
+        width: 90px;
+        min-width: 70px;
+        flex-shrink: 0;
         padding: 8px;
     }
 
     .search-form input[type="text"] {
         flex-grow: 1;
-        min-width: 0;
-        height: 40px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
         padding: 8px 12px;
-        font-size: 1em;
-        font-family: 'Pretendard', sans-serif;
+        min-width: 0;
     }
 
     .search-form input[type="submit"] {
         width: 70px;
-        height: 40px;
         background-color: #e5f7f3;
         color: #555;
         font-weight: 500;
         border: none;
-        border-radius: 8px;
         cursor: pointer;
         transition: background-color 0.3s;
         flex-shrink: 0;
@@ -228,35 +204,36 @@
       background-color: #c9ebe2;
     }
 
-    /* 모바일 대응 */
     @media (max-width: 480px) {
-    .search-form {
-      flex-wrap: nowrap;
-      flex-direction: row;
-      gap: 1px;
-      padding: 0 3px;
-    }
+        .search-form {
+          flex-wrap: nowrap;
+          flex-direction: row;
+          gap: 1px;
+          padding: 0 3px;
+        }
 
-    .search-form select {
-      width: 70px;
-    }
+        .search-form select {
+          width: 70px;
+        }
 
-    .search-form input[type="text"] {
-      flex-grow: 1;
-    }
+        .search-form input[type="text"] {
+          flex-grow: 1;
+        }
 
-    .search-form input[type="submit"] {
-      width: 60px;
-    }
+        .search-form input[type="submit"] {
+          width: 60px;
+        }
     }
 </style>
 
 <body>
 <div class="table-wrapper">
-  <h2 style="text-align:center; color:#f48aa5; font-weight:normal;">공지사항</h2>
+    <h2>공지사항</h2>
+
     <div style="text-align: right;">
         <a th:href="@{/CommunityIn(type='notice')}" class="btn-write" sec:authorize="hasRole('ADMIN')">게시글 작성</a>
     </div>
+
     <!-- 검색 -->
     <form th:action="@{/search}" method="get" class="search-form">
         <input type="hidden" name="board" value="notice" />
@@ -269,29 +246,42 @@
     </form>
 
     <table>
-    <thead>
-    <tr>
-      <th style="width:45%; text-align: center;">제목</th>
-      <th style="width:30%;">작성일자</th>
-    </tr>
-    </thead>
+        <thead>
+        <tr>
+            <th style="width: 70%;">제목</th>
+            <th style="width: 30%;">작성일자</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${#lists.isEmpty(noticePosts)}">
+            <td colspan="2">등록 된 공지사항이 없습니다.</td>
+        </tr>
+        <tr th:each="cc : ${noticePosts}">
+            <td style="text-align: left;">
+                <a th:href="@{/NoticeDetail(postId=${cc.postId})}">
+                    <span th:text="${cc.postTitle}"></span>
+                </a>
+            </td>
+            <td th:text="${cc.postDate}"></td>
+        </tr>
+        </tbody>
+    </table>
 
-    <tbody>
+    <!-- ✅ 페이징 -->
+    <div class="pagination">
+        <a th:href="@{/CommunityNotice(page=${currentPage - 1})}"
+           th:classappend="${currentPage == 1} ? ' disabled' : ''">이전</a>
 
-    <tr th:if="${#lists.isEmpty(noticePosts)}">
-        <td colspan="2">등록 된 공지사항이 없습니다.</td>
-    </tr>
+        <span th:each="pageNum : ${#numbers.sequence(1, totalPages)}">
+          <a th:href="@{/CommunityNotice(page=${pageNum})}"
+             th:text="${pageNum}"
+             th:classappend="${pageNum == currentPage} ? ' current' : ''"></a>
+      </span>
 
-    <tr th:each="cc:${noticePosts}">
-        <td style="text-align: left;">
-            <a th:href="@{/NoticeDetail(postId=${cc.postId})}">
-                <span th:text="${cc.postTitle}"></span>
-            </a>
-        </td>
-        <td th:text="${cc.postDate}"></td>
-    </tr>
-    </tbody>
-  </table>
+        <a th:href="@{/CommunityNotice(page=${currentPage + 1})}"
+           th:classappend="${currentPage == totalPages} ? ' disabled' : ''">다음</a>
+    </div>
+
 </div>
 </body>
 </html>

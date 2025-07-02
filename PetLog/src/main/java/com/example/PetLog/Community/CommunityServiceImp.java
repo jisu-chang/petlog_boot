@@ -160,6 +160,7 @@ public class CommunityServiceImp implements CommunityService{
         return map;
     }
 
+    //커뮤니티 page
     @Override
     public Page<CommunityEntity> getPostsByType(String postType, Pageable pageable) {
         int page = pageable.getPageNumber();
@@ -177,4 +178,14 @@ public class CommunityServiceImp implements CommunityService{
         return new PageImpl<>(content, pageable, total);
     }
 
+    //공지사항 page
+    @Override
+    public List<CommunityEntity> getNoticePostsPaging(int startRow, int endRow) {
+        return communityRepository.findNoticePostsByRowBounds(startRow, endRow);
+    }
+
+    @Override
+    public int countNoticePosts() {
+        return communityRepository.countNoticePosts();
+    }
 }
