@@ -17,20 +17,21 @@
 
   .table-wrapper {
     background-color: white;
-    width: 100%;
+    width: 95%;
     max-width: 1000px;
-    margin: 40px auto 80px auto;
+    margin: 0 auto 40px auto;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    padding: 30px;
+    padding: 20px;
+    box-sizing: border-box;
   }
 
   h2, caption {
     text-align: center;
     color: #f48aa5;
-    font-weight: normal;
+    font-weight: bold;
     font-size: 1.8em;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
   }
 
   table {
@@ -38,13 +39,13 @@
     border-collapse: collapse;
     margin-top: 10px;
     background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     border-radius: 8px;
     overflow: hidden;
   }
 
   th, td {
-    padding: 14px 12px;
+    padding: 12px 8px;
     font-size: 1em;
     border-bottom: 1px solid #eee;
     text-align: center;
@@ -67,111 +68,115 @@
     text-decoration: underline;
   }
 
-  td a span {
-    margin-left: 4px;
-    font-size: 1em;
-    color: #888;
+  .btn-write {
+      background-color: #ffe1e1;
+      color: #333;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-weight: normal;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 15px;
+      font-size: 0.9em;
   }
 
-  .btn-wrap {
-    text-align: right;
-    margin-bottom: 20px;
+  .btn-write:hover {
+      background-color: #ffd2d2;
   }
 
-  .btn-wrap input[type="button"] {
-    background-color: #ffe1e1;
-    color: #444;
-    border: none;
-    border-radius: 10px;
-    padding: 8px 20px;
-    font-size: 1em;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  .board-meta {
+      font-size: 0.9em;
+      margin-left: 6px;
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+      color: #888;
   }
 
-  .btn-wrap input[type="button"]:hover {
-    background-color: #ffd2d2;
+  .board-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      white-space: nowrap;
   }
 
-  form {
-    width: 100%;
-    max-width: 1000px;
-    margin: 30px auto 0;
-    text-align: center;
-  }
-
-  select, input[type="text"], input[type="submit"] {
-    padding: 10px 14px;
-    margin: 8px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 1em;
-    font-family: 'Pretendard', sans-serif;
-  }
-
-  input[type="submit"] {
-    background-color: #e5f7f3;
-    color: #555;
-    font-weight: 500;
-    transition: background-color 0.3s;
-  }
-
-  input[type="submit"]:hover {
-    background-color: #c9ebe2;
+  .no-recipe {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #c0392b;
+      font-size: 1.1em;
+      text-align: center;
   }
 
   .pagination {
     width: 100%;
     text-align: center;
-    margin: 40px 0;
+    margin: 30px 0;
   }
 
   .pagination a {
-    margin: 0 6px;
+    margin: 0 4px;
     padding: 6px 12px;
     color: #888;
     text-decoration: none;
-    border-radius: 4px;
-    transition: all 0.2s;
+    border-radius: 6px;
+    background-color: #ffe1e1;
+    font-size: 0.9em;
   }
 
   .pagination a.current {
-    background-color: #db7093;
-    color: #fff;
+    background-color: #f48aa5;
+    color: white;
     font-weight: bold;
   }
 
   .pagination a:hover {
-    background-color: #ffe1e1;
+    background-color: #ffd2d2;
   }
 
-  .btn-write {
-      float: right;
-      margin-bottom: 10px;
-      background-color: #ffe1e1;
-      color: #333;
-      border: none;
-      padding: 8px 20px;
-      border-radius: 10px;
-      font-weight: normal;
-      cursor: pointer;
-      text-decoration: none;
-    }
+  .pagination a.disabled {
+      pointer-events: none;
+      color: #ccc;
+      background-color: #f0f0f0;
+  }
 
-    .btn-write:hover {
-      background-color: #ffd2d2;
-    }
-    .board-meta {
-      font-size: 1em;
-      display: inline-flex;
-      align-items: center;
-    }
-
-    .board-meta span {
-      display: inline-flex;
-      align-items: center;
-      white-space: nowrap;
-    }
+  /* 모바일 */
+  @media screen and (max-width: 390px) {
+      body {
+          padding-top: 60px;
+      }
+      h2, caption {
+          font-size: 1.6em;
+          margin-bottom: 20px;
+      }
+      .table-wrapper {
+          padding: 15px;
+          margin: 0 auto 30px auto;
+      }
+      th, td {
+          padding: 10px 6px;
+          font-size: 1.2em;
+      }
+      .btn-write {
+          padding: 7px 15px;
+          font-size: 0.8em;
+          margin-bottom: 10px;
+      }
+      .board-meta {
+          font-size: 0.8em;
+          margin-left: 4px;
+      }
+      .no-recipe {
+          font-size: 1em;
+      }
+      .pagination a {
+          margin: 0 3px;
+          padding: 4px 8px;
+          font-size: 0.8em;
+      }
+  }
   .search-form {
       display: flex;
       justify-content: center;
@@ -181,9 +186,9 @@
       flex-wrap: nowrap;
       flex-direction: row;
       max-width: 100%;
-    }
+  }
 
-    .search-form select {
+  .search-form select {
       width: 90px;
       min-width: 70px;
       flex-shrink: 0;
@@ -193,9 +198,9 @@
       font-size: 1em;
       font-family: 'Pretendard', sans-serif;
       padding: 8px;
-    }
+  }
 
-    .search-form input[type="text"] {
+  .search-form input[type="text"] {
       flex-grow: 1;
       min-width: 0;
       height: 40px;
@@ -204,9 +209,9 @@
       padding: 8px 12px;
       font-size: 1em;
       font-family: 'Pretendard', sans-serif;
-    }
+  }
 
-    .search-form input[type="submit"] {
+  .search-form input[type="submit"] {
       width: 70px;
       height: 40px;
       background-color: #e5f7f3;
@@ -217,39 +222,42 @@
       cursor: pointer;
       transition: background-color 0.3s;
       flex-shrink: 0;
-    }
+  }
 
-    .search-form input[type="submit"]:hover {
-      background-color: #c9ebe2;
-    }
+  .search-form input[type="submit"]:hover {
+    background-color: #c9ebe2;
+  }
 
-    /* 모바일 대응 */
-    @media (max-width: 480px) {
-    .search-form {
-      flex-wrap: nowrap;
-      flex-direction: row;
-      gap: 1px;
-      padding: 0 3px;
-    }
+  /* 모바일 대응 */
+  @media (max-width: 480px) {
+  .search-form {
+    flex-wrap: nowrap;
+    flex-direction: row;
+    gap: 1px;
+    padding: 0 3px;
+  }
 
-    .search-form select {
-      width: 70px;
-    }
+  .search-form select {
+    width: 70px;
+  }
 
-    .search-form input[type="text"] {
-      flex-grow: 1;
-    }
+  .search-form input[type="text"] {
+    flex-grow: 1;
+  }
 
-    .search-form input[type="submit"] {
-      width: 60px;
-    }
-    }
-  </style>
+  .search-form input[type="submit"] {
+    width: 60px;
+  }
+  }
+</style>
 
 <body>
 <div class="table-wrapper">
   <h2 style="text-align:center; color:#f48aa5; font-weight:normal;">📝 자유게시판</h2>
+
+  <div style="text-align: right;">
     <a th:href="CommunityIn" class="btn-write">게시글 작성</a>
+  </div>
 
   <!-- 검색 -->
   <form th:action="@{/search}" method="get" class="search-form">
