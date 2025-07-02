@@ -30,4 +30,5 @@ public interface SnackRepository extends JpaRepository<SnackEntity, Long> {
     @Query(value = "SELECT COUNT(*) FROM snack", nativeQuery = true)
     int countAllSnacks();
 
+    int countByUserId(Long userId);
 }

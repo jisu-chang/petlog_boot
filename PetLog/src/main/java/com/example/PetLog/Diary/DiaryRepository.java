@@ -43,9 +43,10 @@ public interface DiaryRepository extends JpaRepository<DiaryEntity, Long> {
             @Param("offset") int offset,
             @Param("limit") int limit);
 
-
     @Query(value = "SELECT COUNT(*) FROM diary WHERE user_id = :userId", nativeQuery = true)
     int countByUserIdNative(@Param("userId") Long userId);
+
+    int countByUserId(Long userId);
 }
 
 
