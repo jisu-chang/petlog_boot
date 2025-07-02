@@ -84,7 +84,6 @@ public class CommunityServiceImp implements CommunityService{
                 }
             }
         }
-
         // DB에서 게시글 삭제
         communityRepository.deleteByUser_UserId(userId);
     }
@@ -104,7 +103,16 @@ public class CommunityServiceImp implements CommunityService{
     //공지사항 출력
     @Override
     public List<CommunityEntity> getNoticePost() {
-        return communityRepository.findByPostType("notice");
+        List<CommunityEntity> noticePosts = communityRepository.findByPostType("notice");
+
+        // 정렬: postDate 최신순, 같으면 postId 내림차순
+        noticePosts.sort((a, b) -> {
+            int dateCompare = b.getPostDate().compareTo(a.getPostDate());
+            if (dateCompare != 0) return dateCompare;
+            return Long.compare(b.getPostId(), a.getPostId());
+        });
+
+        return noticePosts;
     }
 
     @Override
