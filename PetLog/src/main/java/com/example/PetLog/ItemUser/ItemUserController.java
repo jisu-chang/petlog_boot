@@ -32,7 +32,7 @@ public class ItemUserController {
     @GetMapping("/ItemUser/ItemOutUser")
     public String showItemShop(Model model,
                                @RequestParam(defaultValue = "1") int page,
-                               @RequestParam(defaultValue = "3") int size) {
+                               @RequestParam(defaultValue = "5") int size) {
         int start = (page - 1) * size + 1;
         int end = page * size;
 

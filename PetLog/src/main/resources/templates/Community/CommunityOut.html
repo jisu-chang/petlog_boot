@@ -7,12 +7,11 @@
     background-color: #fff6f6;
     margin: 0;
     padding: 0;
-    font-family: 'Pretendard', sans-serif;
     color: #333;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* 화면 전체 높이 확보 */
+    min-height: 100vh;
   }
 
   .table-wrapper {
@@ -110,10 +109,10 @@
       text-align: center;
   }
 
-  .pagination {
+  .pagination { /* 기존 .pagination 스타일 유지 */
     width: 100%;
     text-align: center;
-    margin: 30px 0;
+    margin: 30px 0; /* 이 마진은 table-wrapper 안에서 적용되도록 합니다. */
   }
 
   .pagination a {
@@ -124,6 +123,11 @@
     border-radius: 6px;
     background-color: #ffe1e1;
     font-size: 0.9em;
+    cursor: pointer;
+    user-select: none;
+    display: inline-block;
+    min-width: 32px;
+    box-sizing: border-box;
   }
 
   .pagination a.current {
@@ -259,7 +263,6 @@
     <a th:href="CommunityIn" class="btn-write">게시글 작성</a>
   </div>
 
-  <!-- 검색 -->
   <form th:action="@{/search}" method="get" class="search-form">
     <input type="hidden" name="board" value="normal"/>
     <select name="postType">
@@ -270,34 +273,53 @@
     <input type="submit" value="검색" />
   </form>
 
-    <table>
-      <thead>
-      <tr>
-        <th style="width:70%; text-align: center;">제목</th>
-        <th style="width:30%;">작성자</th>
-      </tr>
-      </thead>
+  <table>
+    <thead>
+    <tr>
+      <th style="width:70%; text-align: center;">제목</th>
+      <th style="width:30%;">작성자</th>
+    </tr>
+    </thead>
 
-      <tbody>
-      <tr th:if="${#lists.isEmpty(normalPosts)}">
-        <td colspan="2">등록 된 게시글이 없습니다.</td>
-      </tr>
+    <tbody>
+    <tr th:if="${#lists.isEmpty(normalPosts)}">
+      <td colspan="2">등록 된 게시글이 없습니다.</td>
+    </tr>
 
-      <tr th:each="cc:${normalPosts}">
-        <td style="text-align: left;">
-          <a th:href="@{/CommunityDetail(postId=${cc.postId})}" style="color: #333; text-decoration: none;">
-            <span th:text="${cc.postTitle}" style="font-weight: 500;"></span>
-            <span class="board-meta">
+    <tr th:each="cc:${normalPosts}">
+      <td style="text-align: left;">
+        <a th:href="@{/CommunityDetail(postId=${cc.postId})}" style="color: #333; text-decoration: none;">
+          <span th:text="${cc.postTitle}" style="font-weight: 500;"></span>
+          <span class="board-meta">
               <span class="comments">🗨️<span th:text="${commentCounts[cc.postId]}"></span></span>
               <span class="likes">❤️<span th:text="${likeCounts[cc.postId]}"></span></span>
               <span class="views">👁<span th:text="${cc.postReadcnt}"></span></span>
             </span>
+
+        </a>
+      </td>
+      <td th:text="${cc.user != null ? cc.user.userLoginId : '탈퇴회원'}"></td>
           </a>
         </td>
         <td th:text="${cc.user != null ? cc.user.userLoginId : '탈퇴회원'}"></td>
     </tr>
     </tbody>
   </table>
+
+  <div class="pagination">
+    <a th:classappend="${normalPosts.first} ? 'disabled'"
+       th:href="@{/CommunityOut(page=${normalPosts.number - 1}, size=${normalPosts.size})}"
+    >이전</a>
+
+    <a th:each="pageNum : ${#numbers.sequence(0, normalPosts.totalPages - 1)}"
+       th:href="@{/CommunityOut(page=${pageNum}, size=${normalPosts.size})}"
+       th:text="${pageNum + 1}"
+       th:classappend="${pageNum == normalPosts.number} ? 'current'"></a>
+
+    <a th:classappend="${normalPosts.last} ? 'disabled'"
+       th:href="@{/CommunityOut(page=${normalPosts.number + 1}, size=${normalPosts.size})}"
+    >다음</a>
+  </div>
 </div>
 
 <script th:inline="javascript">

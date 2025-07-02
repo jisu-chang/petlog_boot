@@ -4,6 +4,9 @@ import com.example.PetLog.Comments.CommentsEntity;
 import com.example.PetLog.Comments.CommentsRepository;
 import com.example.PetLog.Likes.LikesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -155,6 +158,23 @@ public class CommunityServiceImp implements CommunityService{
             map.put(post.getPostId(), count);
         }
         return map;
+    }
+
+    @Override
+    public Page<CommunityEntity> getPostsByType(String postType, Pageable pageable) {
+        int page = pageable.getPageNumber();
+        int size = pageable.getPageSize();
+
+        int startRow = page * size + 1;
+        int endRow = startRow + size - 1;
+
+        // 수동 페이징 쿼리 호출 (Repository에 아래 메서드 필요)
+        List<CommunityEntity> content = communityRepository.findByPostTypeWithPaging(postType, startRow, endRow);
+
+        // 전체 개수 조회 (Repository에 countByPostType 메서드 필요)
+        long total = communityRepository.countByPostType(postType);
+
+        return new PageImpl<>(content, pageable, total);
     }
 
 }
