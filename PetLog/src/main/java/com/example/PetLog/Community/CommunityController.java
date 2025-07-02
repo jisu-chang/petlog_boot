@@ -93,15 +93,9 @@ public class CommunityController {
         communityService.insertpost(communityEntity);
 
         // --- 포도알 +1 로직 추가 시작 ---
-        // UserID가 유효할 경우에만 포도알을 증가시킵니다.
         if (userId != null) {
-            // userService의 addGrapeCount 메서드를 호출하여 해당 사용자의 포도알을 1 증가시킵니다.
-            // 이 메서드는 UserService에 구현되어 있어야 합니다.
             userService.addGrapeCount(userId, 1);
-            // 필요하다면, 로그를 추가하여 포도알이 증가했음을 확인할 수 있습니다.
-            // log.info("사용자 ID: {} 의 포도알이 1 증가했습니다. (커뮤니티 게시글 작성)", userId);
         }
-        // --- 포도알 +1 로직 추가 끝 ---
 
         String redirectUrl;
         if ("notice".equals(communityDTO.getPostType())) {
