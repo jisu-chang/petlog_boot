@@ -4,6 +4,8 @@ import com.example.PetLog.Comments.CommentsEntity;
 
 import java.util.List;
 import java.util.Map;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface CommunityService {
 
@@ -41,4 +43,7 @@ public interface CommunityService {
     Map<Long, Integer> getCommentCountsByList(List<CommunityEntity> communityResults);
 
     Map<Long, Integer> getLikeCountsByList(List<CommunityEntity> communityResults);
+
+    //page
+    public Page<CommunityEntity> getPostsByType(String postType, Pageable pageable);
 }

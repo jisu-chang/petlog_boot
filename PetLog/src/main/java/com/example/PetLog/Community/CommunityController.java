@@ -21,6 +21,11 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
 @Slf4j
 @Controller
 public class CommunityController {
@@ -115,40 +120,32 @@ public class CommunityController {
 
     // 커뮤니티 게시글 목록
     @GetMapping(value = "/CommunityOut")
-    public String comout(Model mo) {
-        List<CommunityEntity> list = communityService.allout();
-        // 최근 게시물 먼저 출력 (postDate 기준 내림차순)
-        list.sort((a, b) -> b.getPostDate().compareTo(a.getPostDate()));
+    public String comout(Model mo,
+                         @RequestParam(value = "page", defaultValue = "0") int page,
+                         @RequestParam(value = "size", defaultValue = "5") int size) {
 
-        // 탈퇴회원 글 제외
-        List<CommunityEntity> filtered = list.stream()
-                .filter(cc -> cc.getUser() != null)
-                .collect(Collectors.toList());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("postDate").descending());
 
-        // 공지사항 / 일반글 분리
-        List<CommunityEntity> noticePosts = list.stream()
-                .filter(post -> "notice".equals(post.getPostType()))
-                .collect(Collectors.toList());
+        // 공지사항 페이징
+        Page<CommunityEntity> noticePage = communityService.getPostsByType("notice", pageable);
+        // 일반글 페이징
+        Page<CommunityEntity> normalPage = communityService.getPostsByType("normal", pageable);
 
-        List<CommunityEntity> normalPosts = list.stream()
-                .filter(post -> "normal".equals(post.getPostType()))
-                .collect(Collectors.toList());
-
-        // 댓글수 / 좋아요수 매핑
+        // 댓글수 / 좋아요수 매핑 (normalPosts만)
         Map<Long, Integer> commentCounts = new HashMap<>();
         Map<Long, Integer> likeCounts = new HashMap<>();
 
-        for (CommunityEntity post : normalPosts) {
+        for (CommunityEntity post : normalPage.getContent()) {
             Long id = post.getPostId();
             commentCounts.put(id, commentsService.getCommentsByPostId(id).size());
             likeCounts.put(id, likesService.getLikeCount(id));
         }
 
-        mo.addAttribute("normalPosts", normalPosts);
-        mo.addAttribute("noticePosts", noticePosts);
+        mo.addAttribute("noticePosts", noticePage);
+        mo.addAttribute("normalPosts", normalPage);
         mo.addAttribute("commentCounts", commentCounts);
         mo.addAttribute("likeCounts", likeCounts);
-        mo.addAttribute("list", filtered);
+
         return "Community/CommunityOut";
     }
 

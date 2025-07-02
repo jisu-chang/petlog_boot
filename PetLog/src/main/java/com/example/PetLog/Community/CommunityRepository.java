@@ -9,6 +9,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 
 @Repository
@@ -45,4 +48,19 @@ public interface CommunityRepository extends JpaRepository<CommunityEntity, Long
     int countByUserId(Long userId);
 
     List<CommunityEntity> findByUser_UserId(Long userId);
+
+    //page
+    @Query(value =
+            "SELECT * FROM (" +
+                    "  SELECT ce.*, ROWNUM rn FROM (" +
+                    "    SELECT * FROM community WHERE user_id IS NOT NULL AND post_type = :postType ORDER BY post_date DESC" +
+                    "  ) ce WHERE ROWNUM <= :endRow" +
+                    ") WHERE rn >= :startRow",
+            nativeQuery = true)
+    List<CommunityEntity> findByPostTypeWithPaging(
+            @Param("postType") String postType,
+            @Param("startRow") int startRow,
+            @Param("endRow") int endRow);
+
+    long countByPostType(String postType);
 }
