@@ -43,4 +43,6 @@ public interface CommunityRepository extends JpaRepository<CommunityEntity, Long
     List<CommunityEntity> findByPostContentContainingAndPostType(String keyword, String postType);
 
     int countByUserId(Long userId);
+
+    List<CommunityEntity> findByUser_UserId(Long userId);
 }

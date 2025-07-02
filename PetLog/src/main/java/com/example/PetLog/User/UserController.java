@@ -104,7 +104,7 @@ public class UserController {
     //회원가입 처리
     @PostMapping("/signUpSave")
     public String member2(@ModelAttribute("userDTO") @Valid UserDTO userDTO, BindingResult bindingResult, @RequestParam("phoneCheckStatus") String phoneCheckStatus,
-                          @RequestParam("idCheckStatus") String idCheckStatus, MultipartHttpServletRequest mul, Model mo) throws IOException {
+                          @RequestParam("idCheckStatus") String idCheckStatus, MultipartHttpServletRequest mul, Model mo, HttpSession session) throws IOException {
         // 유효성 검사 에러 (ex. 이름, 이메일 등)
         if (bindingResult.hasErrors()) {
             return "User/UserSignUp";
@@ -150,7 +150,8 @@ public class UserController {
 
         // 새로운 파일명을 DTO에 설정
         userDTO.setProfileimgName(nfname);
-        userService.signUpInsert(userDTO);
+        Long savedUserId = userService.signUpInsert(userDTO);
+        session.setAttribute("userId", savedUserId);
         return "redirect:/main";
     }
 
@@ -305,7 +306,6 @@ public class UserController {
         Long userId = (Long) session.getAttribute("userId");
 
         if (userId == null) {
-            System.out.println("세션에 userId가 없습니다. 로그인 페이지로 리디렉션됩니다.");
             return "redirect:/login";
         }
 

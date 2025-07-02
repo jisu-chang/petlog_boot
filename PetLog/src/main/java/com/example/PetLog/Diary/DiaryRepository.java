@@ -47,6 +47,8 @@ public interface DiaryRepository extends JpaRepository<DiaryEntity, Long> {
     int countByUserIdNative(@Param("userId") Long userId);
 
     int countByUserId(Long userId);
+
+    List<DiaryEntity> findByUser_UserId(Long userId);
 }
 
 

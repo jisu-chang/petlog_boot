@@ -1,11 +1,13 @@
 package com.example.PetLog.Snack;
 
 import com.example.PetLog.Comments.CommentsRepository;
+import com.example.PetLog.Diary.DiaryEntity;
 import com.example.PetLog.Likes.LikesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,12 +20,11 @@ public class SnackServiceImp implements SnackService {
 
     @Autowired
     SnackRepository snackRepository;
-
     @Autowired
     LikesRepository likesRepository;
-
     @Autowired
     CommentsRepository commentsRepository;
+    String path = "C:/petlog-uploads/snack";
 
     @Override
     public void save(SnackEntity snackEntity) {
@@ -86,6 +87,18 @@ public class SnackServiceImp implements SnackService {
 
     @Override
     public void deleteByUserId(Long userId) {
+        // 해당 유저의 게시글 불러오기
+        List<SnackEntity> posts = snackRepository.findByUser_UserId(userId);
+
+        // 각 게시글에 등록된 이미지 파일 삭제
+        for (SnackEntity post : posts) {
+            if (post.getSnackImage()!= null && !post.getSnackImage().equals("default.png")) {
+                File file = new File(path + File.separator + post.getSnackImage());
+                if (file.exists()) {
+                    file.delete();
+                }
+            }
+        }
         snackRepository.deleteByUser_UserId(userId);
     }
 

@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface UserService {
 
-    void signUpInsert(@Valid UserDTO userDTO);
+    Long signUpInsert(@Valid UserDTO userDTO);
 
     //pet에서 추가
     UserEntity findById(Long id);

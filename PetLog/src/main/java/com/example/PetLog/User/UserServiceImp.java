@@ -5,7 +5,6 @@ import com.example.PetLog.Comments.CommentsRepository;
 import com.example.PetLog.Community.CommunityRepository;
 import com.example.PetLog.Diary.DiaryRepository;
 import com.example.PetLog.Likes.LikesRepository;
-import com.example.PetLog.Quiz.QuizRepository;
 import com.example.PetLog.QuizResult.QuizResultRepository;
 import com.example.PetLog.Snack.SnackRepository;
 import jakarta.mail.internet.MimeMessage;
@@ -18,6 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.spring6.SpringTemplateEngine;
+
+import java.io.File;
 import java.util.Optional;
 import java.util.UUID;
 import org.thymeleaf.context.Context;
@@ -55,17 +56,15 @@ public class UserServiceImp implements UserService{
     private SpringTemplateEngine templateEngine;
     @Autowired
     ItemUserRepository itemUserRepository;//프로필 프레임 용
+    String path = "C:/petlog-uploads/profile";
 
     @Override
-    public void signUpInsert(UserDTO userDTO) {
-        userDTO.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword())); //패스워드 암호화
-        //기본 이미지 파일 처리
-        if (userDTO.getProfileimg() == null || userDTO.getProfileimg().isEmpty()) {
-            userDTO.setProfileimgName("default.png");
-        } else {
-            userDTO.setProfileimgName(userDTO.getProfileimg().getOriginalFilename());
-        }
-        userRepository.save(userDTO.toEntity());
+    public Long signUpInsert(UserDTO userDTO) {
+        userDTO.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword())); // 패스워드 암호화
+
+        UserEntity userEntity = userDTO.toEntity();
+        userRepository.save(userEntity);
+        return userEntity.getUserId(); // 회원가입 후 세션 저장을 위해 ID 반환
     }
 
     @Override
@@ -167,6 +166,12 @@ public class UserServiceImp implements UserService{
 
     @Override
     public void deleteUser(Long userId) {
+        UserEntity user = userRepository.findById(userId).orElse(null);
+
+        if (user != null && user.getProfileimg() != null && !user.getProfileimg().equals("default.png")) {
+            File file = new File(path + File.separator + user.getProfileimg());
+            if (file.exists()) file.delete();
+        }
         userRepository.deleteById(userId);
     }
 

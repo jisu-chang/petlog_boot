@@ -31,4 +31,6 @@ public interface SnackRepository extends JpaRepository<SnackEntity, Long> {
     int countAllSnacks();
 
     int countByUserId(Long userId);
+
+    List<SnackEntity> findByUser_UserId(Long userId);
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,8 @@ public class CommunityServiceImp implements CommunityService{
     LikesRepository likesRepository;
     @Autowired
     CommentsRepository commentsRepository;
+
+    String path = "C:/petlog-uploads/community";
 
     @Override
     public void insertpost(CommunityEntity communityEntity) {
@@ -69,6 +72,20 @@ public class CommunityServiceImp implements CommunityService{
     @Override
     @Transactional
     public void deleteByUserId(Long userId) {
+        // 해당 유저의 커뮤니티 글 불러오기
+        List<CommunityEntity> posts = communityRepository.findByUser_UserId(userId);
+
+        // 각 게시글에 등록된 이미지 파일 삭제
+        for (CommunityEntity post : posts) {
+            if (post.getPostImage()!= null && !post.getPostImage().equals("default.png")) {
+                File file = new File(path + File.separator + post.getPostImage());
+                if (file.exists()) {
+                    file.delete();
+                }
+            }
+        }
+
+        // DB에서 게시글 삭제
         communityRepository.deleteByUser_UserId(userId);
     }
 

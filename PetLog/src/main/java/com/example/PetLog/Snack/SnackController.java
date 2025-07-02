@@ -40,7 +40,7 @@ public class SnackController {
     @Autowired
     private LikesService likesService;
 
-    private final String path = "C:/petlog-uploads/snack";
+    String path = "C:/petlog-uploads/snack";
 
     // 입력 폼
     @GetMapping("/Snack/SnackInput")

@@ -1,5 +1,6 @@
 package com.example.PetLog.Diary;
 
+import com.example.PetLog.Community.CommunityEntity;
 import com.example.PetLog.Pet.PetDTO;
 import com.example.PetLog.Pet.PetEntity;
 import com.example.PetLog.Pet.PetRepository;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,6 +23,7 @@ public class DiaryServiceImp implements DiaryService {
     private final DiaryRepository diaryRepository;
     private final PetRepository petRepository;
     private final UserRepository userRepository;
+    String path = System.getProperty("user.dir") + "/src/main/resources/static/image";
 
     @Autowired
     public DiaryServiceImp(DiaryRepository diaryRepository, PetRepository petRepository, UserRepository userRepository) {
@@ -119,6 +122,19 @@ public class DiaryServiceImp implements DiaryService {
     // 지수 추가 - 회원탈퇴
     @Override
     public void deleteByUserId(Long userId) {
+        // 해당 유저의 게시글 불러오기
+        List<DiaryEntity> posts = diaryRepository.findByUser_UserId(userId);
+
+        // 각 게시글에 등록된 이미지 파일 삭제
+        for (DiaryEntity post : posts) {
+            if (post.getDiaryImage()!= null && !post.getDiaryImage().equals("default.png")) {
+                File file = new File(path + File.separator + post.getDiaryImage());
+                if (file.exists()) {
+                    file.delete();
+                }
+            }
+        }
+
         diaryRepository.deleteByUser_UserId(userId);
     }
 
