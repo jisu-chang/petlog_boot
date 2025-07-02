@@ -1,6 +1,7 @@
 package com.example.PetLog.Quiz;
 
 import com.example.PetLog.QuizResult.QuizResultRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,8 +43,10 @@ public class QuizServiceImp implements QuizService{
     }
 
     @Override
+    @Transactional
     public void deleteSave(Long quizId) {
-        quizRepository.deleteById(quizId);
+        quizResultRepository.deleteByQuizId(quizId); //결과 먼저 삭제
+        quizRepository.deleteById(quizId); //퀴즈 문제 삭제
     }
 
     //유저 아이디로 풀지않은 퀴즈 랜덤 가져오기

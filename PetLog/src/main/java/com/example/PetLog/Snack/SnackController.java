@@ -90,7 +90,8 @@ public class SnackController {
         String loginId = principal.getName();
         Long userId = userService.findUserIdByLoginId(loginId);
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("snackDate").descending());
+        Pageable pageable = PageRequest.of(page, size,
+                Sort.by(Sort.Order.desc("snackDate"), Sort.Order.desc("snackId")));
         Page<SnackDTO> snackPage = snackService.findPagedSnacks(pageable);
 
         Map<Long, Integer> commentCounts = new HashMap<>();

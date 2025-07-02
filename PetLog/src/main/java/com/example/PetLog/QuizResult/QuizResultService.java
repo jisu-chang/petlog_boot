@@ -17,4 +17,5 @@ public interface QuizResultService {
     List<QuizResultDTO> getUserQuizList(Long userId);
 
     void deleteByUserId(Long userId);
+
 }

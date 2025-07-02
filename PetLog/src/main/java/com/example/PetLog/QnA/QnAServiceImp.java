@@ -19,7 +19,12 @@ public class QnAServiceImp implements QnAService{
 
     @Override
     public List<QnAEntity> allout() {
-        return qnARepository.findAll();
+        List<QnAEntity> list = qnARepository.findAll(); // 또는 커스텀 메서드
+
+        // 정렬: qnaId 내림차순 (최신 글 먼저)
+        list.sort((a, b) -> Long.compare(b.getQnaId(), a.getQnaId()));
+
+        return list;
     }
 
     @Override
@@ -49,7 +54,11 @@ public class QnAServiceImp implements QnAService{
 
     @Override
     public List<QnAEntity> findByUserId(Long userId) {
-        return qnARepository.findByUserId(userId);
+        List<QnAEntity> list = qnARepository.findByUserId(userId);
+
+        list.sort((a, b) -> Long.compare(b.getQnaId(), a.getQnaId()));
+
+        return list;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.example.PetLog.Quiz;
 
+import com.example.PetLog.QuizResult.QuizResultService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,8 @@ public class QuizController {
 
     @Autowired
     QuizService quizService;
+    @Autowired
+    QuizResultService quizResultRepository;
 
     @GetMapping("/QuizInput")
     public String quizin(){
