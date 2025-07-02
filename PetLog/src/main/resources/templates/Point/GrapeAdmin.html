@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      background-color: #fefefe;
+      background-color: #fff6f6;
       margin: 0;
       padding: 0;
       color: #333;
@@ -28,7 +28,7 @@
 
     h2 {
       font-size: 22px;
-      color: #db7093;
+      color: #f48aa5;
       margin-bottom: 25px;
     }
 
@@ -77,6 +77,24 @@
       background-color: #ffd2d2;
     }
 
+    .btn-rank-view {
+      background-color: #f48aa5;
+      color: white;
+      padding: 10px 24px;
+      border-radius: 10px;
+      font-weight: 500;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      display: inline-block;
+      margin-top: 20px;
+    }
+
+    .btn-rank-view:hover {
+      background-color: #db7093;
+      transform: translateY(-2px);
+    }
+
+
     @media screen and (max-width: 390px) {
       body {
         padding-top: 60px;
@@ -115,6 +133,13 @@
         font-size: 13px;
         margin: 0 5px;
       }
+
+      .btn-rank-view {
+          width: auto;
+          padding: 9px 20px;
+          font-size: 13px;
+          margin: 0;
+      }
     }
   </style>
 </head>
@@ -144,8 +169,8 @@
     </div>
   </form>
 
-  <form th:action="@{/Point/GrapeRank}" method="get" style="margin-top: 20px; text-align: right;">
-    <input type="submit" value="회원별 포도알 보기 🍇">
+  <form th:action="@{/Point/GrapeRank}" method="get" style="margin-top: 20px; text-align: center;">
+    <input type="submit" value="회원별 포도알 보기 🍇" class="btn-rank-view">
   </form>
 
 </div>
