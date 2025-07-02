@@ -44,6 +44,10 @@ public interface CommunityService {
 
     Map<Long, Integer> getLikeCountsByList(List<CommunityEntity> communityResults);
 
-    //page
+    // 커뮤니티 page
     public Page<CommunityEntity> getPostsByType(String postType, Pageable pageable);
+
+    // 공지사항 page
+    List<CommunityEntity> getNoticePostsPaging(int startRow, int endRow);
+    int countNoticePosts();
 }

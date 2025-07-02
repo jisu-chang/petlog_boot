@@ -49,7 +49,7 @@ public interface CommunityRepository extends JpaRepository<CommunityEntity, Long
 
     List<CommunityEntity> findByUser_UserId(Long userId);
 
-    //page
+    //커뮤니티 page
     @Query(value =
             "SELECT * FROM (" +
                     "  SELECT ce.*, ROWNUM rn FROM (" +
@@ -63,4 +63,17 @@ public interface CommunityRepository extends JpaRepository<CommunityEntity, Long
             @Param("endRow") int endRow);
 
     long countByPostType(String postType);
+
+    //공지사항 page
+    @Query(value = "SELECT * FROM (" +
+            " SELECT a.*, ROWNUM rnum FROM (" +
+            "   SELECT * FROM community WHERE post_type = 'notice' ORDER BY post_date DESC" +
+            " ) a WHERE ROWNUM <= :endRow" +
+            ") WHERE rnum >= :startRow",
+            nativeQuery = true)
+    List<CommunityEntity> findNoticePostsByRowBounds(@Param("startRow") int startRow,
+                                                     @Param("endRow") int endRow);
+
+    @Query(value = "SELECT COUNT(*) FROM community WHERE post_type = 'notice'", nativeQuery = true)
+    int countNoticePosts();
 }
