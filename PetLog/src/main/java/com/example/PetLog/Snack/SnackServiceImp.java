@@ -3,10 +3,15 @@ package com.example.PetLog.Snack;
 import com.example.PetLog.Comments.CommentsRepository;
 import com.example.PetLog.Likes.LikesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class SnackServiceImp implements SnackService {
@@ -141,5 +146,18 @@ public class SnackServiceImp implements SnackService {
         return likesRepository.countBySnack_SnackId(snackId);
     }
 
+    @Override
+    public Page<SnackDTO> findPagedSnacks(Pageable pageable) {
+        int offset = (int) pageable.getOffset();  // long → int 캐스팅
+        int limit = pageable.getPageSize();
 
+        List<SnackEntity> snacks = snackRepository.findSnacksPaged(offset, limit);
+        int total = snackRepository.countAllSnacks();
+
+        List<SnackDTO> snackDTOs = snacks.stream()
+                .map(SnackDTO::new) // 생성자 필요
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(snackDTOs, pageable, total);
+    }
 }

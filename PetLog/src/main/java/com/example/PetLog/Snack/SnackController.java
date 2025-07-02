@@ -23,6 +23,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
 @Controller
 public class SnackController {
 
@@ -88,29 +93,31 @@ public class SnackController {
     }
 
     @GetMapping(value = "/Snack/SnackOut")
-    public String out(Model mo, Principal pri) {
+    public String out(Model mo, Principal pri,
+                      @RequestParam(defaultValue = "0") int page,
+                      @RequestParam(defaultValue = "5") int size) {
+
         String loginId = pri.getName();
         Long userId = userService.findUserIdByLoginId(loginId);
 
-        List<SnackDTO> list = snackService.out();
+        Pageable pageable = PageRequest.of(page, size, Sort.by("snackDate").descending());
+        Page<SnackDTO> snackPage = snackService.findPagedSnacks(pageable);
 
         Map<Long, Integer> commentCounts = new HashMap<>();
         Map<Long, Integer> likeCounts = new HashMap<>();
 
-        for (SnackDTO snack : list) {
+        for (SnackDTO snack : snackPage.getContent()) {
             Long snackId = snack.getSnackId();
-
-            //좋아요 수 가져오기
-            int likeCount = likesService.getSnackLikeCount(snackId);
-            //댓글 목록 가져오기
-            List<CommentsEntity> comments = commentsService.getSnackComments(snackId);
-
-            likeCounts.put(snackId, likeCount);
-            commentCounts.put(snackId, comments.size());
+            commentCounts.put(snackId, snackService.getCommentCount(snackId));
+            likeCounts.put(snackId, snackService.getLikeCount(snackId));
         }
+
         mo.addAttribute("commentCounts", commentCounts);
         mo.addAttribute("likeCounts", likeCounts);
-        mo.addAttribute("list", list);
+        mo.addAttribute("snackPage", snackPage);
+        mo.addAttribute("currentPage", page);
+        mo.addAttribute("totalPages", snackPage.getTotalPages());
+
         return "Snack/SnackOut";
     }
 

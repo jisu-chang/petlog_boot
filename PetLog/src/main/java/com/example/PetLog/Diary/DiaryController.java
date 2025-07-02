@@ -106,7 +106,8 @@ public class DiaryController {
             return "redirect:/login";
         }
 
-        int pageSize = 2;
+        //page
+        int pageSize = 5; //한 페이지에 5 게시물
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("diaryDate").descending());
         Page<DiaryDTO> diaryPage = diaryService.findDiaryByUserIdPaged(userId, pageable);
 
