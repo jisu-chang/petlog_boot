@@ -41,7 +41,7 @@ public class DiaryController {
     @Autowired
     PetRepository petRepository;
 
-    String path = System.getProperty("user.dir") + "/src/main/resources/static/image";
+    String path = "C:/petlog-uploads/Diary";
 
     @GetMapping (value = "/Diary/DiaryInput")
     public String in(Model mo, HttpSession session) {
@@ -74,7 +74,6 @@ public class DiaryController {
         if (file != null && !file.isEmpty()) {
             String filename = file.getOriginalFilename();
 
-            String path = System.getProperty("user.dir") + "/src/main/resources/static/image";
             File dir = new File(path);
             if (!dir.exists()) {
                 dir.mkdirs(); // 폴더 없으면 생성

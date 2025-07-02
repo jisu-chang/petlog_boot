@@ -154,7 +154,11 @@
             <tr>
                 <th>이미지</th>
                 <td>
-                    <img th:src="@{'/image/' + ${dto.diaryImageName}}"/>
+                    <img th:if="${dto.diaryImageName != null and !#strings.isEmpty(dto.diaryImageName)}"
+                         th:src="@{'/diaryimg/' + ${dto.diaryImageName}}"
+                         alt="일기 이미지"
+                         style="max-width: 60%; max-height: 200px; height: auto; border-radius: 10px; margin-top: 20px;" />
+                    <span th:unless="${dto.diaryImageName != null and !#strings.isEmpty(dto.diaryImageName)}">이미지 없음</span>
                 </td>
             </tr>
             <tr>

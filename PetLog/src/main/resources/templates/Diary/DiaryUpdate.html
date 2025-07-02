@@ -166,7 +166,11 @@
 
     <div class="form-group">
       <label for="diary_image">이미지</label>
-      <img th:src="@{'/image/' + *{diaryImageName}}" width="100px" style="margin-bottom:10px;"><br>
+      <img th:if="${dto.diaryImageName != null and !#strings.isEmpty(dto.diaryImageName)}"
+           th:src="@{'/diaryimg/' + ${dto.diaryImageName}}"
+           alt="일기 이미지"
+           style="max-width: 60%; max-height: 200px; height: auto; border-radius: 10px; margin-top: 20px;" />
+      <span th:unless="${dto.diaryImageName != null and !#strings.isEmpty(dto.diaryImageName)}">이미지 없음</span>
       <input type="file" id="diary_image" name="diaryImage" />
     </div>
 

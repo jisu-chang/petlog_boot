@@ -12,16 +12,16 @@
           color: #333;
         }
 
-.table-wrapper {
-  background-color: white;
-  width: 100%;
-  max-width: 600px;
-  margin: 80px auto 60px auto;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  padding: 20px;
-  box-sizing: border-box;
-}
+        .table-wrapper {
+          background-color: white;
+          width: 100%;
+          max-width: 600px;
+          margin: 80px auto 60px auto;
+          border-radius: 12px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+          padding: 20px;
+          box-sizing: border-box;
+        }
 
         .back-btn-wrap {
           text-align: left;
@@ -50,13 +50,13 @@
           margin: 0 0 24px;
         }
 
-.diary-item-container {
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  padding: 20px;
-  margin-top: 15px;
-}
+        .diary-item-container {
+          background-color: #fff;
+          border-radius: 8px;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+          padding: 20px;
+          margin-top: 15px;
+        }
 
         .diary-field {
           display: flex;
@@ -87,17 +87,17 @@
           display: block;
         }
 
-.diary-content-box {
-    background-color: #f9f9f9;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    padding: 20px;
-    margin-top: 15px;
-    min-height: 100px;
-    white-space: pre-line;
-    text-align: left;
-    line-height: 1.6;
-}
+        .diary-content-box {
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            min-height: 100px;
+            white-space: pre-line;
+            text-align: left;
+            line-height: 1.6;
+        }
 
         .action-buttons {
           text-align: center;
@@ -128,12 +128,12 @@
             background-color: #ffb3b3;
         }
 
-@media screen and (min-width: 768px) {
-  .table-wrapper {
-    max-width: 700px;
-    padding: 30px;
-    margin-top: 90px;
-  }
+        @media screen and (min-width: 768px) {
+          .table-wrapper {
+            max-width: 700px;
+            padding: 30px;
+            margin-top: 90px;
+          }
           h2 {
             font-size: 1.8em;
           }
@@ -183,8 +183,11 @@
         <div class="diary-field">
             <span class="diary-field-label">이미지:</span>
             <div class="diary-field-content">
-                <img th:if="*{diaryImageName}" th:src="@{'/image/' + *{diaryImageName}}" alt="일기 이미지" />
-                <span th:unless="*{diaryImageName}">이미지 없음</span>
+                <img th:if="${dto.diaryImageName != null and !#strings.isEmpty(dto.diaryImageName)}"
+                     th:src="@{'/diaryimg/' + ${dto.diaryImageName}}"
+                     alt="일기 이미지"
+                     style="max-width: 100%; max-height: 400px; height: auto; border-radius: 10px; margin-top: 20px;" />
+                <span th:unless="${dto.diaryImageName != null and !#strings.isEmpty(dto.diaryImageName)}">이미지 없음</span>
             </div>
         </div>
         <div class="diary-field">
