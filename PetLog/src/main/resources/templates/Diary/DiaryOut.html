@@ -37,19 +37,14 @@
       background-color: #ffd2d2;
     }
 
-.table-wrapper {
-  background-color: white;
-  max-width: 800px;
-  margin: 80px auto 60px auto;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-    .button-wrap {
-      text-align: right;
-      margin-bottom: 20px;
+    .table-wrapper {
+      background-color: white;
+      max-width: 800px;
+      margin: 80px auto 60px auto;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      padding: 20px;
+      box-sizing: border-box;
     }
 
     table {
@@ -74,14 +69,6 @@
       font-weight: bold;
     }
 
-    th:first-child {
-      border-top-left-radius: 8px;
-    }
-
-    th:last-child {
-      border-top-right-radius: 8px;
-    }
-
     td a {
       color: #333;
       text-decoration: none;
@@ -93,11 +80,6 @@
       text-decoration: underline;
     }
 
-    td img {
-      max-width: 60px;
-      height: auto;
-    }
-
     .no-diary {
       text-align: center;
       color: #c0392b;
@@ -105,6 +87,40 @@
       padding: 30px 0;
       font-size: 1em;
     }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.pagination a {
+  padding: 6px 12px;
+  border-radius: 6px;
+  background-color: #ffe1e1;
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.pagination a.active {
+  font-weight: bold;
+  background-color: #f48aa5;
+  color: white;
+}
+
+.pagination a:hover {
+  background-color: #ffd2d2;
+}
+
+.pagination a.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: default;
+  background-color: #eee;
+  color: #999;
+}
 
     @media screen and (min-width: 768px) {
       .table-wrapper {
@@ -128,7 +144,6 @@
       }
     }
   </style>
-
 </head>
 
 <body>
@@ -139,7 +154,7 @@
     <a th:href="@{/Diary/DiaryInput}" class="btn" style="float: right;">일기 쓰러 가기</a>
   </div>
 
-  <div th:if="${list != null and !#lists.isEmpty(list)}">
+  <div th:if="${diaryPage != null and !diaryPage.empty}">
     <table>
       <thead>
       <tr>
@@ -149,22 +164,41 @@
       </tr>
       </thead>
       <tbody>
-      <tr th:each="di : ${list}">
+      <tr th:each="di : ${diaryPage.content}">
         <td th:text="${di.petName}"></td>
         <td>
           <a th:href="@{/Diary/DiaryDetail(diaryId=${di.diaryId})}" th:text="${di.diaryTitle}"></a>
         </td>
         <td th:text="${di.diaryDate}"></td>
-
       </tr>
       </tbody>
     </table>
+
+    <!-- 페이징 영역 -->
+    <div class="pagination">
+      <!-- 이전 버튼 (첫 페이지면 disabled 클래스 적용) -->
+      <a th:href="@{/Diary/DiaryOut(page=${currentPage > 0 ? currentPage - 1 : 0})}"
+         th:classappend="${currentPage == 0} ? 'disabled' : ''">
+        이전
+      </a>
+
+      <!-- 페이지 번호 버튼 -->
+      <a th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+         th:href="@{/Diary/DiaryOut(page=${i})}"
+         th:text="${i + 1}"
+         th:classappend="${i == currentPage} ? 'active' : ''"></a>
+
+      <!-- 다음 버튼 (마지막 페이지면 disabled 클래스 적용) -->
+      <a th:href="@{/Diary/DiaryOut(page=${currentPage < totalPages - 1 ? currentPage + 1 : totalPages - 1})}"
+         th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''">
+        다음
+      </a>
+    </div>
   </div>
 
-  <div th:if="${list == null or #lists.isEmpty(list)}" class="no-diary">
+  <div th:if="${diaryPage == null or diaryPage.empty}" class="no-diary">
     작성된 일기가 없습니다.
   </div>
 </div>
 </body>
-
 </html>

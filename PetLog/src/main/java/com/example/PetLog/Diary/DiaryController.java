@@ -21,6 +21,11 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
 @Controller
 public class DiaryController {
 
@@ -91,7 +96,9 @@ public class DiaryController {
     }
 
     @GetMapping(value = "/Diary/DiaryOut")
-    public String out(Model mo, HttpSession session) {
+    public String out(Model mo,
+                      HttpSession session,
+                      @RequestParam(defaultValue = "0") int page) {
         Long userId = (Long) session.getAttribute("userId");
         String userLoginId = (String) session.getAttribute("userLoginId");
 
@@ -99,9 +106,13 @@ public class DiaryController {
             return "redirect:/login";
         }
 
-        List<DiaryDTO> diaryList = diaryService.findDiaryByUserId(userId);
+        int pageSize = 2;
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("diaryDate").descending());
+        Page<DiaryDTO> diaryPage = diaryService.findDiaryByUserIdPaged(userId, pageable);
 
-        mo.addAttribute("list", diaryList);
+        mo.addAttribute("diaryPage", diaryPage);
+        mo.addAttribute("currentPage", page);
+        mo.addAttribute("totalPages", diaryPage.getTotalPages());
 
         return "Diary/DiaryOut";
     }
