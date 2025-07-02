@@ -36,7 +36,7 @@
           background-color: white;
           width: 100%;
           max-width: 1000px;
-          margin: 40px auto 80px auto;
+          margin: 100px auto 200px auto;
           border-radius: 12px;
           box-shadow: 0 4px 12px rgba(0,0,0,0.08);
           padding: 30px;
@@ -76,27 +76,6 @@
         td a:hover {
           color: #d65b7b;
           text-decoration: underline;
-        }
-        .pagination {
-          width: 100%;
-          text-align: center;
-          margin: 40px 0;
-        }
-        .pagination a {
-          margin: 0 6px;
-          padding: 6px 12px;
-          color: #888;
-          text-decoration: none;
-          border-radius: 4px;
-          transition: all 0.2s;
-        }
-        .pagination a.current {
-          background-color: #db7093;
-          color: #fff;
-          font-weight: bold;
-        }
-        .pagination a:hover {
-          background-color: #ffe1e1;
         }
 
         @media screen and (max-width: 768px) {
@@ -168,15 +147,40 @@
                 padding: 8px 25px;
                 font-size: 1em;
             }
+        }
 
-            .pagination {
-                margin: 20px 0;
-            }
-            .pagination a {
-                margin: 0 4px;
-                padding: 5px 10px;
-                font-size: 0.9em;
-            }
+        .pagination {
+          display: flex;
+          justify-content: center;
+          gap: 8px;
+          margin-top: 20px;
+        }
+
+        .pagination a {
+          padding: 6px 12px;
+          border-radius: 6px;
+          background-color: #ffe1e1;
+          color: #333;
+          text-decoration: none;
+          cursor: pointer;
+        }
+
+        .pagination a.active {
+          font-weight: bold;
+          background-color: #f48aa5;
+          color: white;
+        }
+
+        .pagination a:hover {
+          background-color: #ffd2d2;
+        }
+
+        .pagination a.disabled {
+          pointer-events: none;
+          opacity: 0.5;
+          cursor: default;
+          background-color: #eee;
+          color: #999;
         }
     </style>
 </head>
@@ -213,13 +217,19 @@
         </tbody>
     </table>
 
-    <div class="pagination" th:if="${page_count != null}">
-        <a th:each="i : ${#numbers.sequence(1, page_count)}"
-           th:href="@{'/ItemUser/ItemOutUser'(page=${i})}"
-           th:text="${i}"
-           th:classappend="${i == page} ? 'current'">1</a>
-    </div>
-</div>
+    <div class="pagination">
+        <a th:href="@{/ItemUser/ItemOutUser(page=${currentPage - 1})}"
+           th:classappend="${currentPage == 1} ? 'disabled' : ''">이전</a>
 
+        <a th:each="i : ${#numbers.sequence(1, totalPages)}"
+           th:href="@{/ItemUser/ItemOutUser(page=${i})}"
+           th:text="${i}"
+           th:classappend="${i == currentPage} ? 'active' : ''"></a>
+
+        <a th:href="@{/ItemUser/ItemOutUser(page=${currentPage + 1})}"
+           th:classappend="${currentPage == totalPages} ? 'disabled' : ''">다음</a>
+    </div>
+
+</div>
 </body>
 </html>

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-@Table(name = "usertems")
+@Table(name = "USERTEMS")
 public class ItemUserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usertems_seq")
