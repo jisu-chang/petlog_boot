@@ -128,15 +128,23 @@ public class DiaryServiceImp implements DiaryService {
         int offset = (int) pageable.getOffset();
         int limit = pageable.getPageSize();
 
-        // 네이티브 쿼리 호출
         List<DiaryEntity> diaryEntities = diaryRepository.findDiaryByUserIdPagedNative(userId, offset, limit);
 
-        // 총 개수 조회를 위한 별도 쿼리 (countByUserIdNative) 필요 - 아래 메서드는 DiaryRepository에 추가해야 함
+        // 총 개수 조회
         int total = diaryRepository.countByUserIdNative(userId);
 
+        List<Long> petIds = diaryEntities.stream()
+                .map(DiaryEntity::getPetId)
+                .distinct()
+                .toList();
+
+        Map<Long, String> petIdNameMap = petRepository.findAllById(petIds).stream()
+                .collect(Collectors.toMap(PetEntity::getPetId, PetEntity::getPetName));
+
         List<DiaryDTO> diaryDTOs = diaryEntities.stream()
+                .peek(diary -> diary.setPetName(petIdNameMap.getOrDefault(diary.getPetId(), "이름없음")))
                 .map(DiaryDTO::new)
-                .collect(Collectors.toList());
+                .toList();
 
         return new PageImpl<>(diaryDTOs, pageable, total);
     }

@@ -51,6 +51,7 @@ public class DiaryDTO {
         this.grapeCount = entity.getGetGrape();  // 필드명 일치
         this.userId = entity.getUserId();
         this.petId = entity.getPetId();
+        this.petName = entity.getPetName();
     }
 
     public void setDiaryImageName(String filename) {

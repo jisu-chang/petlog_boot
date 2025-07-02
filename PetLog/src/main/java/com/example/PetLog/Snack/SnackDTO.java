@@ -56,5 +56,8 @@ public class SnackDTO {
         this.snackDate = entity.getSnackDate();
         this.snackReadcnt = entity.getSnackReadcnt();
         this.userId = entity.getUserId();
+        if (entity.getUser() != null) {
+            this.userLoginId = entity.getUser().getUserLoginId();
+        }
     }
 }

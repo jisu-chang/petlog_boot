@@ -47,6 +47,9 @@ public class DiaryEntity {
     @Column(name = "pet_id")
     Long petId;     // 직접 숫자 ID 필드로 변경
 
+    @Transient
+    private String petName;
+
     //지수 추가
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
