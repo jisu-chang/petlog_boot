@@ -45,11 +45,20 @@ public class QnAController {
     }
 
     @GetMapping("/QnAOut")
-    public String qnaout(Model mo, HttpSession session){
-        Long userId = (Long) session.getAttribute("userId");
+    public String qnaout(@RequestParam(defaultValue = "1") int page, Model mo, HttpSession session) {
+        int pageSize = 5;
+        int offset = (page - 1) * pageSize;
 
-        List<QnAEntity> list = qnaService.allout();
+        Long userId = (Long) session.getAttribute("userId");
+        List<QnAEntity> list = qnaService.getQnAPage(offset, pageSize);
+        int totalCount = qnaService.getTotalQnACount();
+
+        int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+
         mo.addAttribute("list", list);
+        mo.addAttribute("currentPage", page);
+        mo.addAttribute("totalPages", totalPages);
+
         return "QnA/QnAOut";
     }
 
@@ -140,11 +149,21 @@ public class QnAController {
     }
 
     @GetMapping("/UserQnAOut")
-    public String userqnaout(Model mo, HttpSession session){
+    public String userqnaout(@RequestParam(defaultValue = "1") int page, Model mo, HttpSession session) {
+        int pageSize = 5;
+        int offset = (page - 1) * pageSize;
+
         Long userId = (Long) session.getAttribute("userId");
 
-        List<QnAEntity> list = qnaService.findByUserId(userId);
+        List<QnAEntity> list = qnaService.getUserQnAPage(userId, offset, pageSize);
+        int totalCount = qnaService.getTotalUserQnACount(userId);
+        int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+
         mo.addAttribute("list", list);
+        mo.addAttribute("currentPage", page);
+        mo.addAttribute("totalPages", totalPages);
+
         return "QnA/UserQnAOut";
     }
+
 }

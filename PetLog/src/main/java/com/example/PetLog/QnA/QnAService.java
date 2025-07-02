@@ -21,4 +21,12 @@ public interface QnAService {
     List<QnAEntity> findByUserId(Long userId);
 
     void deleteByUserId(Long userId);
+
+    //전체 QnA page
+    List<QnAEntity> getQnAPage(int offset, int limit);
+    int getTotalQnACount();
+
+    //My Qna page
+    List<QnAEntity> getUserQnAPage(Long userId, int offset, int limit);
+    int getTotalUserQnACount(Long userId);
 }
