@@ -26,7 +26,7 @@ public interface CommentsRepository extends JpaRepository<CommentsEntity, Long> 
     @Modifying
     @Transactional
     @Query("DELETE FROM CommentsEntity c WHERE c.community.postId = :postId")
-    void deleteByPostId( Long postId);
+    void deleteByPostId(Long postId);
 
     @Modifying
     @Transactional
@@ -36,4 +36,6 @@ public interface CommentsRepository extends JpaRepository<CommentsEntity, Long> 
     int countByCommunity_PostId(Long postId);
 
     Integer countBySnack_SnackId(Long snackId);
+
+    int countByUser_UserId(Long userId);
 }

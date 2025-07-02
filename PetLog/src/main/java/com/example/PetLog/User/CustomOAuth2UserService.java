@@ -51,7 +51,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             userEntity.setProfileimg(profileImage);
             userEntity.setUserRole("USER");
             userEntity.setGrapeCount(0);
-            userEntity.setRank("일반회원");
+            userEntity.setRank("새싹포도🌱");
         }
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();

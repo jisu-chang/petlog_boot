@@ -207,7 +207,7 @@ public class UserController {
 
         dto.setPassword("kakao");
         dto.setUserRole("USER");
-        dto.setRank("일반회원");
+        dto.setRank("새싹포도🌱");
         dto.setGrapeCount(0);
 
         UserEntity savedUser = userRepository.save(dto.toEntity());
@@ -315,6 +315,14 @@ public class UserController {
             mo.addAttribute("error", "유저 정보를 찾을 수 없습니다.");
             return "User/UserError";
         }
+
+        int score = userService.calculateUserScore(userId);
+        String rank = userService.getUserRank(score);
+        int pointsToNext = userService.getPointsToNextRank(score);  //다음 등급까지 남은 점수 확인
+
+        userProfile.setRank(rank); //현재 등급 출력
+        userProfile.setPointsToNext(pointsToNext); // 다음 등급까지 남은 점수 확인
+        userProfile.setScore(score); // 점수도 함께 출력
 
         long timestamp = System.currentTimeMillis();
         mo.addAttribute("timestamp", timestamp);

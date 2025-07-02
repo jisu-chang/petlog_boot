@@ -14,4 +14,6 @@ public interface SnackRepository extends JpaRepository<SnackEntity,Long> {
     List<SnackEntity> findBySnackTitleContaining(String keyword);
 
     List<SnackEntity> findBySnackRecipeContaining(String keyword);
+
+    int countByUserId(Long userId);
 }

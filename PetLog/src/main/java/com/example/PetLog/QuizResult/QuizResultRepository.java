@@ -30,5 +30,7 @@ public interface QuizResultRepository extends JpaRepository<QuizResultEntity, Lo
     int countRankByQuizIdAndFasterTime(@Param("quizId") Long quizId, @Param("resultTime") int resultTime);
 
     List<QuizResultEntity> findByUserId(Long userId);
+
+    int countByUserIdAndResultScore(Long userId, int i);
 }
 

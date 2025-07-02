@@ -42,4 +42,5 @@ public interface CommunityRepository extends JpaRepository<CommunityEntity, Long
     // 내용+타입으로 검색
     List<CommunityEntity> findByPostContentContainingAndPostType(String keyword, String postType);
 
+    int countByUserId(Long userId);
 }

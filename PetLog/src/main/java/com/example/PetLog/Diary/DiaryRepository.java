@@ -32,4 +32,5 @@ public interface DiaryRepository extends JpaRepository<DiaryEntity,Long> {
             @Param("petId") Long petId
     );
 
+    int countByUserId(Long userId);
 }

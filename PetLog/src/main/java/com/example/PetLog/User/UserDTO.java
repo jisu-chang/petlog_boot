@@ -63,6 +63,10 @@ public class UserDTO {
     String equippedFrameImageName;
     String equippedFrameName;
 
+    //회원등급 보여주기 용
+    int pointsToNext;
+    int score;
+
     public UserDTO(UserEntity userEntity) {
     }
 

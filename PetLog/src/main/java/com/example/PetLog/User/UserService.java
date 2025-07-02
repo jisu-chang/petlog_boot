@@ -47,4 +47,10 @@ public interface UserService {
     Optional<UserEntity> findUserById(Long userId);
 
     void addGrapeCount(Long userId, int i); //커뮤니티 포도알 +1
+
+    int calculateUserScore(Long userId);
+
+    String getUserRank(int score);
+
+    int getPointsToNextRank(int score);
 }

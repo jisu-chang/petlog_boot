@@ -1,5 +1,13 @@
 package com.example.PetLog.User;
 
+import com.example.PetLog.Calendar.CalendarRepository;
+import com.example.PetLog.Comments.CommentsRepository;
+import com.example.PetLog.Community.CommunityRepository;
+import com.example.PetLog.Diary.DiaryRepository;
+import com.example.PetLog.Likes.LikesRepository;
+import com.example.PetLog.Quiz.QuizRepository;
+import com.example.PetLog.QuizResult.QuizResultRepository;
+import com.example.PetLog.Snack.SnackRepository;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -24,6 +32,20 @@ public class UserServiceImp implements UserService{
     @Autowired
     UserRepository userRepository;
     @Autowired
+    SnackRepository snackRepository;
+    @Autowired
+    CommunityRepository communityRepository;
+    @Autowired
+    CalendarRepository calendarRepository;
+    @Autowired
+    DiaryRepository diaryRepository;
+    @Autowired
+    CommentsRepository commentsRepository;
+    @Autowired
+    LikesRepository likesRepository;
+    @Autowired
+    QuizResultRepository quizResultRepository;
+    @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -31,7 +53,6 @@ public class UserServiceImp implements UserService{
     JavaMailSender mailSender;
     @Autowired
     private SpringTemplateEngine templateEngine;
-
     @Autowired
     ItemUserRepository itemUserRepository;//프로필 프레임 용
 
@@ -299,4 +320,43 @@ public class UserServiceImp implements UserService{
             System.err.println("오류: 사용자 ID " + userId + "를 찾을 수 없어 포도알을 추가하지 못했습니다.");
         }
     }
+
+    @Override
+    public int calculateUserScore(Long userId) {
+        int score = 0;
+        score += snackRepository.countByUserId(userId) * 3;
+        score += communityRepository.countByUserId(userId) * 3;
+        score += calendarRepository.countByUserId(userId) * 3;
+        score += diaryRepository.countByUserId(userId) * 3;
+
+        score += commentsRepository.countByUser_UserId(userId);
+        score += likesRepository.countByUserId(userId);
+
+        score += itemUserRepository.countByUserId(userId) * 4;
+
+        score += quizResultRepository.countByUserIdAndResultScore(userId, 1) * 3; // 정답
+        score += quizResultRepository.countByUserIdAndResultScore(userId, 0);     // 오답
+
+        return score;
     }
+
+    @Override
+    public String getUserRank(int score) {
+        if (score >= 150) return "포도왕👑";
+        else if (score >= 120) return "포도유망주✨";
+        else if (score >= 100) return "보라포도🍇";
+        else if (score >= 80) return "청포도🌿";
+        else if (score >= 40) return "아기포도🍼";
+        else return "새싹포도🌱";
+    }
+
+    public int getPointsToNextRank(int score) {
+        if (score < 40) return 40 - score;            // 새싹포도 → 아기포도
+        else if (score < 80) return 80 - score;       // 아기포도 → 청포도
+        else if (score < 100) return 100 - score;     // 청포도 → 보라포도
+        else if (score < 120) return 120 - score;     // 보라포도 → 유망주
+        else if (score < 150) return 150 - score;     // 유망주 → 포도왕
+        else return 0; // 이미 포도왕!
+    }
+
+}
