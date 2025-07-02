@@ -1,6 +1,8 @@
 package com.example.PetLog.Snack;
 
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -31,4 +33,7 @@ public interface SnackService {
 
     Integer getCommentCount(Long snackId);
     Integer getLikeCount(Long snackId);
+
+    //page
+    Page<SnackDTO> findPagedSnacks(Pageable pageable);
 }

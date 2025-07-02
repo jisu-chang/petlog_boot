@@ -9,14 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface DiaryRepository extends JpaRepository<DiaryEntity,Long> {
+public interface DiaryRepository extends JpaRepository<DiaryEntity, Long> {
 
     List<DiaryEntity> findByUserId(Long userId);
 
-    //지수 추가 - 회원탈퇴
     List<DiaryEntity> findAllByUser_UserId(Long userId);
 
-    //지수 추가 - 회원탈퇴
     @Transactional
     void deleteByUser_UserId(Long userId);
 
@@ -32,5 +30,22 @@ public interface DiaryRepository extends JpaRepository<DiaryEntity,Long> {
             @Param("petId") Long petId
     );
 
-    int countByUserId(Long userId);
+    // Oracle 11g 이하 네이티브 페이징 쿼리
+    @Query(value =
+            "SELECT * FROM ( " +
+                    "  SELECT a.*, ROWNUM rnum FROM ( " +
+                    "    SELECT * FROM diary WHERE user_id = :userId ORDER BY diary_date DESC " +
+                    "  ) a WHERE ROWNUM <= :offset + :limit " +
+                    ") WHERE rnum > :offset",
+            nativeQuery = true)
+    List<DiaryEntity> findDiaryByUserIdPagedNative(
+            @Param("userId") Long userId,
+            @Param("offset") int offset,
+            @Param("limit") int limit);
+
+
+    @Query(value = "SELECT COUNT(*) FROM diary WHERE user_id = :userId", nativeQuery = true)
+    int countByUserIdNative(@Param("userId") Long userId);
 }
+
+

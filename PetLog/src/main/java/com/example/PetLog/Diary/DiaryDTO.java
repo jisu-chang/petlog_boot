@@ -20,7 +20,7 @@ public class DiaryDTO {
     MultipartFile diaryImage;
     String diaryContent;
 
-    int getGrape;
+    int grapeCount;
 
     Long userId;
     Long petId;
@@ -34,12 +34,24 @@ public class DiaryDTO {
                 .diaryId(diaryId)
                 .diaryTitle(diaryTitle)
                 .diaryDate(diaryDate)
-                .diaryImage(diaryImageName) // ★ 이게 DB에 들어감
+                .diaryImage(diaryImageName)
                 .diaryContent(diaryContent)
-                .getGrape(getGrape)
+                .getGrape(grapeCount)   // entity 필드명 맞춰서
                 .userId(userId)
                 .petId(petId)
                 .build();
+    }
+
+    public DiaryDTO(DiaryEntity entity) {
+        this.diaryId = entity.getDiaryId();
+        this.diaryTitle = entity.getDiaryTitle();
+        this.diaryDate = entity.getDiaryDate();
+        this.diaryContent = entity.getDiaryContent();
+        this.diaryImageName = entity.getDiaryImage();
+        this.grapeCount = entity.getGetGrape();  // 필드명 일치
+        this.userId = entity.getUserId();
+        this.petId = entity.getPetId();
+        this.petName = entity.getPetName();
     }
 
     public void setDiaryImageName(String filename) {

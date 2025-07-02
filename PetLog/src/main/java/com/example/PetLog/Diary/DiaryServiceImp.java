@@ -5,9 +5,10 @@ import com.example.PetLog.Pet.PetEntity;
 import com.example.PetLog.Pet.PetRepository;
 import com.example.PetLog.User.UserEntity;
 import com.example.PetLog.User.UserRepository;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -17,100 +18,91 @@ import java.util.stream.Collectors;
 @Service
 public class DiaryServiceImp implements DiaryService {
 
-DiaryRepository diaryRepository;
-PetRepository petRepository;
-UserRepository userRepository;
+    private final DiaryRepository diaryRepository;
+    private final PetRepository petRepository;
+    private final UserRepository userRepository;
 
+    @Autowired
     public DiaryServiceImp(DiaryRepository diaryRepository, PetRepository petRepository, UserRepository userRepository) {
         this.diaryRepository = diaryRepository;
         this.petRepository = petRepository;
         this.userRepository = userRepository;
     }
 
-@Override
-public List<PetDTO> petByUser() {
-    return null;
-}
-
-@Override
-@Transactional
-public void save(DiaryEntity diaryEntity) {
-    diaryRepository.save(diaryEntity);
-
-    Long userId = diaryEntity.getUserId();
-
-    Optional<UserEntity> userOptional = userRepository.findById(userId);
-
-    if (userOptional.isPresent()) {
-        UserEntity user = userOptional.get();
-        // 포도알 1개 적립
-        user.setGrapeCount(user.getGrapeCount() + 1);
-        // 갱신된 사용자 정보 저장
-        userRepository.save(user);
-
-        System.out.println("다이어리 작성 완료! 사용자 " + user.getUserLoginId() + "에게 포도알 1개가 적립되었습니다. 현재 포인트: " + user.getGrapeCount());
-    } else {
-
-        System.err.println("오류: 사용자 ID " + userId + "를 찾을 수 없어 포인트를 적립할 수 없습니다.");
+    @Override
+    public List<PetDTO> petByUser() {
+        return null; // 필요시 구현
     }
 
-}
+    @Override
+    @Transactional
+    public void save(DiaryEntity diaryEntity) {
+        diaryRepository.save(diaryEntity);
 
-@Override
-public List<DiaryDTO> findDiaryByUserId(Long userId) {
+        Long userId = diaryEntity.getUserId();
 
-    List<DiaryEntity> diaryEntities = diaryRepository.findByUserId(userId);
+        Optional<UserEntity> userOptional = userRepository.findById(userId);
 
-    List<PetEntity> petList = petRepository.findByUserUserId(userId);
-    Map<Long, String> petIdNameMap = petList.stream()
-            .collect(Collectors.toMap(PetEntity::getPetId, PetEntity::getPetName));
+        if (userOptional.isPresent()) {
+            UserEntity user = userOptional.get();
+            user.setGrapeCount(user.getGrapeCount() + 1);
+            userRepository.save(user);
+            System.out.println("다이어리 작성 완료! 사용자 " + user.getUserLoginId() + "에게 포도알 1개가 적립되었습니다. 현재 포인트: " + user.getGrapeCount());
+        } else {
+            System.err.println("오류: 사용자 ID " + userId + "를 찾을 수 없어 포인트를 적립할 수 없습니다.");
+        }
+    }
 
-    List<DiaryDTO> diaryDTOList = diaryEntities.stream()
-            .map(entity -> {
-                DiaryDTO dto = new DiaryDTO();
-                dto.setDiaryId(entity.getDiaryId());
-                dto.setDiaryTitle(entity.getDiaryTitle());
-                dto.setDiaryDate(entity.getDiaryDate());
-                dto.setDiaryImageName(entity.getDiaryImage());
-                dto.setDiaryContent(entity.getDiaryContent());
+    @Override
+    public List<DiaryDTO> findDiaryByUserId(Long userId) {
+        List<DiaryEntity> diaryEntities = diaryRepository.findByUserId(userId);
 
-                dto.setPetName(petIdNameMap.getOrDefault(entity.getPetId(), "이름없음"));
+        List<PetEntity> petList = petRepository.findByUserUserId(userId);
+        Map<Long, String> petIdNameMap = petList.stream()
+                .collect(Collectors.toMap(PetEntity::getPetId, PetEntity::getPetName));
 
-                return dto;
-            })
-            .collect(Collectors.toList());
+        return diaryEntities.stream()
+                .map(entity -> {
+                    DiaryDTO dto = new DiaryDTO();
+                    dto.setDiaryId(entity.getDiaryId());
+                    dto.setDiaryTitle(entity.getDiaryTitle());
+                    dto.setDiaryDate(entity.getDiaryDate());
+                    dto.setDiaryImageName(entity.getDiaryImage());
+                    dto.setDiaryContent(entity.getDiaryContent());
+                    dto.setPetName(petIdNameMap.getOrDefault(entity.getPetId(), "이름없음"));
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
 
-    return diaryDTOList;
-}
+    @Override
+    public DiaryDTO detail(long diaryId) {
+        DiaryEntity diaryEntity = diaryRepository.findById(diaryId)
+                .orElseThrow(() -> new RuntimeException("일기를 찾을 수 없습니다: " + diaryId));
 
-@Override
-public DiaryDTO detail(long diaryId) {
-    DiaryEntity diaryEntity = diaryRepository.findById(diaryId)
-            .orElseThrow(() -> new RuntimeException("일기를 찾을 수 없습니다: " + diaryId));
+        PetEntity petEntity = petRepository.findById(diaryEntity.getPetId()).orElse(null);
+        String petName = (petEntity != null) ? petEntity.getPetName() : "이름없음";
 
-    PetEntity petEntity = petRepository.findById(diaryEntity.getPetId()).orElse(null);
-    String petName = (petEntity != null) ? petEntity.getPetName() : "이름없음";
+        DiaryDTO dto = new DiaryDTO();
+        dto.setDiaryId(diaryEntity.getDiaryId());
+        dto.setDiaryTitle(diaryEntity.getDiaryTitle());
+        dto.setDiaryDate(diaryEntity.getDiaryDate());
+        dto.setDiaryImageName(diaryEntity.getDiaryImage());
+        dto.setDiaryContent(diaryEntity.getDiaryContent());
+        dto.setPetName(petName);
 
-    DiaryDTO dto = new DiaryDTO();
-    dto.setDiaryId(diaryEntity.getDiaryId());
-    dto.setDiaryTitle(diaryEntity.getDiaryTitle());
-    dto.setDiaryDate(diaryEntity.getDiaryDate());
-    dto.setDiaryImageName(diaryEntity.getDiaryImage());
-    dto.setDiaryContent(diaryEntity.getDiaryContent());
-    dto.setPetName(petName); // 기존 오류 수정 (petEntity가 null일 경우 대비)
+        return dto;
+    }
 
-    return dto;
-}
-
-@Override
-public DiaryEntity detailEntity(Long diaryId) { //diaryId에 해당하는 데이터 가져오기
-    return diaryRepository.findById(diaryId)
-            .orElseThrow(() -> new RuntimeException("일기를 찾을 수 없습니다: " + diaryId));
-}
+    @Override
+    public DiaryEntity detailEntity(Long diaryId) {
+        return diaryRepository.findById(diaryId)
+                .orElseThrow(() -> new RuntimeException("일기를 찾을 수 없습니다: " + diaryId));
+    }
 
     @Override
     public void update(DiaryEntity entity) {
-    diaryRepository.save(entity);
+        diaryRepository.save(entity);
     }
 
     @Override
@@ -118,16 +110,42 @@ public DiaryEntity detailEntity(Long diaryId) { //diaryId에 해당하는 데이
         diaryRepository.deleteById(diaryId);
     }
 
-    //지수 추가 - 회원탈퇴
+    // 지수 추가 - 회원탈퇴
     @Override
     public List<DiaryEntity> findByDiaryUserId(Long userId) {
         return diaryRepository.findAllByUser_UserId(userId);
     }
 
-    //지수 추가 - 회원탈퇴
+    // 지수 추가 - 회원탈퇴
     @Override
     public void deleteByUserId(Long userId) {
         diaryRepository.deleteByUser_UserId(userId);
     }
 
+    // 페이징 처리 (Oracle 11g 이하 네이티브 쿼리 사용)
+    @Override
+    public Page<DiaryDTO> findDiaryByUserIdPaged(Long userId, Pageable pageable) {
+        int offset = (int) pageable.getOffset();
+        int limit = pageable.getPageSize();
+
+        List<DiaryEntity> diaryEntities = diaryRepository.findDiaryByUserIdPagedNative(userId, offset, limit);
+
+        // 총 개수 조회
+        int total = diaryRepository.countByUserIdNative(userId);
+
+        List<Long> petIds = diaryEntities.stream()
+                .map(DiaryEntity::getPetId)
+                .distinct()
+                .toList();
+
+        Map<Long, String> petIdNameMap = petRepository.findAllById(petIds).stream()
+                .collect(Collectors.toMap(PetEntity::getPetId, PetEntity::getPetName));
+
+        List<DiaryDTO> diaryDTOs = diaryEntities.stream()
+                .peek(diary -> diary.setPetName(petIdNameMap.getOrDefault(diary.getPetId(), "이름없음")))
+                .map(DiaryDTO::new)
+                .toList();
+
+        return new PageImpl<>(diaryDTOs, pageable, total);
+    }
 }
