@@ -7,6 +7,7 @@ import com.example.PetLog.Community.CommunityEntity;
 import com.example.PetLog.Community.CommunityService;
 import com.example.PetLog.Diary.DiaryEntity;
 import com.example.PetLog.Diary.DiaryService;
+import com.example.PetLog.ItemUser.ItemUserEntity;
 import com.example.PetLog.ItemUser.ItemUserService;
 import com.example.PetLog.Likes.LikesEntity;
 import com.example.PetLog.Likes.LikesService;
@@ -457,7 +458,9 @@ public class UserController {
         List<SnackEntity> mySnack = snackService.findByUserId(userId); // 간식
         List<CommentsEntity> myComment = commentsService.findByUserId(userId); // 댓글
         List<LikesEntity> myLike = likesService.findByUserId(userId); // 좋아요
+        List<ItemUserEntity> myItems = itemUserService.findByUserId(userId); //구매한 아이템
 
+        mo.addAttribute("myItems", myItems);
         mo.addAttribute("user", userEntity);
         mo.addAttribute("myPost", myPost);
         mo.addAttribute("mySnack", mySnack);

@@ -12,4 +12,6 @@ public interface ItemUserService {
     void frame_wearing(Long userId, Long itemId);
 
     void deleteByUserId(Long userId);
+
+    List<ItemUserEntity> findByUserId(Long userId);
 }

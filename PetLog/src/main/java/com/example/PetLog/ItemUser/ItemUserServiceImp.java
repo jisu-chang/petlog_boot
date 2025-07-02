@@ -52,5 +52,10 @@ public class ItemUserServiceImp implements ItemUserService {
         // DB에서 게시글 삭제
         itemUserRepository.deleteByUser_UserId(userId);
     }
+
+    @Override
+    public List<ItemUserEntity> findByUserId(Long userId) {
+        return itemUserRepository.findByUserId(userId);
+    }
 }
 
