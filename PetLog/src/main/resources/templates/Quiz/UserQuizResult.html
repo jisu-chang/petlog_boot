@@ -6,34 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Quiz Result</title>
     <style>
-        .container {
-          width: 100%;
-          max-width: 500px;
-          padding: 80px 20px 100px; /* 상단 padding을 80px로! */
-          box-sizing: border-box;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          min-height: 100vh;
-        }
-
         body {
             background-color: #fff6f6;
             margin: 0;
             padding: 0;
             font-family: 'Pretendard', sans-serif;
             color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
         }
 
         .result-wrapper {
             background-color: white;
             width: 100%;
             max-width: 700px;
-            margin: 40px 20px;
+             margin: 80px 20px 80px 20px;
             border-radius: 20px;
             box-shadow: 0 4px 16px rgba(0,0,0,0.06);
             padding: 40px 30px;
             box-sizing: border-box;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
         }
 
         .result-box {
@@ -58,6 +57,7 @@
             color: #555;
             margin: 12px 0;
             text-align: center;
+            line-height: 1.5;
         }
 
         .info strong {
@@ -110,6 +110,12 @@
             color: #b56f44;
         }
 
+        .btn-wrapper {
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+        }
+
         .btn-next {
             background-color: #ffe1e1;
             color: #333;
@@ -123,7 +129,6 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
             transition: background-color 0.3s ease, transform 0.2s ease;
             display: inline-block;
-            margin: 0 auto;
         }
 
         .btn-next:hover {
@@ -144,52 +149,52 @@
     }
 </script>
 
-<div class="container">
-    <div class="result-wrapper">
-        <div class="result-box">
-            <div th:if="${isCorrect}">
-                <p class="info">⌛ <strong><span th:text="${result.resultTime}"></span>초 만에 풀었어요!</strong></p>
-                <p class="info">🏅 현재 순위: <strong><span th:text="${result.resultRank}"></span>위</strong></p>
-            </div>
-
-            <div th:unless="${isCorrect}">
-                <p class="info">정답은 <br>
-                    <strong>
-                        <span th:text="${result.quizAnswer}"></span>번 -
-                        <span th:switch="${result.quizAnswer}">
-                            <span th:case="'1'" th:text="${result.quizOption1}"></span>
-                            <span th:case="'2'" th:text="${result.quizOption2}"></span>
-                            <span th:case="'3'" th:text="${result.quizOption3}"></span>
-                            <span th:case="'4'" th:text="${result.quizOption4}"></span>
-                        </span><br>
-                    </strong> 입니다.
-                </p>
-            </div>
+<div class="result-wrapper">
+    <div class="result-box">
+        <div th:if="${isCorrect}">
+            <p class="info">⌛ <strong><span th:text="${result.resultTime}"></span>초 만에 풀었어요!</strong></p>
+            <p class="info">🏅 현재 순위: <strong><span th:text="${result.resultRank}"></span>위</strong></p>
         </div>
 
-        <h3>🏆 TOP 10</h3>
-        <table>
-            <thead>
-            <tr>
-                <th>순위</th>
-                <th>유저</th>
-                <th>풀이시간</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="row : ${top10}" th:classappend="${row.resultRank == 1 ? 'rank-gold' : (row.resultRank == 2 ? 'rank-silver' : (row.resultRank == 3 ? 'rank-bronze' : ''))}">
-                <td>
-                    <span th:if="${row.resultRank == 1}">🥇</span>
-                    <span th:if="${row.resultRank == 2}">🥈</span>
-                    <span th:if="${row.resultRank == 3}">🥉</span>
-                    <span th:text="${row.resultRank}"></span>위
-                </td>
-                <td th:text="${row.userLoginId}"></td>
-                <td th:text="${row.resultTime} + '초'"></td>
-            </tr>
-            </tbody>
-        </table>
+        <div th:unless="${isCorrect}">
+            <p class="info">정답은 <br>
+                <strong>
+                    <span th:text="${result.quizAnswer}"></span>번 -
+                    <span th:switch="${result.quizAnswer}">
+                        <span th:case="'1'" th:text="${result.quizOption1}"></span>
+                        <span th:case="'2'" th:text="${result.quizOption2}"></span>
+                        <span th:case="'3'" th:text="${result.quizOption3}"></span>
+                        <span th:case="'4'" th:text="${result.quizOption4}"></span>
+                    </span><br>
+                </strong> 입니다.
+            </p>
+        </div>
+    </div>
 
+    <h3>🏆 TOP 10</h3>
+    <table>
+        <thead>
+        <tr>
+            <th>순위</th>
+            <th>유저</th>
+            <th>풀이시간</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="row : ${top10}" th:classappend="${row.resultRank == 1 ? 'rank-gold' : (row.resultRank == 2 ? 'rank-silver' : (row.resultRank == 3 ? 'rank-bronze' : ''))}">
+            <td>
+                <span th:if="${row.resultRank == 1}">🥇</span>
+                <span th:if="${row.resultRank == 2}">🥈</span>
+                <span th:if="${row.resultRank == 3}">🥉</span>
+                <span th:text="${row.resultRank}"></span>위
+            </td>
+            <td th:text="${row.userLoginId}"></td>
+            <td th:text="${row.resultTime} + '초'"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="btn-wrapper">
         <a th:href="@{/UserQuiz}" class="btn-next">다음 문제 풀기 ➡</a>
     </div>
 </div>

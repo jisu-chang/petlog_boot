@@ -70,4 +70,27 @@ public class QnAServiceImp implements QnAService{
         qnARepository.deleteByUser_UserId(userId);
     }
 
+    //전체 QnA page
+    @Override
+    public List<QnAEntity> getQnAPage(int offset, int limit) {
+        return qnARepository.findPagedQnA(offset + limit, offset + 1); // Oracle 방식
+    }
+
+    @Override
+    public int getTotalQnACount() {
+        return qnARepository.countAllQnA();
+    }
+
+    //My QnA page
+    @Override
+    public List<QnAEntity> getUserQnAPage(Long userId, int offset, int limit) {
+        int startRow = offset + 1;
+        int endRow = offset + limit;
+        return qnARepository.findPagedUserQnA(userId, endRow, startRow);
+    }
+
+    @Override
+    public int getTotalUserQnACount(Long userId) {
+        return qnARepository.countUserQnA(userId);
+    }
 }
