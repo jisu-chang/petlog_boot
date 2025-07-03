@@ -1,5 +1,6 @@
 package com.example.PetLog;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -7,9 +8,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class PetLogApplication {
 
 	public static void main(String[] args) {
+		// .env 읽고 시스템 속성으로 등록
+		Dotenv dotenv = Dotenv.configure().directory("PetLog").load();
+		dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
+		System.out.println("SMTP_USER: " + System.getProperty("SMTP_USER"));
+
 		SpringApplication.run(PetLogApplication.class, args);
 	}
-
 }
 
 /*

@@ -6,4 +6,5 @@ import org.springframework.stereotype.Service;
 @Service
 public interface PointService {
 
+    void deleteByUserId(Long userId);
 }

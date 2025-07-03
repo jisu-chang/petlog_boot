@@ -13,8 +13,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     Optional<UserEntity> findByUserLoginId(String userLoginId);
 
-//    @Query("SELECT u FROM UserEntity u WHERE u.email = :email")
-//    Optional<UserEntity> findOptionalByEmail(@Param("email") String email);
+    @Query("SELECT u FROM UserEntity u WHERE u.email = :email")
+    Optional<UserEntity> findOptionalByEmail(@Param("email") String email);
 
     Optional<UserEntity> findByNameAndUserLoginIdAndEmailAndPhone(String name, String userLoginId, String email, String phone);
 

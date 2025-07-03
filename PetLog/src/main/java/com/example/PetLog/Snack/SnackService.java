@@ -26,12 +26,12 @@ public interface SnackService {
     //지수 추가 - 회원탈퇴
     void deleteByUserId(Long userId);
 
-
     SnackEntity getSnackById(Long snackId);
 
     List<SnackDTO> searchSnacks(String postType, String keyword);
 
     Integer getCommentCount(Long snackId);
+
     Integer getLikeCount(Long snackId);
 
     //page

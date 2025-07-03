@@ -178,8 +178,10 @@ public class UserServiceImp implements UserService{
 
     @Override
     public boolean processPasswordReset(String name, String userLoginId, String email, String phone) {
-        Optional<UserEntity> userOpt = userRepository.findByNameAndUserLoginIdAndEmailAndPhone(name, userLoginId, email, phone);
+        System.out.println("입력값: name=" + name + ", loginId=" + userLoginId + ", email=" + email + ", phone=" + phone);
 
+        Optional<UserEntity> userOpt = userRepository.findByNameAndUserLoginIdAndEmailAndPhone(name, userLoginId, email, phone);
+        System.out.println("조회 성공 여부: " + userOpt.isPresent());
         if (userOpt.isPresent()) {
             String tempPw = UUID.randomUUID().toString().substring(0, 10);
             String encPw = passwordEncoder.encode(tempPw);

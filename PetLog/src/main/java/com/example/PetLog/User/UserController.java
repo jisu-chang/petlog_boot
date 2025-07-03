@@ -13,6 +13,7 @@ import com.example.PetLog.Likes.LikesEntity;
 import com.example.PetLog.Likes.LikesService;
 import com.example.PetLog.Pet.PetRepository;
 import com.example.PetLog.Pet.PetService;
+import com.example.PetLog.Point.PointService;
 import com.example.PetLog.QnA.QnAService;
 import com.example.PetLog.QuizResult.QuizResultService;
 import com.example.PetLog.Snack.SnackEntity;
@@ -66,6 +67,8 @@ public class UserController {
     QnAService qnAService;
     @Autowired
     ItemUserService itemUserService;
+    @Autowired
+    PointService pointService;
     String path = "C:/petlog-uploads/profile";
 
     //로그인
@@ -495,6 +498,7 @@ public class UserController {
         quizResultService.deleteByUserId(userId); //퀴즈 결과 삭제
         qnAService.deleteByUserId(userId); //문의글 삭제
         itemUserService.deleteByUserId(userId); //아이템 구매내역 삭제
+        pointService.deleteByUserId(userId); //관리자 지급 포도알 삭제
         userService.deleteUser(userId);  //유저 삭제
 
         session.invalidate(); // 세션 종료
