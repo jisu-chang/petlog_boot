@@ -2,202 +2,213 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <div th:replace="~{top::menu}"></div>
 
-<style>
-    body {
-      background-color: #fff6f6;
-      margin: 0;
-      padding: 0;
-      font-family: 'Pretendard', sans-serif;
-      color: #333;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-
-    .table-wrapper {
-      background-color: white;
-      width: 95%;
-      max-width: 1000px;
-      margin: 0 auto 40px auto;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      padding: 20px;
-      box-sizing: border-box;
-    }
-
-    h2, caption {
-      text-align: center;
-      color: #f48aa5;
-      font-weight: bold;
-      font-size: 1.8em;
-      margin-bottom: 25px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      background-color: #fff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-      border-radius: 8px;
-      overflow: hidden;
-    }
-
-    th, td {
-      padding: 12px 8px;
-      font-size: 1em;
-      border-bottom: 1px solid #eee;
-      text-align: center;
-    }
-
-    th {
-      background-color: #fff0f4;
-      color: #555;
-      font-weight: bold;
-    }
-
-    td a {
-      color: #333;
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    td a:hover {
-      color: #d65b7b;
-      text-decoration: underline;
-    }
-
-    .btn-write {
-        background-color: #ffe1e1;
-        color: #333;
-        border: none;
-        padding: 8px 18px;
-        border-radius: 10px;
-        font-weight: normal;
-        cursor: pointer;
-        text-decoration: none;
-        display: inline-block;
-        margin-bottom: 15px;
-        font-size: 0.9em;
-    }
-
-    .btn-write:hover {
-        background-color: #ffd2d2;
-    }
-
-    .no-recipe {
-        margin-top: 20px;
-        font-weight: bold;
-        color: #c0392b;
-        font-size: 1.1em;
-        text-align: center;
-    }
-
-    .pagination {
-      width: 100%;
-      text-align: center;
-      margin: 30px 0;
-    }
-
-    .pagination a {
-      margin: 0 4px;
-      padding: 6px 12px;
-      color: #888;
-      text-decoration: none;
-      border-radius: 6px;
-      background-color: #ffe1e1;
-      font-size: 0.9em;
-    }
-
-    .pagination a.current {
-      background-color: #f48aa5;
-      color: white;
-      font-weight: bold;
-    }
-
-    .pagination a:hover {
-      background-color: #ffd2d2;
-    }
-
-    .pagination a.disabled {
-        pointer-events: none;
-        color: #ccc;
-        background-color: #f0f0f0;
-    }
-
-    /* 모바일 */
-    @media screen and (max-width: 390px) {
+<head>
+    <meta charset="UTF-8" />
+    <title>공지사항</title>
+    <style>
         body {
-            padding-top: 60px;
+          background-color: #fff6f6;
+          margin: 0;
+          padding: 0;
+          color: #333;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-height: 100vh;
         }
-        h2, caption {
-            font-size: 1.6em;
-            margin-bottom: 20px;
-        }
+
         .table-wrapper {
-            padding: 15px;
-            margin: 0 auto 30px auto;
+          background-color: white;
+          width: 95%;
+          max-width: 1000px;
+          margin: 0 auto 40px auto;
+          border-radius: 12px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+          padding: 20px;
+          box-sizing: border-box;
         }
+
+        h2, caption {
+          text-align: center;
+          color: #f48aa5;
+          font-weight: bold;
+          font-size: 1.8em;
+          margin-bottom: 25px;
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 10px;
+          background-color: #fff;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+          border-radius: 8px;
+          overflow: hidden;
+        }
+
         th, td {
-            padding: 10px 6px;
-            font-size: 1.2em;
+          padding: 12px 8px;
+          font-size: 1em;
+          border-bottom: 1px solid #eee;
+          text-align: center;
         }
+
+        th {
+          background-color: #fff0f4;
+          color: #555;
+          font-weight: bold;
+        }
+
+        td a {
+          color: #333;
+          text-decoration: none;
+          font-weight: 500;
+        }
+
+        td a:hover {
+          color: #d65b7b;
+          text-decoration: underline;
+        }
+
         .btn-write {
-            padding: 7px 15px;
-            font-size: 0.8em;
-            margin-bottom: 10px;
+            background-color: #ffe1e1;
+            color: #333;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-weight: normal;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 15px;
+            font-size: 0.9em;
         }
+
+        .btn-write:hover {
+            background-color: #ffd2d2;
+        }
+
+        .no-post {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #c0392b;
+            font-size: 1.1em;
+            text-align: center;
+            padding: 30px 0;
+            background-color: #fcfcfc;
+            border-radius: 8px;
+        }
+
+        .pagination {
+          width: 100%;
+          text-align: center;
+          margin: 30px 0;
+          display: flex;
+          justify-content: center;
+          gap: 8px;
+        }
+
         .pagination a {
-            margin: 0 3px;
-            padding: 4px 8px;
-            font-size: 0.8em;
+          margin: 0;
+          padding: 6px 12px;
+          color: #888;
+          text-decoration: none;
+          border-radius: 6px;
+          background-color: #ffe1e1;
+          font-size: 0.9em;
+          cursor: pointer;
+          user-select: none;
+          display: inline-block;
+          min-width: 32px;
+          box-sizing: border-box;
         }
-    }
 
-    .search-form {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 8px;
-        margin: 30px 0;
-        flex-wrap: nowrap;
-        flex-direction: row;
-        max-width: 100%;
-    }
+        .pagination a.current {
+          background-color: #f48aa5;
+          color: white;
+          font-weight: bold;
+        }
 
-    .search-form select,
-    .search-form input[type="text"],
+        .pagination a:hover {
+          background-color: #ffd2d2;
+        }
+
+        .pagination a.disabled {
+            pointer-events: none;
+            color: #ccc;
+            background-color: #f0f0f0;
+        }
+
+        @media screen and (max-width: 390px) {
+            body {
+                padding-top: 60px;
+            }
+            h2, caption {
+                font-size: 1.6em;
+                margin-bottom: 20px;
+            }
+            .table-wrapper {
+                padding: 15px;
+                margin: 0 auto 30px auto;
+            }
+            th, td {
+                padding: 10px 6px;
+                font-size: 0.9em;
+            }
+            .btn-write {
+                padding: 7px 15px;
+                font-size: 0.8em;
+                margin-bottom: 10px;
+            }
+            .pagination a {
+                margin: 0 3px;
+                padding: 4px 8px;
+                font-size: 0.8em;
+            }
+        }
+
+        .search-form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin: 30px 0;
+            flex-wrap: nowrap;
+            flex-direction: row;
+            max-width: 100%;
+        }
+
+        .search-form select,
+        .search-form input[type="text"],
+        .search-form input[type="submit"] {
+            height: 40px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .search-form select {
+            width: 90px;
+            min-width: 70px;
+            flex-shrink: 0;
+            padding: 8px;
+        }
+
+        .search-form input[type="text"] {
+            flex-grow: 1;
+            padding: 8px 12px;
+            min-width: 0;
+        }
+
     .search-form input[type="submit"] {
-        height: 40px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        font-size: 1em;
-        font-family: 'Pretendard', sans-serif;
-    }
-
-    .search-form select {
-        width: 90px;
-        min-width: 70px;
-        flex-shrink: 0;
-        padding: 8px;
-    }
-
-    .search-form input[type="text"] {
-        flex-grow: 1;
-        padding: 8px 12px;
-        min-width: 0;
-    }
-
-    .search-form input[type="submit"] {
-        width: 70px;
-        background-color: #e5f7f3;
-        color: #555;
-        font-weight: 500;
-        border: none;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        flex-shrink: 0;
+      width: 70px;
+      background-color: #e5f7f3;
+      color: #555;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      flex-shrink: 0;
     }
 
     .search-form input[type="submit"]:hover {
@@ -224,7 +235,8 @@
           width: 60px;
         }
     }
-</style>
+    </style>
+</head>
 
 <body>
 <div class="table-wrapper">
@@ -234,7 +246,6 @@
         <a th:href="@{/CommunityIn(type='notice')}" class="btn-write" sec:authorize="hasRole('ADMIN')">게시글 작성</a>
     </div>
 
-    <!-- 검색 -->
     <form th:action="@{/search}" method="get" class="search-form">
         <input type="hidden" name="board" value="notice" />
         <select name="postType">
@@ -245,41 +256,47 @@
         <input type="submit" value="검색" />
     </form>
 
-    <table>
-        <thead>
-        <tr>
-            <th style="width: 70%;">제목</th>
-            <th style="width: 30%;">작성일자</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:if="${#lists.isEmpty(noticePosts)}">
-            <td colspan="2">등록 된 공지사항이 없습니다.</td>
-        </tr>
-        <tr th:each="cc : ${noticePosts}">
-            <td style="text-align: left;">
-                <a th:href="@{/NoticeDetail(postId=${cc.postId})}">
-                    <span th:text="${cc.postTitle}"></span>
-                </a>
-            </td>
-            <td th:text="${cc.postDate}"></td>
-        </tr>
-        </tbody>
-    </table>
+    <div th:if="${noticePosts != null and !noticePosts.empty}">
+        <table>
+            <thead>
+            <tr>
+                <th style="width: 70%;">제목</th>
+                <th style="width: 30%;">작성일자</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="cc : ${noticePosts}">
+                <td style="text-align: left;">
+                    <a th:href="@{/NoticeDetail(postId=${cc.postId})}">
+                        <span th:text="${cc.postTitle}"></span>
+                    </a>
+                </td>
+                <td th:text="${#temporals.format(cc.postDate, 'yyyy-MM-dd')}"></td>
+            </tr>
+            </tbody>
+        </table>
 
-    <!-- ✅ 페이징 -->
-    <div class="pagination">
-        <a th:href="@{/CommunityNotice(page=${currentPage - 1})}"
-           th:classappend="${currentPage == 1} ? ' disabled' : ''">이전</a>
+        <div class="pagination">
+            <a th:classappend="${currentPage == 1} ? 'disabled'"
+               th:href="@{/CommunityNotice(page=${currentPage - 1}, keyword=${param.keyword}, postType=${param.postType})}">
+                이전
+            </a>
 
-        <span th:each="pageNum : ${#numbers.sequence(1, totalPages)}">
-          <a th:href="@{/CommunityNotice(page=${pageNum})}"
-             th:text="${pageNum}"
-             th:classappend="${pageNum == currentPage} ? ' current' : ''"></a>
-      </span>
+            <span th:each="pageNum : ${#numbers.sequence(1, totalPages)}">
+                <a th:href="@{/CommunityNotice(page=${pageNum}, keyword=${param.keyword}, postType=${param.postType})}"
+                   th:text="${pageNum}"
+                   th:classappend="${pageNum == currentPage} ? 'current'"></a>
+            </span>
 
-        <a th:href="@{/CommunityNotice(page=${currentPage + 1})}"
-           th:classappend="${currentPage == totalPages} ? ' disabled' : ''">다음</a>
+            <a th:classappend="${currentPage == totalPages} ? 'disabled'"
+               th:href="@{/CommunityNotice(page=${currentPage + 1}, keyword=${param.keyword}, postType=${param.postType})}">
+                다음
+            </a>
+        </div>
+    </div>
+
+    <div th:if="${noticePosts == null or noticePosts.empty}" class="no-post">
+        등록 된 공지사항이 없습니다.
     </div>
 
 </div>
