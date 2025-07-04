@@ -170,14 +170,10 @@
     <h3><span class="nickname" th:text="${list.name}"></span>님의 회원정보</h3>
 
     <div class="profile-frame-container">
-      <img th:src="${list.profileimgName != null
-              ? (#strings.startsWith(list.profileimgName, 'http') or #strings.startsWith(list.profileimgName, 'https')
-                 ? list.profileimgName
-                 : '/profileimg/' + list.profileimgName)
-              : '/profileimg/default.png'}"
-           alt="프로필 이미지"
-           th:classappend="${list.equippedFrameImageName == null or list.equippedFrameImageName.isEmpty()} ? 'with-border'"
-           class="profile-img" />
+      <img th:src="${list.profileimgName == null or list.profileimgName == 'default.png'
+            ? '/image/default.png' : (#strings.startsWith(list.profileimgName, 'http') or #strings.startsWith(list.profileimgName, 'https')
+            ? list.profileimgName: '/profileimg/' + list.profileimgName)}"  alt="프로필 이미지" class="profile-img"
+            th:classappend="${list.equippedFrameImageName == null or list.equippedFrameImageName.isEmpty()} ? 'with-border'" />
 
       <img th:if="${list.equippedFrameImageName != null and !list.equippedFrameImageName.isEmpty()}"
            th:src="@{/image/{fileName}(fileName=${list.equippedFrameImageName})}" alt="착용 중인 프레임"

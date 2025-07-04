@@ -115,6 +115,14 @@
     .pagination a:hover:not(.disabled):not(.current) {
       background-color: #ffd2d2;
     }
+    td.title-col {
+      text-align: left;
+      padding-left: 20px;
+    }
+    td.status-col {
+      width: 80px; /* 적당히 넓게 */
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -128,7 +136,6 @@
   <table>
     <thead>
     <tr>
-      <th>No</th>
       <th>제목</th>
       <th>작성자</th>
       <th>상태</th>
@@ -139,14 +146,12 @@
     <tr th:if="${#lists.isEmpty(list)}">
       <td colspan="4">작성 된 Q&A가 없습니다.</td>
     </tr>
-
     <tr th:each="dto : ${list}">
-      <td th:text="${dto.qnaId}"></td>
-      <td>
+      <td class="title-col">
         <a th:href="@{/QnADetail(qnaId=${dto.qnaId})}" th:text="${dto.qnaTitle}"></a>
       </td>
       <td th:text="${dto.user != null ? dto.user.userLoginId : '알 수 없음'}"></td>
-      <td th:text="${dto.qnaStatus}"></td>
+      <td class="status-col"  th:text="${dto.qnaStatus}"></td>
     </tr>
     </tbody>
   </table>

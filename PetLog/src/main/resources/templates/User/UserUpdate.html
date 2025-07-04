@@ -103,16 +103,20 @@
     <input type="hidden" name="dfname" th:value="${userDTO.profileimgName != null ? userDTO.profileimgName : 'default.png'}">
     <input type="hidden" name="phoneCheckStatus" id="phoneCheckStatus" value="false" />
 
-    <!-- 일반 유저용 이미지 (내부 저장된 파일) -->
+    <!-- 외부 URL 이미지 (카카오) -->
     <img class="profile-img-only"
-         th:if="${session.loginType != 'kakao'}"
-         th:src="@{${userDTO.profileimgName != null ? '/profileimg/' + userDTO.profileimgName : '/profileimg/default.png'}}"
-         alt="Profile Image" />
-    <!-- 카카오 로그인 유저용 이미지 (외부 URL) -->
+         th:if="${userDTO.profileimgName != null and userDTO.profileimgName.startsWith('http')}"
+         th:src="${userDTO.profileimgName}" alt="Kakao Profile"/>
+
+    <!-- default.png 이미지 (내부 static/image 폴더) -->
     <img class="profile-img-only"
-         th:if="${session.loginType == 'kakao'}"
-         th:src="${userDTO.profileimgName != null and #strings.contains(userDTO.profileimgName, 'http') ? userDTO.profileimgName : '/profileimg/default.png'}"
-         alt="Profile Image" />
+         th:if="${userDTO.profileimgName == null or userDTO.profileimgName == 'default.png'}"
+         th:src="@{/image/default.png}" alt="Default Image"/>
+
+    <!-- 내부 저장된 사용자 이미지 -->
+    <img class="profile-img-only"
+         th:if="${userDTO.profileimgName != null and userDTO.profileimgName != 'default.png' and !userDTO.profileimgName.startsWith('http')}"
+         th:src="@{'/profileimg/' + ${userDTO.profileimgName}}" alt="Local Profile"/>
 
     <div class="form-group">
       <label for="userLoginId">아이디</label>

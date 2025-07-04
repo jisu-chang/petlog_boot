@@ -153,20 +153,9 @@
         </th:block>
 
         <div class="post-header">
-            <!-- 카카오 등 외부 이미지 -->
-            <img class="profile-img"
-                 th:if="${dto.user != null and dto.user.profileimg != null and dto.user.profileimg.startsWith('http')}"
-                 th:src="${dto.user.profileimg}" alt="Profile Image"/>
-
-            <!-- 로컬에서 저장한 프로필 이미지 -->
-            <img class="profile-img"
-                 th:if="${dto.user != null and dto.user.profileimg != null and !dto.user.profileimg.startsWith('http')}"
-                 th:src="@{'/profileimg/' + ${dto.user.profileimg}}" alt="Local Profile Image"/>
-
-            <!-- 기본 이미지 -->
-            <img class="profile-img"
-                 th:if="${dto.user == null or dto.user.profileimg == null}"
-                 th:src="@{/profileimg/default.png}" alt="Default Image"/>
+            <img class="profile-img" th:if="${dto.user.profileimg?.startsWith('http')}" th:src="${dto.user.profileimg}" alt="프로필">
+            <img class="profile-img" th:if="${dto.user.profileimg == 'default.png'}" th:src="@{/image/default.png}" alt="기본이미지">
+            <img class="profile-img" th:if="${dto.user.profileimg != null and !dto.user.profileimg.startsWith('http') and dto.user.profileimg != 'default.png'}" th:src="@{'/profileimg/' + ${dto.user.profileimg}}" alt="프로필">
             <h2><span th:text="${dto.user.userLoginId} + '님의 삭제 게시물'"></span></h2>
         </div>
 
