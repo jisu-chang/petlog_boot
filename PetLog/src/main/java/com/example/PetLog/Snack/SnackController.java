@@ -44,9 +44,9 @@ public class SnackController {
 
     // 입력 폼
     @GetMapping("/Snack/SnackInput")
-    public String input(Model model, HttpSession session, Principal principal) {
-        String loginId = principal.getName();
-        Long userId = userService.findUserIdByLoginId(loginId);
+    public String input(Model model, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        userService.findByuserId(userId);
 
         model.addAttribute("userId", userId);
         session.setAttribute("userId", userId);
@@ -56,7 +56,7 @@ public class SnackController {
 
     // 저장
     @PostMapping("/SnackSave")
-    public String save(SnackDTO dto, HttpSession session) throws IOException {
+    public String save(@ModelAttribute SnackDTO dto, HttpSession session) throws IOException {
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) {
             return "redirect:/login";
@@ -194,8 +194,8 @@ public class SnackController {
     public String dd2(@RequestParam("snackId") Long snackId, @RequestParam("himage") String imagename) {
         snackService.delete(snackId);
 
-        File file = new File(path, imagename);
-        if (file.exists()) file.delete();
+//        File file = new File(path, imagename);
+//        if (file.exists()) file.delete();
 
         return "redirect:/Snack/SnackOut";
     }

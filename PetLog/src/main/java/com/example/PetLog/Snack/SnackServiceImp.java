@@ -76,7 +76,14 @@ public class SnackServiceImp implements SnackService {
         // 댓글, 좋아요 삭제 먼저
         commentsRepository.deleteBysnackId(snackId);
         likesRepository.deleteBysnackId(snackId);
-
+        //이미지 삭제 처리
+        SnackEntity snack = snackRepository.findById(snackId).orElse(null);
+        if(snack != null && snack.getSnackImage() != null && !snack.getSnackImage().equals("default.png")){
+            File file = new File(path + File.separator + snack.getSnackImage());
+            if(file.exists()){
+                file.delete();
+            }
+        }
         snackRepository.deleteById(snackId);
     }
 

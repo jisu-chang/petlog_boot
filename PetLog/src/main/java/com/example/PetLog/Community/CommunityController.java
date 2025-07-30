@@ -236,7 +236,7 @@ public class CommunityController {
 
     @PostMapping(value = "/CommunityDeleteSave")
     public String comdeletesave(@RequestParam("postId") Long postId,
-                                @RequestParam("dfname") String dfname,
+//                                @RequestParam("dfname") String dfname,
                                 @RequestParam(value = "type", required = false) String type,
                                 @RequestParam(value = "post_type", required = false) String postType,
                                 HttpSession session,
@@ -245,9 +245,8 @@ public class CommunityController {
         communityDTO.setUserId(userId);
 
         communityService.deletesave(postId);
-        File ff = new File(path + "\\" + dfname);
-        ff.delete();
-
+//        File ff = new File(path + "\\" + dfname);
+//        ff.delete();
         return "redirect:/CommunityOut";
     }
 

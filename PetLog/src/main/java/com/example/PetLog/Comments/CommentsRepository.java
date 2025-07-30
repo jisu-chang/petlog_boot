@@ -17,7 +17,7 @@ public interface CommentsRepository extends JpaRepository<CommentsEntity, Long> 
     void deleteByUser_UserId(Long userId);
 
     //게시글 아이디로 댓글 조회
-    @Query("SELECT c FROM CommentsEntity c WHERE c.community.postId = :postId ORDER BY c.parentId ASC, c.comId ASC")
+    @Query("SELECT c FROM CommentsEntity c JOIN FETCH c.user WHERE c.community.postId = :postId ORDER BY c.parentId ASC, c.comId ASC")
     List<CommentsEntity> findCommentsByPostId(@Param("postId") Long postId);
 
     @Query("SELECT c FROM CommentsEntity c JOIN FETCH c.user WHERE c.snack.snackId = :snackId ORDER BY c.parentId ASC, c.comId ASC")

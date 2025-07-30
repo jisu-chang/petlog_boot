@@ -9,7 +9,8 @@ public class PetLogApplication {
 
 	public static void main(String[] args) {
 		// .env 읽고 시스템 속성으로 등록
-		Dotenv dotenv = Dotenv.configure().load();
+//		Dotenv dotenv = Dotenv.configure().load();
+		Dotenv dotenv = Dotenv.configure().directory("PetLog").load();
 		dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
 		System.out.println("SMTP_USER: " + System.getProperty("SMTP_USER"));
 

@@ -63,7 +63,15 @@ public class CommunityServiceImp implements CommunityService{
         commentsRepository.deleteByPostId(postId);
         // 2. 좋아요 삭제
         likesRepository.deleteByPostId(postId);
-        // 3. 게시글 삭제
+        // 3. 이미지 삭제
+        CommunityEntity post = communityRepository.findById(postId).orElse(null);
+        if(post != null && post.getPostImage() != null && !post.getPostImage().equals("default.png")){
+            File file = new File(path + File.separator + post.getPostImage());
+            if(file.exists()){
+                file.delete();
+            }
+        }
+        // 4. 게시글 삭제
         communityRepository.deleteById(postId);
     }
 

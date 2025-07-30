@@ -144,7 +144,7 @@
 <div class="container">
     <form th:action="@{/CommunityDeleteSave}" method="post">
         <input type="hidden" name="postId" th:value="${dto.postId}" />
-        <input type="hidden" name="dfname" th:value="${dto.postImage}" />
+<!--        <input type="hidden" name="dfname" th:value="${dto.postImage}" />-->
         <th:block th:if="${isNoticePage}">
             <input type="hidden" name="type" value="notice" />
         </th:block>

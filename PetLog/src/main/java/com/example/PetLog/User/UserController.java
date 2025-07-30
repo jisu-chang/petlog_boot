@@ -488,8 +488,25 @@ public class UserController {
     public String withdraw(HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
 
-        likesService.deleteByUserId(userId); //좋아요 삭제
+        //커뮤니티
+        //유저가 작성한 게시글 리스트 조회
+        List<CommunityEntity> userPosts = communityService.findByUserId(userId);
+        //게시글에 등록 된 댓글, 좋아요 전체 삭제
+        for(CommunityEntity post : userPosts){
+            communityService.deletesave(post.getPostId());
+        }
+
+        //간식레시피
+        //유저가 작성한 게시글 리스트 조회
+        List<SnackEntity> snackPosts = snackService.findByUserId(userId);
+        //게시글에 등록 된 댓글, 좋아요 전체 삭제
+        for(SnackEntity snack : snackPosts){
+            snackService.delete(snack.getSnackId());
+        }
+
+        //유저 아이디 기반 데이터 삭제
         commentsService.deleteByUserId(userId); //댓글 삭제
+        likesService.deleteByUserId(userId); //좋아요 삭제
         communityService.deleteByUserId(userId); //게시글 삭제
         diaryService.deleteByUserId(userId); //일기 삭제
         snackService.deleteByUserId(userId); //간식 삭제
