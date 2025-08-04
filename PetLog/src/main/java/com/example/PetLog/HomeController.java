@@ -63,7 +63,7 @@ public class HomeController {
 
         model.addAttribute("list", pets);
         model.addAttribute("user", user);
-        return "main4";
+        return "main";
     }
 
     @GetMapping("/")
@@ -92,7 +92,7 @@ public class HomeController {
 
         model.addAttribute("list", pets);
         model.addAttribute("user", user);
-        return "main4";
+        return "main";
     }
 
 
